@@ -5,18 +5,13 @@
 <body>
   <h1>Welcome to HipLearn!</h1>
 
-  {{> hello}}
-  {{> info}}
+  <div class="container">
+      {{> hello}}
+  </div>
+
 </body>
 
 <template name="hello">
-  <button>Click Me</button>
-  <p>You've pressed the button {{counter}} times.</p>
-</template>
-
-<template name="info">
-  <h2>You need it</h2>
-  <ul>
-    <li>Because it's needed</li>
-  </ul>
+  <button>Feed the hippo</button>
+  <p>Hippo Happiness: <span>{{counter}}</span> </p>
 </template>

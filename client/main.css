@@ -1,1 +1,22 @@
 /* CSS declarations go here */
+
+body {
+    position: absolute;
+    top: auto;
+    left: auto;
+    bottom: auto;
+    right: auto;
+    background: url("imgs/hippo.png") no-repeat;
+    background-size: 1000px;
+}
+
+.container {
+    margin: 200px 100px auto;
+}
+
+span {
+    color: forestgreen;
+    font-family: Helvetica sans-serif;
+    font-size: 2em;
+    margin: 10px;
+}

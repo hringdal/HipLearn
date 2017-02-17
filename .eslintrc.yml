@@ -1,0 +1,25 @@
+parserOptions:
+  ecmaVersion: 6
+  sourceType: "module"
+
+plugins:
+  - meteor
+
+extends:
+  - airbnb
+  - plugin:meteor/recommended
+
+settings:
+  import/resolver: meteor
+
+env:
+  meteor: true
+  browser: true
+  node: true
+
+rules:
+  import/no-extraneous-dependencies: "off"
+  import/extensions:
+    - off
+    - never
+    no-underscore-dangle: "off"
