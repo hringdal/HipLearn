@@ -1,22 +1,22 @@
 /* CSS declarations go here */
 
 body {
-    position: absolute;
-    top: auto;
-    left: auto;
-    bottom: auto;
-    right: auto;
     background: url("imgs/hippo.png") no-repeat;
     background-size: 1000px;
+    padding-top: 50px;
+    color: #CB5167
 }
 
-.container {
-    margin: 200px 100px auto;
+#happybox {
+    padding: 100px;
 }
 
-span {
-    color: forestgreen;
-    font-family: Helvetica sans-serif;
-    font-size: 2em;
-    margin: 10px;
+#happiness {
+    color: #9F3F87;
+    font-size: 4rem;
+    padding-left: 30px;
+}
+
+h1 {
+    font-size: 2.5rem;
 }

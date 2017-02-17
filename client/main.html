@@ -1,17 +1,19 @@
 <head>
-  <title>hiplearn</title>
+    <title>hiplearn</title>
 </head>
 
 <body>
-  <h1>Welcome to HipLearn!</h1>
-
-  <div class="container">
-      {{> hello}}
-  </div>
-
+<div class="ui container">
+    <h1 class>Welcome to HipLearn!</h1>
+    {{> hello}}
+</div>
 </body>
 
+
 <template name="hello">
-  <button>Feed the hippo</button>
-  <p>Hippo Happiness: <span>{{counter}}</span> </p>
+    <button class="ui green huge basic button"><i class="empty heart icon"></i>Feed the hippo</button>
+    <div class="ui container" id="happybox">
+        <p>Hippo Happiness:</p>
+        <p id="happiness">{{counter}}</p>
+    </div>
 </template>
