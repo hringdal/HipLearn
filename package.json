@@ -1,0 +1,68 @@
+{
+  "name": "hiplearn2",
+  "private": true,
+  "scripts": {
+    "start": "meteor run",
+    "lint": "eslint --quiet ./imports",
+    "test": "meteor test --driver-package practicalmeteor:mocha"
+  },
+  "dependencies": {
+    "babel-runtime": "6.18.0",
+    "bcrypt": "^1.0.2",
+    "meteor-node-stubs": "~0.2.0",
+    "simpl-schema": "^0.2.2"
+  },
+  "devDependencies": {
+    "autoprefixer": "^6.4.1",
+    "eslint": "^3.15.0",
+    "eslint-config-airbnb": "^14.1.0",
+    "eslint-import-resolver-meteor": "^0.3.4",
+    "eslint-plugin-import": "^2.2.0",
+    "eslint-plugin-jsx-a11y": "^4.0.0",
+    "eslint-plugin-meteor": "^4.0.1",
+    "eslint-plugin-react": "^6.10.0"
+  },
+
+  "eslintConfig": {
+    "parserOptions": {
+      "allowImportExportEverywhere": true
+    },
+    "plugins": [
+      "meteor"
+    ],
+    "extends": [
+      "airbnb",
+      "plugin:meteor/recommended"
+    ],
+    "rules": {
+      "import/no-extraneous-dependencies": "off",
+      "import/extensions": [
+        "off",
+        "never"
+      ],
+      "no-underscore-dangle": "off",
+      "meteor/eventmap-params": [
+        "error",
+        {
+          "eventParamName": "event",
+          "templateInstanceParamName": "instance"
+        }
+      ],
+      "meteor/template-names": [
+        "off"
+      ]
+    },
+    "settings": {
+      "import/resolver": "meteor"
+    }
+  },
+  "postcss": {
+    "plugins": {
+      "autoprefixer": {
+        "browsers": [
+          "last 2 versions"
+        ]
+      }
+    }
+  }
+}
