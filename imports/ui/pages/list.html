@@ -1,13 +1,10 @@
 <template name="List">
-    <div class="ui fluid center aligned basic fitted segment">
-        <div class="column">
-            <p>This is your fantastificasionistic list!</p>
-        </div>
-
-        <ul>
+    <div class="ui basic segment">
+        <h2 class="ui center aligned header">This is your fantastificasionistic list!</h2>
+        <div class="ui relaxed list">
             {{#each tasks}}
-                {{task}}
+                {{> task}}
             {{/each}}
-        </ul>
+        </div>
     </div>
 </template>
