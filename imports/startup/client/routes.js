@@ -1,7 +1,8 @@
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import { BlazeLayout } from 'meteor/kadira:blaze-layout';
 
-// Client templates
+// Layout and all route targets
+// Each page imports its own components and other pages that it references
 import '../../ui/layouts/app-body.js';
 import '../../ui/pages/list.js';
 import '../../ui/pages/placeholder.js';

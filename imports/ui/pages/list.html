@@ -1,10 +1,15 @@
 <template name="List">
-    <div class="ui basic segment">
-        <h2 class="ui center aligned header">This is your fantastificasionistic list!</h2>
-        <div class="ui relaxed list">
-            {{#each tasks}}
-                {{> task}}
-            {{/each}}
+    <div id="list" class="ui container">
+        <div class="ui padded grid">
+            <div class="three wide column"></div>
+            <div class="ten wide column list-body" style="padding: 2em">
+                <h1 class="ui center aligned dividing header">Lista</h1>
+                <div class="ui relaxed list">
+                    {{#each tasks}}
+                        {{> task}}
+                    {{/each}}
+                </div>
+            </div>
         </div>
     </div>
 </template>
