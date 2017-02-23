@@ -13,6 +13,7 @@ Template.Placeholder.onRendered(() => {
   $('body').addClass('hippo');
 });
 
+
 Template.Placeholder.onDestroyed(() => {
   $('body').removeClass('hippo');
 });

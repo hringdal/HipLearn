@@ -1,8 +1,24 @@
 <template name="Placeholder">
     <div class="ui container">
+        <div class="ui secondary pointing vertical labeled icon right floated menu">
+
+            <a href="{{pathFor 'App.home'}}" class="active item">
+                <i class="home icon"></i>
+                Home
+            </a>
+            <a href="{{pathFor 'list'}}" class="item">
+                <i class="list icon"></i>
+                List
+            </a>
+        </div>
+    </div>
+
+    <div class="ui container">
         <h1>Welcome to HipLearn!</h1>
 
-        <button class="ui green huge basic button"><i class="empty heart icon"></i>Feed the hippo</button>
+        <div class="row">
+            <button class="ui green huge basic button"><i class="empty heart icon"></i>Feed the hippo</button>
+        </div>
 
         <div class="ui container" id="happybox">
             <p>Hippo Happiness:</p>
