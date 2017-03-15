@@ -2,11 +2,6 @@ import { Template } from 'meteor/templating';
 import { $ } from 'meteor/jquery';
 // import Tasks from '../../api/tasks.js';
 
-import './list.html';
-
-// imports required components for this page
-import '../components/task.js';
-
 Template.List.onRendered(() => {
   $('.list .master.checkbox')
     .checkbox({
