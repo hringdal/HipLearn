@@ -5,7 +5,15 @@ const Books = new Mongo.Collection('books');
 export default Books;
 
 Books.schema = new SimpleSchema({
-  // rules go here
+  name: {
+    type: String,
+  },
+  course_id: {
+    type: String,
+  },
+  chapters: {
+    type: Array,
+  },
 });
 
 // For automatic validation with Collection 2
