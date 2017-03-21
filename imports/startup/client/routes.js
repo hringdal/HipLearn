@@ -7,7 +7,16 @@ import '../../ui/layouts/app-body.js';
 import '../../ui/pages/list.js';
 import '../../ui/pages/placeholder.js';
 import '../../ui/pages/app-not-found.js';
+import '../../ui/pages/tasks.js';
+import '../../ui/pages/login_Student.js';
 
+// route to login
+FlowRouter.route('/login', {
+    name: 'login_Student.show',
+    action() {
+        BlazeLayout.render('App_body', {main: 'login_Student'})
+    }
+});
 // Routes
 FlowRouter.route('/', {
   name: 'App.home',
@@ -21,6 +30,12 @@ FlowRouter.route('/list', {
   action() {
     BlazeLayout.render('App_body', { main: 'List' });
   },
+});
+FlowRouter.route('/janne', {
+    name: 'Tasks.show',
+    action() {
+        BlazeLayout.render('App_body', { main: 'tasks' });
+    },
 });
 
 // Redirect for all unknown routes
