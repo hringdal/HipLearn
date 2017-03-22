@@ -118,17 +118,6 @@ Schemas.Result = new SimpleSchema({
   },
 }, { tracker: Tracker });
 
-Schemas.UserProfile = new SimpleSchema({
-  firstName: {
-    type: String,
-    optional: true,
-  },
-  lastName: {
-    type: String,
-    optional: true,
-  },
-});
-
 Schemas.User = new SimpleSchema({
   username: {
     type: String,
@@ -138,14 +127,9 @@ Schemas.User = new SimpleSchema({
     autoValue() {
       if (this.isInsert) {
         return new Date();
-      } else if (this.isUpsert) {
-        return { $setOnInsert: new Date() };
       }
       return this.unset();
     },
-  },
-  profile: {
-    type: Schemas.UserProfile,
   },
   services: {
     type: Object,
