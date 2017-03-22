@@ -21,21 +21,20 @@ reactive-var@1.0.11            # Reactive variable for tracker
 semantic:ui
 
 # Data
-mongo@1.1.15                   # The database Meteor supports right now
-aldeed:collection2-core
+mongo@1.1.16                   # The database Meteor supports right now
 
 # Development
-autopublish@1.0.7             # Publish all data to the clients (for prototyping)
+autopublish@1.0.7             # Publ all data to the clients (for prototyping)
 insecure@1.0.7                # Allow all DB writes from clients (for prototyping)
 
 # Testing
 practicalmeteor:mocha
 practicalmeteor:chai
-shell-server@0.2.2            # Server-side component of the `meteor shell` command
+shell-server@0.2.3            # Server-side component of the `meteor shell` command
 
 # Production
 juliancwirko:postcss
-standard-minifier-js@1.2.2    # JS minifier run for production mode
+standard-minifier-js@1.2.3    # JS minifier run for production mode
 wizonesolutions:canonical
 
 # Accounts
@@ -52,6 +51,9 @@ zimme:active-route
 # Mobile
 mobile-experience@1.0.4       # Packages for a great mobile UX
 fastclick@1.0.13
-check@1.2.4
+check@1.2.5
 msavin:mongol
 alanning:roles
+aldeed:autoform
+aldeed:collection2-core
+eoliphant:autoform-semantic-ui

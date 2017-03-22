@@ -46,9 +46,6 @@ Template.List.onRendered(() => {
 });
 
 Template.List.helpers({
-  // tasks() {
-  //   return Tasks.find({});
-  // },
   tasks: [
     { text: '1.1 What is the internet?' },
     { text: '1.2 The Network Edge' },
