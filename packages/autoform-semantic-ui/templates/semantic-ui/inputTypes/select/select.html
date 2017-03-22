@@ -1,0 +1,53 @@
+<template name="afSelect_semanticUI">
+  <div {{divAtts}}>
+    <input type="hidden" {{inputAtts}} value="{{this.value}}">
+    {{#if this.atts.placeholder}}
+      <div class="default text">{{this.atts.placeholder}}</div>
+    {{else}}
+      <div class="text"></div>
+    {{/if}}
+    <i class="dropdown icon"></i>
+    <div class="menu">
+      {{#if showClearButton}}
+        <div class="ui fluid compact clear button"><i class="erase icon"></i></div>
+      {{/if}}
+      {{#each this.items}}
+        {{> afSelectRecursive}}
+      {{/each}}
+    </div>
+  </div>
+</template>
+
+<template name="afSelectRecursive">
+  {{#if this.itemGroup}}
+    <div class="header">{{this.itemGroup}}</div>
+    {{#each this.items}}
+      {{> afSelectRecursive}}
+    {{/each}}
+  {{else}}
+    {{#if this.category}}
+      <div class="item" data-value="{{this.category.value}}">
+        <i class="dropdown icon"></i>
+        <span class="text">{{this.category.label}}</span>
+        <div class="menu">
+          {{#each this.items}}
+            {{> afSelectRecursive}}
+          {{/each}}
+        </div>
+      </div>
+    {{else}}
+      <div {{this.htmlAtts}} data-value="{{this.value}}">
+        {{#if this.icon}}
+          <i class="{{this.icon}}"></i>
+        {{/if}}
+        {{#if this.circularLabel}}
+          <div class="ui {{this.circularLabel}} empty circular label"></div>
+        {{/if}}
+        {{#if this.description}}
+          <span class="description">{{this.description}}</span>
+        {{/if}}
+        {{this.label}}
+      </div>
+    {{/if}}
+  {{/if}}
+</template>
