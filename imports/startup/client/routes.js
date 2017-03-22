@@ -16,8 +16,15 @@ FlowRouter.route('/list', {
   },
 });
 
-FlowRouter.route('/form', {
+FlowRouter.route('/form/', {
   name: 'Form.show',
+  action() {
+    BlazeLayout.render('App_body', { main: 'Form' });
+  },
+});
+
+FlowRouter.route('/form/:_id', {
+  name: 'Form.Update',
   action() {
     BlazeLayout.render('App_body', { main: 'Form' });
   },
