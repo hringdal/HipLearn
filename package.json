@@ -41,6 +41,7 @@
         "never"
       ],
       "no-underscore-dangle": "off",
+      "prefer-arrow-callback": "off",
       "meteor/eventmap-params": [
         "error",
         {

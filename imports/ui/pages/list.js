@@ -2,11 +2,6 @@ import { Template } from 'meteor/templating';
 import { $ } from 'meteor/jquery';
 // import Tasks from '../../api/tasks.js';
 
-import './list.html';
-
-// imports required components for this page
-import '../components/task.js';
-
 Template.List.onRendered(() => {
   $('.list.master.checkbox')
     .checkbox({
@@ -51,9 +46,6 @@ Template.List.onRendered(() => {
 });
 
 Template.List.helpers({
-  // tasks() {
-  //   return Tasks.find({});
-  // },
   tasks: [
     { text: '1.1 What is the internet?' },
     { text: '1.2 The Network Edge' },
