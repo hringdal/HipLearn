@@ -3,14 +3,16 @@
         <div class="ui segment">
             {{#autoForm collection=getCollection type="update" doc=getBook id="insertBook"}}
                 {{> afQuickField name='name'}}
-                {{> afQuickField name='course_id'}}
+                {{> afQuickField name='course_id' search=true placeholder='Select a course'}}
                 <h4 class="ui header">Chapters</h4>
                 {{> afArrayField name='chapters' template="bookForm"}}
-                <button type="submit" class="ui positive button">Insert</button>
+                <button type="submit" class="ui positive button">Update</button>
             {{/autoForm}}
         </div>
     </div>
 </template>
+
+<!--Nødvendig for å fjerne litt stygg standard stil-->
 
 <template name="afArrayField_bookForm">
     <!--<h4 class="ui header">

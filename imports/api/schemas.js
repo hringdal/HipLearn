@@ -1,6 +1,9 @@
 import { Tracker } from 'meteor/tracker';
 import { Random } from 'meteor/random';
+
 import SimpleSchema from 'simpl-schema';
+
+import { Courses } from './collections.js';
 
 SimpleSchema.extendOptions(['autoform']);
 
@@ -12,7 +15,17 @@ Schemas.Book = new SimpleSchema({
     label: 'Name',
   },
   course_id: {
-    type: String, label: 'Course ID',
+    type: String,
+    label: 'Course ID',
+    autoform: {
+      afFieldInput: {
+        options() {
+          return Courses.find({}, { _id: 1, sort: { _id: 1 } }).map(function (c) {
+            return { label: c._id.toUpperCase(), value: c._id };
+          });
+        },
+      },
+    },
   },
   chapters: {
     type: Array,
@@ -65,7 +78,7 @@ Schemas.Book = new SimpleSchema({
   'chapters.$.subchapters.$.name': {
     type: String,
     autoform: {
-      placeholder: 'Name',
+      placeholder: 'subchapter',
       label: false,
     },
   },
@@ -80,6 +93,7 @@ Schemas.Course = new SimpleSchema({
   students: {
     type: Array,
     label: 'Students taking the course',
+    optional: true,
   },
   'students.$': String,
   books: {
