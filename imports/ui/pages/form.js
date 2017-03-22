@@ -1,6 +1,7 @@
 import { Template } from 'meteor/templating';
 import { $ } from 'meteor/jquery';
 import { AutoForm } from 'meteor/aldeed:autoform';
+import { FlowRouter } from 'meteor/kadira:flow-router';
 import { Books } from '../../api/collections.js';
 
 Template.Form.events({
@@ -17,6 +18,10 @@ Template.Form.events({
 Template.Form.helpers({
   getCollection() {
     return Books;
+  },
+  getBook() {
+    const id = FlowRouter.current().getParams('id');
+    return Books.findOne(id);
   },
 });
 

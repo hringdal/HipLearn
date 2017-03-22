@@ -38,7 +38,7 @@ standard-minifier-js@1.2.3    # JS minifier run for production mode
 wizonesolutions:canonical
 
 # Accounts
-accounts-password@1.3.4
+accounts-password
 useraccounts:semantic-ui
 useraccounts:flow-routing
 
