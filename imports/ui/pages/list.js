@@ -3,7 +3,7 @@ import { $ } from 'meteor/jquery';
 // import Tasks from '../../api/tasks.js';
 
 Template.List.onRendered(() => {
-  $('.list .master.checkbox')
+  $('.list.master.checkbox')
     .checkbox({
       // check all children
       onChecked() {
@@ -15,7 +15,7 @@ Template.List.onRendered(() => {
         $childCheckbox.checkbox('uncheck');
       },
     });
-  $('.list .child.checkbox')
+  $('.list.child.checkbox')
     .checkbox({
       // Fire on load to set parent value
       fireOnInit: true, // Change parent state on each child checkbox change
