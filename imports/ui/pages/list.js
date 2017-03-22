@@ -2,13 +2,8 @@ import { Template } from 'meteor/templating';
 import { $ } from 'meteor/jquery';
 // import Tasks from '../../api/tasks.js';
 
-import './list.html';
-
-// imports required components for this page
-import '../components/task.js';
-
 Template.List.onRendered(() => {
-  $('.list .master.checkbox')
+  $('.list.master.checkbox')
     .checkbox({
       // check all children
       onChecked() {
@@ -20,7 +15,7 @@ Template.List.onRendered(() => {
         $childCheckbox.checkbox('uncheck');
       },
     });
-  $('.list .child.checkbox')
+  $('.list.child.checkbox')
     .checkbox({
       // Fire on load to set parent value
       fireOnInit: true, // Change parent state on each child checkbox change
@@ -51,9 +46,6 @@ Template.List.onRendered(() => {
 });
 
 Template.List.helpers({
-  // tasks() {
-  //   return Tasks.find({});
-  // },
   tasks: [
     { text: '1.1 What is the internet?' },
     { text: '1.2 The Network Edge' },

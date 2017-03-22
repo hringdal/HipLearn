@@ -1,13 +1,6 @@
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import { BlazeLayout } from 'meteor/kadira:blaze-layout';
 
-// Layout and all route targets
-// Each page imports its own components and other pages that it references
-import '../../ui/layouts/app-body.js';
-import '../../ui/pages/list.js';
-import '../../ui/pages/placeholder.js';
-import '../../ui/pages/app-not-found.js';
-
 // Routes
 FlowRouter.route('/', {
   name: 'App.home',
@@ -20,6 +13,20 @@ FlowRouter.route('/list', {
   name: 'List.show',
   action() {
     BlazeLayout.render('App_body', { main: 'List' });
+  },
+});
+
+FlowRouter.route('/form/', {
+  name: 'Form.show',
+  action() {
+    BlazeLayout.render('App_body', { main: 'Form' });
+  },
+});
+
+FlowRouter.route('/form/:_id', {
+  name: 'Form.Update',
+  action() {
+    BlazeLayout.render('App_body', { main: 'Form' });
   },
 });
 
