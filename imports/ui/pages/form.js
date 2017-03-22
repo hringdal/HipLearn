@@ -15,12 +15,14 @@ Template.Form.events({
   },
 });
 
+console.log(FlowRouter.getParam('_id'));
+
 Template.Form.helpers({
   getCollection() {
     return Books;
   },
   getBook() {
-    const id = FlowRouter.current().getParams('id');
+    const id = FlowRouter.getParam('_id');
     return Books.findOne(id);
   },
 });
