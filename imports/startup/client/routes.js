@@ -1,6 +1,5 @@
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import { BlazeLayout } from 'meteor/kadira:blaze-layout';
-import { Books } from '../../api/collections.js';
 
 // Routes
 FlowRouter.route('/', {
@@ -17,17 +16,24 @@ FlowRouter.route('/list', {
   },
 });
 
-FlowRouter.route('/form/', {
-  name: 'Form.show',
+FlowRouter.route('/books', {
+  name: 'books.index',
   action() {
-    BlazeLayout.render('App_body', { main: 'Form' });
+    BlazeLayout.render('App_body', { main: 'listBooks' });
   },
 });
 
-FlowRouter.route('/form/:_id', {
-  name: 'Form.Update',
+FlowRouter.route('/books/:_id/edit', {
+  name: 'books.edit',
   action() {
-    BlazeLayout.render('App_body', { main: 'Form' });
+    BlazeLayout.render('App_body', { main: 'editBook' });
+  },
+});
+
+FlowRouter.route('/books/new', {
+  name: 'books.new',
+  action() {
+    BlazeLayout.render('App_body', { main: 'newBook' });
   },
 });
 

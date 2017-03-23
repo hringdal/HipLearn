@@ -1,4 +1,6 @@
-import './methods.js';
-import './publications.js';
-import './collections.js';
-import './schemas.js';
+import './books.js';
+import './courses.js';
+import './results.js';
+import './users.js';
+
+// All collections must be available on both client and server

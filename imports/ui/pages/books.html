@@ -1,7 +1,36 @@
-<template name="Form">
+<template name="listBooks">
+    {{> atNavButton}}
+    {{> atForm}}
+    <ul>
+        {{#each books}}
+            {{> book}}
+        {{/each}}
+    </ul>
+    <a href="{{pathFor 'books.new'}}" class="ui button">New Book</a>
+</template>
+
+<template name="book">
+    <li>
+        <a href="{{pathFor 'books.edit' _id=this._id}}" title="{{book.name}}">
+            {{name}}
+        </a>
+    </li>
+</template>
+
+<!--<template name="showBook">
+    innlogget user skal se egen status på bok
+    Tilgjengelig:
+        - bok
+        - results = Results.find({bokid, user_id})
+
+    Vise felt med poengsum for kapitlet
+    Vise checkbox for hvert kapittel i boka. Huket av
+</template>-->
+
+<template name="editBook">
     <div class="ui container">
         <div class="ui segment">
-            {{#autoForm collection=getCollection type="update" doc=getBook id="insertBook"}}
+            {{#autoForm collection=getBooks type="update" doc=getBook id="updateBook"}}
                 {{> afQuickField name='name'}}
                 {{> afQuickField name='course_id' search=true placeholder='Select a course'}}
                 <h4 class="ui header">Chapters</h4>
@@ -12,7 +41,20 @@
     </div>
 </template>
 
-<!--Nødvendig for å fjerne litt stygg standard stil-->
+<template name="newBook">
+    <div class="ui container">
+        <div class="ui segment">
+            <h2>New Book</h2>
+            {{#autoForm collection=getBooks type="insert" id="createBook"}}
+                {{> afQuickField name='name'}}
+                {{> afQuickField name='course_id' search=true placeholder='Select a course'}}
+                <h4 class="ui header">Chapters</h4>
+                {{> afArrayField name='chapters' template="bookForm"}}
+                <button type="submit" class="ui positive button">Insert</button>
+            {{/autoForm}}
+        </div>
+    </div>
+</template>
 
 <template name="afArrayField_bookForm">
     <!--<h4 class="ui header">

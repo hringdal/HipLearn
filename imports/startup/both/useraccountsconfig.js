@@ -9,22 +9,26 @@ AccountsTemplates.configure({
   defaultContentRegion: 'main',
   defaultLayoutRegions: {},
 });
-const pwd = AccountsTemplates.removeField('password');
-AccountsTemplates.removeField('email');
-AccountsTemplates.addFields([
-  {
-    _id: 'username',
-    type: 'text',
-    required: true,
-    lowercase: true,
-  },
-  pwd,
-]);
+AccountsTemplates.addField({
+  _id: 'role',
+  type: 'select',
+  required: true,
+  select: [
+    {
+      text: 'Student',
+      value: 1,
+    },
+    {
+      text: 'Teacher',
+      value: 2,
+    },
+  ],
+});
 
-AccountsTemplates.configureRoute('signIn');
+/*AccountsTemplates.configureRoute('signIn');
 AccountsTemplates.configureRoute('signUp');
 AccountsTemplates.configureRoute('forgotPwd');
 AccountsTemplates.configureRoute('resetPwd');
-AccountsTemplates.configureRoute('changePwd');
+AccountsTemplates.configureRoute('changePwd');*/
 
 // FlowRouter.triggers.enter([AccountsTemplates.ensureSignedIn]);
