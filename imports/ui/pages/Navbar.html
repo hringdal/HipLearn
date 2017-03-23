@@ -1,10 +1,32 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+<template name="Navbar">
+
+<div class="ui grid">
+<div class="computer tablet only row">
+    <div class="ui inverted fixed menu navbar page grid">
+        <a href="{{pathFor 'App.home'}}" class="item">
+            <i class="home icon"></i>
+            Home
+        </a>
+        <a href="{{pathFor 'StudentPage.show'}}" class="item">
+            <i class="list icon"></i>
+            Subjects
+        </a>
+        <a href="" class="brand item">
+            <i class="lightbulb icon"></i>
+            Notifications
+        </a>
+
+        <div class="right menu">
+            <a class="ui dropdown item">"navn på student/lærer"
+                <i class="dropdown icon"></i>
+                <div class="menu">
+                    <div class="item">Sign out</div>
+                </div>
+            </a>
+
+        </div>
+    </div>
+</div>
+</div>
+
+</template>

@@ -1,0 +1,20 @@
+.information{
+    text-align: center;
+    font-size: 30px;
+    font-family:Georgia;
+    color:Black;
+
+
+}
+.quote{
+    text-align: center;
+    font-size: 20px;
+    font-family:Georgia;
+    color:Black;
+    border:3px;
+    border-style:solid;
+    border-color:black;
+    margin:0;
+    padding:0;
+    padding: 1em;
+}

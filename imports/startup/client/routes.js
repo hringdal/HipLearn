@@ -1,5 +1,5 @@
-import { FlowRouter } from 'meteor/kadira:flow-router';
-import { BlazeLayout } from 'meteor/kadira:blaze-layout';
+import {FlowRouter} from 'meteor/kadira:flow-router';
+import {BlazeLayout} from 'meteor/kadira:blaze-layout';
 
 // Routes
 FlowRouter.route('/', {
@@ -28,6 +28,20 @@ FlowRouter.route('/form/:_id', {
   action() {
     BlazeLayout.render('App_body', { main: 'Form' });
   },
+});
+
+FlowRouter.route('/StudentPage', {
+    name: 'StudentPage.show',
+    action() {
+        BlazeLayout.render('App_body', { main: 'StudentPage' });
+    },
+});
+
+FlowRouter.route('/TeacherPage', {
+    name: 'TeacherPage.show',
+    action() {
+        BlazeLayout.render('App_body', { main: 'StudentPage' });
+    },
 });
 
 // Redirect for all unknown routes
