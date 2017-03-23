@@ -1,20 +1,42 @@
 <template name="listBooks">
-    {{> atNavButton}}
-    {{> atForm}}
-    <ul>
-        {{#each books}}
-            {{> book}}
-        {{/each}}
-    </ul>
-    <a href="{{pathFor 'books.new'}}" class="ui button">New Book</a>
+    <div class="ui text container">
+        <table class="ui striped table">
+            <thead>
+            <tr>
+                <th colspan="2">
+                    Books
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            {{#each books}}
+                {{> book}}
+            {{/each}}
+            <tr>
+                <td colspan="2">
+                    <a href="{{pathFor 'books.new'}}" class="ui positive button">New Book</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
 </template>
 
 <template name="book">
-    <li>
-        <a href="{{pathFor 'books.edit' _id=this._id}}" title="{{book.name}}">
-            {{name}}
-        </a>
-    </li>
+    <tr>
+        <td>
+            <i class="book icon"></i>
+            {{title}}
+        </td>
+        <td class="right aligned">
+            <a href="{{pathFor 'books.edit' _id=this._id}}" title="{{title}}" class="ui basic button">
+                Edit Book
+            </a>
+            <button class="ui basic icon negative button delete-book">
+                <i class="trash icon"></i>
+            </button>
+        </td>
+    </tr>
 </template>
 
 <!--<template name="showBook">
@@ -31,7 +53,7 @@
     <div class="ui container">
         <div class="ui segment">
             {{#autoForm collection=getBooks type="update" doc=getBook id="updateBook"}}
-                {{> afQuickField name='name'}}
+                {{> afQuickField name='title'}}
                 {{> afQuickField name='course_id' search=true placeholder='Select a course'}}
                 <h4 class="ui header">Chapters</h4>
                 {{> afArrayField name='chapters' template="bookForm"}}
@@ -46,7 +68,7 @@
         <div class="ui segment">
             <h2>New Book</h2>
             {{#autoForm collection=getBooks type="insert" id="createBook"}}
-                {{> afQuickField name='name'}}
+                {{> afQuickField name='title'}}
                 {{> afQuickField name='course_id' search=true placeholder='Select a course'}}
                 <h4 class="ui header">Chapters</h4>
                 {{> afArrayField name='chapters' template="bookForm"}}
@@ -57,7 +79,7 @@
 </template>
 
 <template name="afArrayField_bookForm">
-    <!--<h4 class="ui header">
+    <!--<h4 class="ui top attached bheader">
         {{afFieldLabelText name=this.atts.name}}
     </h4>-->
     <div class="ui basic segment">

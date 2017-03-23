@@ -7,6 +7,10 @@ const CourseSchema = new SimpleSchema({
     type: String,
     label: 'Created by',
   },
+  name: {
+    type: String,
+    label: 'Course Name',
+  },
   students: {
     type: Array,
     label: 'Students taking the course',

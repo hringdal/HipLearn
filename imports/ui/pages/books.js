@@ -1,12 +1,19 @@
 import { Template } from 'meteor/templating';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import { AutoForm } from 'meteor/aldeed:autoform';
-
+import { $ } from 'meteor/jquery';
 import { Books } from '../../api/books.js';
 
 Template.listBooks.helpers({
   books() {
     return Books.find({});
+  },
+});
+
+Template.listBooks.events({
+  'click .delete-book': function (event) {
+    event.preventDefault();
+    Books.remove(this._id);
   },
 });
 
