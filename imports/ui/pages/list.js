@@ -1,6 +1,5 @@
 import { Template } from 'meteor/templating';
 import { $ } from 'meteor/jquery';
-// import Tasks from '../../api/tasks.js';
 
 Template.List.onRendered(() => {
   $('.list .master.checkbox')

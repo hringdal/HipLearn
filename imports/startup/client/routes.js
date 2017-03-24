@@ -1,11 +1,11 @@
-import {FlowRouter} from 'meteor/kadira:flow-router';
-import {BlazeLayout} from 'meteor/kadira:blaze-layout';
+import { FlowRouter } from 'meteor/kadira:flow-router';
+import { BlazeLayout } from 'meteor/kadira:blaze-layout';
 
 // Routes
 FlowRouter.route('/', {
   name: 'App.home',
   action() {
-    BlazeLayout.render('App_body', { main: 'Placeholder' });
+    BlazeLayout.render('App_body', { main: 'listBooks' });
   },
 });
 
@@ -44,18 +44,18 @@ FlowRouter.route('/books/show', {
   },
 });
 
-FlowRouter.route('/StudentPage', {
-    name: 'StudentPage.show',
-    action() {
-        BlazeLayout.render('App_body', { main: 'StudentPage' });
-    },
+FlowRouter.route('/student', {
+  name: 'student.show',
+  action() {
+    BlazeLayout.render('App_body', { main: 'student' });
+  },
 });
 
-FlowRouter.route('/TeacherPage', {
-    name: 'TeacherPage.show',
-    action() {
-        BlazeLayout.render('App_body', { main: 'StudentPage' });
-    },
+FlowRouter.route('/teacher', {
+  name: 'teacher.show',
+  action() {
+    BlazeLayout.render('App_body', { main: 'student' });
+  },
 });
 
 // Redirect for all unknown routes

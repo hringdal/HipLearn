@@ -9,3 +9,9 @@ import './placeholder.js';
 
 import './books.html';
 import './books.js';
+
+import './Navbar.html';
+import './Navbar.js';
+import './StudentPage.html';
+import './StudentPage.js';
+

@@ -4,7 +4,7 @@ import { FlowRouter } from 'meteor/kadira:flow-router';
 AccountsTemplates.configure({
   showForgotPasswordLink: true,
   enablePasswordChange: true,
-  defaultLayout: 'App_body',
+  defaultLayout: 'loginLayout',
   // defaultTemplate: 'loginForm',
   defaultContentRegion: 'main',
   defaultLayoutRegions: {},

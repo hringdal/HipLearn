@@ -1,21 +1,8 @@
-/**
- * Created by ingeborglianes on 23.03.2017.
- */
-$(Document).ready(function() {
-    $(".ui.sidebar").sidebar({
-        context: $('.pusher')
-    });
+import { Template } from 'meteor/templating';
+import { $ } from 'meteor/jquery';
 
-    $('a').click(function() { $('.ui.sidebar').sidebar('toggle'); });
+Template.student.onRendered(() => {
+  $('.ui.sidebar')
+    .sidebar({ context: $('#context') })
+  ;
 });
-/***
-Package.describe({
-    summary: "Student page"
-});
-
-Package.on_use(function (api) {
-    api.use(['templating'], 'client');
-
-    api.add_files('StudentPage.html', 'client');
-});
- */

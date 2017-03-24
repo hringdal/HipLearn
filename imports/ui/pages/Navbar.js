@@ -1,11 +1,8 @@
-/**
- * Created by ingeborglianes on 22.03.2017.
- */
-$(document).ready(function(){
-    $('.right.menu.open').on("click",function(e){
-        e.preventDefault();
-        $('.ui.vertical.menu').toggle();
-    });
+import { Template } from 'meteor/templating';
+import { $ } from 'meteor/jquery';
 
-    $('.ui.dropdown').dropdown();
+Template.navbar.onRendered(() => {
+  $('.ui.dropdown')
+    .dropdown()
+  ;
 });

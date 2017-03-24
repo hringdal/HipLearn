@@ -17,9 +17,6 @@
                     <a href="{{pathFor 'books.new'}}" class="ui green basic button"><i class="book icon"></i>New
                         Book
                     </a>
-                    <a href="{{pathFor 'books.show'}}" class="ui purple basic button">
-                        Results
-                    </a>
                 </td>
             </tr>
             </tbody>
@@ -45,21 +42,22 @@
 </template>
 
 <template name="showBook">
-    <div class="ui segment container">
-        {{#with book}}
-            <h3>Progress on book: {{title}}</h3>
-            <h4>Current user logged in: {{currentUser._id}}</h4>
-            <div class="ui relaxed list">
-                {{#each chapter in chapters}}
-                    <div class="item">
-                        <div class="level-{{chapter.level}}">
-                            <button data-id="{{chapter._id}}" class="ui small icon button chapter-status {{#if checked chapter._id}}green{{/if}}"><i class="check icon"></i></button>
-                            {{chapter.name}}: {{checked chapter._id}}
+    <div class="ui text container">
+        <div class="ui segment">
+            {{#with book}}
+                <h2>Progress on book: {{title}}</h2>
+                <div class="ui relaxed list">
+                    {{#each chapter in chapters}}
+                        <div class="item">
+                            <div class="level-{{chapter.level}}">
+                                <button data-id="{{chapter._id}}" class="ui small icon button chapter-status {{#if checked chapter._id}}green{{/if}}"><i class="check icon"></i></button>
+                                {{chapter.name}}
+                            </div>
                         </div>
-                    </div>
-                {{/each}}
-            </div>
-        {{/with}}
+                    {{/each}}
+                </div>
+            {{/with}}
+        </div>
     </div>
     <!--innlogget user skal se egen status på bok
     Tilgjengelig:
@@ -71,8 +69,9 @@
 </template>
 
 <template name="editBook">
-    <div class="ui container">
+    <div class="ui text container">
         <div class="ui segment">
+            <h2>Editing book</h2>
             {{#autoForm collection=getBooks type="update" doc=getBook id="updateBook"}}
                 {{> afQuickField name='title'}}
                 {{> afQuickField name='course_id' search=true placeholder='Select a course'}}
@@ -86,9 +85,9 @@
 </template>
 
 <template name="newBook">
-    <div class="ui container">
+    <div class="ui text container">
         <div class="ui segment">
-            <h2>New Book</h2>
+            <h2>Creating New Book</h2>
             {{#autoForm collection=getBooks type="insert" id="createBook"}}
                 {{> afQuickField name='title'}}
                 {{> afQuickField name='course_id' search=true placeholder='Select a course'}}
