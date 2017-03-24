@@ -14,7 +14,12 @@
             {{/each}}
             <tr>
                 <td colspan="2">
-                    <a href="{{pathFor 'books.new'}}" class="ui positive button">New Book</a>
+                    <a href="{{pathFor 'books.new'}}" class="ui green basic button"><i class="book icon"></i>New
+                        Book
+                    </a>
+                    <a href="{{pathFor 'books.show'}}" class="ui purple basic button">
+                        Results
+                    </a>
                 </td>
             </tr>
             </tbody>
@@ -26,7 +31,7 @@
     <tr>
         <td>
             <i class="book icon"></i>
-            {{title}}
+            {{title}} ({{chapters.length}})
         </td>
         <td class="right aligned">
             <a href="{{pathFor 'books.edit' _id=this._id}}" title="{{title}}" class="ui basic button">
@@ -39,15 +44,31 @@
     </tr>
 </template>
 
-<!--<template name="showBook">
-    innlogget user skal se egen status på bok
+<template name="showBook">
+    <div class="ui segment container">
+        {{#with book}}
+            <h3>Progress on book: {{title}}</h3>
+            <h4>Current user logged in: {{currentUser._id}}</h4>
+            <div class="ui relaxed list">
+                {{#each chapter in chapters}}
+                    <div class="item">
+                        <div class="level-{{chapter.level}}">
+                            <button data-id="{{chapter._id}}" class="ui small icon button chapter-status {{#if checked chapter._id}}green{{/if}}"><i class="check icon"></i></button>
+                            {{chapter.name}}: {{checked chapter._id}}
+                        </div>
+                    </div>
+                {{/each}}
+            </div>
+        {{/with}}
+    </div>
+    <!--innlogget user skal se egen status på bok
     Tilgjengelig:
         - bok
         - results = Results.find({bokid, user_id})
 
     Vise felt med poengsum for kapitlet
-    Vise checkbox for hvert kapittel i boka. Huket av
-</template>-->
+    Vise checkbox for hvert kapittel i boka. Huket av-->
+</template>
 
 <template name="editBook">
     <div class="ui container">
@@ -58,6 +79,7 @@
                 <h4 class="ui header">Chapters</h4>
                 {{> afArrayField name='chapters' template="bookForm"}}
                 <button type="submit" class="ui positive button">Update</button>
+                <a href="{{pathFor 'books.index'}}" class="ui basic button">Cancel</a>
             {{/autoForm}}
         </div>
     </div>
@@ -73,6 +95,7 @@
                 <h4 class="ui header">Chapters</h4>
                 {{> afArrayField name='chapters' template="bookForm"}}
                 <button type="submit" class="ui positive button">Insert</button>
+                <a href="{{pathFor 'books.index'}}" class="ui basic button">Cancel</a>
             {{/autoForm}}
         </div>
     </div>

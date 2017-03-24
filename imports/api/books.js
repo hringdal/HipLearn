@@ -35,7 +35,13 @@ const BookSchema = new SimpleSchema({
     type: String,
     optional: true,
     autoValue() {
-      return Random.id();
+      // might be a problem
+      // deleting books in the array on edit gives an UpdateError
+      if (this.isSet) {
+        return this.value;
+      } else {
+        return Random.id();
+      }
     },
     autoform: {
       type: 'hidden',

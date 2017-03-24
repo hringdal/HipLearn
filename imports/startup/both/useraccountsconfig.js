@@ -1,11 +1,11 @@
 import { AccountsTemplates } from 'meteor/useraccounts:core';
-// import { FlowRouter } from 'meteor/kadira:flow-router';
+import { FlowRouter } from 'meteor/kadira:flow-router';
 
 AccountsTemplates.configure({
   showForgotPasswordLink: true,
   enablePasswordChange: true,
-  defaultTemplate: 'List',
   defaultLayout: 'App_body',
+  // defaultTemplate: 'loginForm',
   defaultContentRegion: 'main',
   defaultLayoutRegions: {},
 });
@@ -25,10 +25,10 @@ AccountsTemplates.addField({
   ],
 });
 
-/*AccountsTemplates.configureRoute('signIn');
-AccountsTemplates.configureRoute('signUp');
+AccountsTemplates.configureRoute('signIn');
+/*AccountsTemplates.configureRoute('signUp');
 AccountsTemplates.configureRoute('forgotPwd');
 AccountsTemplates.configureRoute('resetPwd');
 AccountsTemplates.configureRoute('changePwd');*/
 
-// FlowRouter.triggers.enter([AccountsTemplates.ensureSignedIn]);
+FlowRouter.triggers.enter([AccountsTemplates.ensureSignedIn]);
