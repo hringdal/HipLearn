@@ -37,6 +37,13 @@ FlowRouter.route('/books/new', {
   },
 });
 
+FlowRouter.route('/books/show', {
+  name: 'books.show',
+  action() {
+    BlazeLayout.render('App_body', { main: 'showBook' });
+  },
+});
+
 // Redirect for all unknown routes
 FlowRouter.notFound = {
   action() {

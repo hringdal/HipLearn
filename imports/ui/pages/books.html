@@ -1,41 +1,85 @@
 <template name="listBooks">
-    {{> atNavButton}}
-    {{> atForm}}
-    <ul>
-        {{#each books}}
-            {{> book}}
-        {{/each}}
-    </ul>
-    <a href="{{pathFor 'books.new'}}" class="ui button">New Book</a>
+    <div class="ui text container">
+        <table class="ui striped table">
+            <thead>
+            <tr>
+                <th colspan="2">
+                    Books
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            {{#each books}}
+                {{> book}}
+            {{/each}}
+            <tr>
+                <td colspan="2">
+                    <a href="{{pathFor 'books.new'}}" class="ui green basic button"><i class="book icon"></i>New
+                        Book
+                    </a>
+                    <a href="{{pathFor 'books.show'}}" class="ui purple basic button">
+                        Results
+                    </a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
 </template>
 
 <template name="book">
-    <li>
-        <a href="{{pathFor 'books.edit' _id=this._id}}" title="{{book.name}}">
-            {{name}}
-        </a>
-    </li>
+    <tr>
+        <td>
+            <i class="book icon"></i>
+            {{title}} ({{chapters.length}})
+        </td>
+        <td class="right aligned">
+            <a href="{{pathFor 'books.edit' _id=this._id}}" title="{{title}}" class="ui basic button">
+                Edit Book
+            </a>
+            <button class="ui basic icon negative button delete-book">
+                <i class="trash icon"></i>
+            </button>
+        </td>
+    </tr>
 </template>
 
-<!--<template name="showBook">
-    innlogget user skal se egen status på bok
+<template name="showBook">
+    <div class="ui segment container">
+        {{#with book}}
+            <h3>Progress on book: {{title}}</h3>
+            <h4>Current user logged in: {{currentUser._id}}</h4>
+            <div class="ui relaxed list">
+                {{#each chapter in chapters}}
+                    <div class="item">
+                        <div class="level-{{chapter.level}}">
+                            <button data-id="{{chapter._id}}" class="ui small icon button chapter-status {{#if checked chapter._id}}green{{/if}}"><i class="check icon"></i></button>
+                            {{chapter.name}}: {{checked chapter._id}}
+                        </div>
+                    </div>
+                {{/each}}
+            </div>
+        {{/with}}
+    </div>
+    <!--innlogget user skal se egen status på bok
     Tilgjengelig:
         - bok
         - results = Results.find({bokid, user_id})
 
     Vise felt med poengsum for kapitlet
-    Vise checkbox for hvert kapittel i boka. Huket av
-</template>-->
+    Vise checkbox for hvert kapittel i boka. Huket av-->
+</template>
 
 <template name="editBook">
     <div class="ui container">
         <div class="ui segment">
             {{#autoForm collection=getBooks type="update" doc=getBook id="updateBook"}}
-                {{> afQuickField name='name'}}
+                {{> afQuickField name='title'}}
                 {{> afQuickField name='course_id' search=true placeholder='Select a course'}}
                 <h4 class="ui header">Chapters</h4>
                 {{> afArrayField name='chapters' template="bookForm"}}
                 <button type="submit" class="ui positive button">Update</button>
+                <a href="{{pathFor 'books.index'}}" class="ui basic button">Cancel</a>
             {{/autoForm}}
         </div>
     </div>
@@ -46,18 +90,19 @@
         <div class="ui segment">
             <h2>New Book</h2>
             {{#autoForm collection=getBooks type="insert" id="createBook"}}
-                {{> afQuickField name='name'}}
+                {{> afQuickField name='title'}}
                 {{> afQuickField name='course_id' search=true placeholder='Select a course'}}
                 <h4 class="ui header">Chapters</h4>
                 {{> afArrayField name='chapters' template="bookForm"}}
                 <button type="submit" class="ui positive button">Insert</button>
+                <a href="{{pathFor 'books.index'}}" class="ui basic button">Cancel</a>
             {{/autoForm}}
         </div>
     </div>
 </template>
 
 <template name="afArrayField_bookForm">
-    <!--<h4 class="ui header">
+    <!--<h4 class="ui top attached bheader">
         {{afFieldLabelText name=this.atts.name}}
     </h4>-->
     <div class="ui basic segment">

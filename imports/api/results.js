@@ -5,15 +5,18 @@ import SimpleSchema from 'simpl-schema';
 const ResultSchema = new SimpleSchema({
   user_id: {
     type: String,
-    /*    autoValue() {
-     return this.userId;
-     },*/
+    autoValue() {
+      return this.userId;
+    },
   },
   book_id: {
     type: String,
   },
   chapter_id: {
     type: String,
+  },
+  checked: {
+    type: Boolean,
   },
   createdAt: {
     type: Date,
