@@ -8,7 +8,19 @@ AccountsTemplates.configure({
   // defaultTemplate: 'loginForm',
   defaultContentRegion: 'main',
   defaultLayoutRegions: {},
+  // Hooks
+  onLogoutHook() {
+    console.log('onLogoutHook');
+    FlowRouter.go('/sign-in'); // redirect to sign-in or eventually homepage
+  },
+  // ugly text on not logged in redirect
+  texts: {
+    errors: {
+      mustBeLoggedIn: "Ugly text because you've been redirected",
+    },
+  },
 });
+// Configure signup-fields
 AccountsTemplates.addField({
   _id: 'role',
   type: 'select',
@@ -24,11 +36,8 @@ AccountsTemplates.addField({
     },
   ],
 });
-
+// Creates a route to /sign-in with loginLayout and atFullPageForm template
 AccountsTemplates.configureRoute('signIn');
-/*AccountsTemplates.configureRoute('signUp');
-AccountsTemplates.configureRoute('forgotPwd');
-AccountsTemplates.configureRoute('resetPwd');
-AccountsTemplates.configureRoute('changePwd');*/
 
+// Redirects every route to sign-in if user not logged in
 FlowRouter.triggers.enter([AccountsTemplates.ensureSignedIn]);

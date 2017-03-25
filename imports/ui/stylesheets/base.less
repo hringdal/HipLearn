@@ -1,14 +1,14 @@
 
 body {
-  padding-top: 60px;
+  padding-top: 47px;
   /*background: #FF5F6D; !* fallback for old browsers *!
   background: -webkit-linear-gradient(to bottom, #FF5F6D, #FFC371); !* Chrome 10-25, Safari 5.1-6 *!
   background: linear-gradient(to bottom, #FF5F6D, #FFC371); !* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ *!*/
-  background: #67B26F; /* fallback for old browsers */
+  background: #67B26F no-repeat center center fixed; /* fallback for old browsers */
   background: -webkit-linear-gradient(to bottom, #67B26F , #4ca2cd); /* Chrome 10-25, Safari 5.1-6 */
   background: linear-gradient(to bottom, #67B26F , #4ca2cd); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  background-size: cover;
   background-attachment: fixed;
-  background-repeat: no-repeat;
 }
 
 // Hides big red asterisks from forms
@@ -30,10 +30,20 @@ h1 {
   font-size: 2.5rem;
 }
 
-#__blaze-root {
-  height: 100%;
-}
-
 .pusher .ui.grid {
   height: inherit;
+}
+
+.ui.menu #mobile-dropdown.ui.dropdown .menu {
+  position: fixed;
+  top: 47px;
+  width: 100%;
+  background: #1B1C1D; // @black
+}
+
+.ui.menu #mobile-dropdown.ui.dropdown .menu > .item {
+  color: rgba(255, 255, 255, 0.9) !important; // @invertedTextColor
+  padding: 0;
+  margin: 0;
+  background: red;
 }

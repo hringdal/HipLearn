@@ -1,2 +1,2 @@
-import './app-body.html';
-import './login-layout.html';
+import './mainLayout.html';
+import './loginLayout.html';

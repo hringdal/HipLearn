@@ -3,64 +3,57 @@ import { BlazeLayout } from 'meteor/kadira:blaze-layout';
 
 // Routes
 FlowRouter.route('/', {
-  name: 'App.home',
+  name: 'root',
   action() {
-    BlazeLayout.render('App_body', { main: 'listBooks' });
-  },
-});
-
-FlowRouter.route('/list', {
-  name: 'List.show',
-  action() {
-    BlazeLayout.render('App_body', { main: 'List' });
+    BlazeLayout.render('mainLayout', { main: 'placeholder' });
   },
 });
 
 FlowRouter.route('/books', {
   name: 'books.index',
   action() {
-    BlazeLayout.render('App_body', { main: 'listBooks' });
+    BlazeLayout.render('mainLayout', { main: 'listBooks' });
   },
 });
 
 FlowRouter.route('/books/:_id/edit', {
   name: 'books.edit',
   action() {
-    BlazeLayout.render('App_body', { main: 'editBook' });
+    BlazeLayout.render('mainLayout', { main: 'editBook' });
   },
 });
 
 FlowRouter.route('/books/new', {
   name: 'books.new',
   action() {
-    BlazeLayout.render('App_body', { main: 'newBook' });
+    BlazeLayout.render('mainLayout', { main: 'newBook' });
   },
 });
 
 FlowRouter.route('/books/show', {
   name: 'books.show',
   action() {
-    BlazeLayout.render('App_body', { main: 'showBook' });
+    BlazeLayout.render('mainLayout', { main: 'showBook' });
   },
 });
 
 FlowRouter.route('/student', {
   name: 'student.show',
   action() {
-    BlazeLayout.render('App_body', { main: 'student' });
+    BlazeLayout.render('mainLayout', { main: 'studentPage' });
   },
 });
 
 FlowRouter.route('/teacher', {
   name: 'teacher.show',
   action() {
-    BlazeLayout.render('App_body', { main: 'student' });
+    BlazeLayout.render('mainLayout', { main: 'studentPage' });
   },
 });
 
 // Redirect for all unknown routes
 FlowRouter.notFound = {
   action() {
-    BlazeLayout.render('App_body', { main: 'App_not_found' });
+    BlazeLayout.render('mainLayout', { main: 'appNotFound' });
   },
 };

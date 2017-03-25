@@ -15,7 +15,7 @@ const BookSchema = new SimpleSchema({
     autoform: {
       afFieldInput: {
         options() {
-          return Courses.find({}, { _id: 1, sort: { _id: 1 } }).map(function (c) {
+          return Courses.find({}, { _id: 1, sort: { _id: 1 } }).map(function createSet(c) {
             return { label: c.name.toUpperCase(), value: c.name };
           });
         },

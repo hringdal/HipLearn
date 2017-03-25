@@ -2,27 +2,27 @@ import { Template } from 'meteor/templating';
 import { ReactiveVar } from 'meteor/reactive-var';
 import { $ } from 'meteor/jquery';
 
-Template.Placeholder.onCreated(function helloOnCreated() {
+Template.placeholder.onCreated(function helloOnCreated() {
   // counter starts at 0
   this.counter = new ReactiveVar(0);
 });
 
-Template.Placeholder.onRendered(() => {
+Template.placeholder.onRendered(() => {
   $('body').addClass('hippo');
 });
 
 
-Template.Placeholder.onDestroyed(() => {
+Template.placeholder.onDestroyed(() => {
   $('body').removeClass('hippo');
 });
 
-Template.Placeholder.helpers({
+Template.placeholder.helpers({
   counter() {
     return Template.instance().counter.get();
   },
 });
 
-Template.Placeholder.events({
+Template.placeholder.events({
   'click button': function clickButton(event, instance) {
     // increment the counter when button is clicked
     instance.counter.set(instance.counter.get() + 1);
