@@ -35,6 +35,9 @@ const UserSchema = new SimpleSchema({
     blackbox: true,
   },
   role: {
+    // 1: student
+    // 2: teacher
+    // 3: admin
     type: Number,
     allowedValues: [
       1,
@@ -42,6 +45,17 @@ const UserSchema = new SimpleSchema({
       3,
     ],
     defaultValue: 2,
+  },
+  courses: {
+    // contains course ids
+    // for students: a list of courses you are following
+    // for teachers: a list of the courses you have created
+    type: Array,
+    optional: true,
+    defaultValue: [],
+  },
+  'courses.$': {
+    type: String,
   },
 });
 

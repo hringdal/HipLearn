@@ -11,3 +11,5 @@ import './navbar.js';
 
 import './studentPage.html';
 import './studentPage.js';
+
+import './frontpage.html';

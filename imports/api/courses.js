@@ -1,3 +1,4 @@
+import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { Tracker } from 'meteor/tracker';
 import SimpleSchema from 'simpl-schema';
@@ -6,6 +7,9 @@ const CourseSchema = new SimpleSchema({
   owner_id: {
     type: String,
     label: 'Created by',
+    autoValue() {
+      return Meteor.userId();
+    },
   },
   name: {
     type: String,
@@ -20,6 +24,7 @@ const CourseSchema = new SimpleSchema({
   books: {
     type: Array,
     label: 'Course books',
+    optional: true,
   },
   'books.$.': String,
   faculty: {

@@ -8,15 +8,15 @@
                             <i class="large home icon"></i>
                             <strong>HipLearn</strong>
                         </a>
-                        <a href="{{pathFor 'student.show'}}" class="item">
+                        <a href="{{pathFor 'student.show'}}" class="{{isActiveRoute 'student.show' class='active'}} item">
                             <i class="list icon"></i>
                             Subjects
                         </a>
-                        <a href="{{pathFor 'books.index'}}" class="item">
+                        <a href="{{pathFor 'books.index'}}" class="{{isActiveRoute 'books.index' class='active'}} item">
                             <i class="book icon"></i>
                             Books
                         </a>
-                        <a href="{{pathFor 'books.show'}}" class="item">
+                        <a href="{{pathFor 'books.show'}}" class="{{isActiveRoute 'books.show' class='active'}} item">
                             <i class="smile icon"></i>
                             Result
                         </a>
