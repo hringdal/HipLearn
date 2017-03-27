@@ -25,20 +25,26 @@
                 <i class="plus icon"> </i>
                 Add a new subject
             </a>
+            {{#each courses}}
+                <a class="item test">
+                    {{name}}
+                </a>
+            {{/each}}
         </div>
-
-
         <!-- Main content -->
         <div class="pusher">
+            {{#each selectedCourse}}
+                {{> showBook}}
+            {{/each}}
             <div class="ui grid container">
                 <div class="sixteen wide column">
                     <div class="column">
                         <div class="heading">
-                        <div class=ui header>
-                            <i class="Left arrow"></i>
-                            <h1>Choose a subject or add a new subject.</h1>
+                            <div class=ui header>
+                                <i class="Left arrow"></i>
+                                <h1>Choose a subject or add a new subject.</h1>
+                            </div>
                         </div>
-                    </div>
                     </div>
                     <div class="column"></div>
                     <div class="column"></div>
