@@ -21,9 +21,9 @@ Template.listBooks.events({
 });
 
 Template.showBook.events({
+  // creating/editing results and checking them off in the database
   'click .chapter-status': function (event) {
     const chapterId = event.currentTarget.getAttribute('data-id');
-    console.log(event);
     const bookId = this._id;
 
     const doc = Results.findOne({
@@ -55,23 +55,19 @@ Template.showBook.events({
 });
 
 Template.showBook.helpers({
-  // Temporary database cursor
-  book() {
-    return Books.findOne('ngCjAKza4DDQsjqyJ');
-  },
   // Currently not used
-  results() {
+  /*results() {
     return Results.find({
       // todo: get this from template/params
       book_id: 'ngCjAKza4DDQsjqyJ',
       user_id: Meteor.userId(),
     });
-  },
+  },*/
   // Returns a count of the results in this book that have a checked: false status
   // Issue: does not include chapters that don't have a result in the Results collection
   uncheckedCount() {
     return Results.find({
-      book_id: 'ngCjAKza4DDQsjqyJ',
+      book_id: this._id,
       user_id: Meteor.userId(),
       checked: false,
     }).count();
@@ -82,7 +78,8 @@ Template.showBook.helpers({
     // if it exists, change values
     const result = Results.findOne({
       // todo: get this from template/params
-      book_id: 'ngCjAKza4DDQsjqyJ',
+      // done
+      book_id: this._id,
       user_id: Meteor.userId(),
       chapter_id: chapterId,
     });

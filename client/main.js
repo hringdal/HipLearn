@@ -13,3 +13,9 @@ Meteor.startup(() => {
 });
 
 BlazeLayout.setRoot('body');
+
+// Needed for viewing role and courses.
+// see server/main.js
+Meteor.autorun(function () {
+  Meteor.subscribe('userData');
+});

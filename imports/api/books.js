@@ -16,7 +16,7 @@ const BookSchema = new SimpleSchema({
       afFieldInput: {
         options() {
           return Courses.find({}, { _id: 1, sort: { _id: 1 } }).map(function createSet(c) {
-            return { label: c.name.toUpperCase(), value: c.name };
+            return { label: c.name.toUpperCase(), value: c._id };
           });
         },
       },
