@@ -34,7 +34,10 @@ const UserSchema = new SimpleSchema({
     optional: true,
     blackbox: true,
   },
-  role: {
+  profile: {
+    type: Object,
+  },
+  'profile.role': {
     // 1: student
     // 2: teacher
     // 3: admin
@@ -44,7 +47,7 @@ const UserSchema = new SimpleSchema({
       2,
       3,
     ],
-    defaultValue: 2,
+    // defaultValue: 2,
   },
   courses: {
     // contains course ids
