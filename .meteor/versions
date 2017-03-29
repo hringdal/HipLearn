@@ -3,6 +3,7 @@ accounts-password@1.3.4
 alanning:roles@1.2.16
 aldeed:autoform@6.0.0
 aldeed:collection2-core@2.0.0
+aldeed:schema-index@2.0.0
 aldeed:template-extension@3.4.3
 allow-deny@1.0.5
 arillo:flow-router-helpers@0.5.2

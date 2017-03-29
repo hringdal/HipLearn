@@ -4,7 +4,7 @@ import { $ } from 'meteor/jquery';
 import { ReactiveVar } from 'meteor/reactive-var';
 
 import { Books } from '../../api/books.js';
-import { Courses, PlayersIndex } from '../../api/courses.js';
+import { Courses, AddCourseSchema } from '../../api/courses.js';
 
 Template.studentPage.onCreated(function init() {
   this.course = new ReactiveVar(false);
@@ -13,6 +13,12 @@ Template.studentPage.onCreated(function init() {
 Template.studentPage.onRendered(function render() {
   $('.ui.sidebar')
     .sidebar({ context: $('.context') });
+  $('#student')
+    .modal('attach events', '#clickable', 'show')
+  ;
+  $('#teacher')
+    .modal('attach events', '#clickable2', 'show')
+  ;
 });
 
 Template.studentPage.helpers({
@@ -24,19 +30,21 @@ Template.studentPage.helpers({
   courses() {
     if (Meteor.user()) {
       const courseIds = Meteor.user().courses;
-      return Courses.find({ _id: {
-        $in: courseIds,
-      } });
+      return Courses.find({ _id: { $in: courseIds } }, { sort: { name: 1 } });
     }
     return ['No courses'];
   },
   // change course based on reactivevar course
   selectedCourse() {
     const courseId = Template.instance().course.get();
-    console.log(courseId);
     return Books.find({ course_id: courseId });
   },
-  playersIndex: () => PlayersIndex,
+  addCourseSchema() {
+    return AddCourseSchema;
+  },
+  getCourses() {
+    return Courses;
+  },
 });
 
 Template.studentPage.events({
