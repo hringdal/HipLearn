@@ -1,2 +1,2 @@
 import './mainLayout.html';
-import './loginLayout.html';
+import './minimalLayout.html';
