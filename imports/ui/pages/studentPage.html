@@ -1,7 +1,7 @@
 <template name="studentPage">
     //content-klassen er på alle andre sider enn frontpage.html
     for å ha en padding på 47px til navbaren på disse sidene
-    <div class="content">
+    <div id="content">
         <div class="context">
 
             <!-- Sidebar  -->
@@ -24,13 +24,56 @@
                             {{name}}
                         </a>
                     {{/each}}
-                    <a class="item">
+                    <a class="item" id="clickable">
                         <i class="plus icon"> </i>
                         Add a new subject
                     </a>
+                    <a class="item" id="clickable2">
+                        <i class="plus icon"> </i>
+                        Create subject
+                    </a>
                 </div>
             </div>
-
+            <!-- Modal -->
+            <!-- shows when clicing "add a new subject" in the menu -->
+            <div class="ui small modal" id="student">
+                <i class="close icon"></i>
+                <div class="ui header">
+                    Select a subject to add
+                </div>
+                <div class="content">
+                    {{#autoForm schema=addCourseSchema id="addForm" type="method" meteormethod="addCourseStudent"}}
+                        {{> afFieldInput name="_id" search=true placeholder="Select a course"}}
+                    {{/autoForm}}
+                </div>
+                <div class="actions">
+                    <div class="ui cancel button">
+                        Cancel
+                    </div>
+                    <button type="submit" class="ui green ok button" form="addForm">
+                        Add
+                    </button>
+                </div>
+            </div>
+            <div class="ui small modal" id="teacher">
+                <i class="close icon"></i>
+                <div class="ui header">
+                    Create a new subject
+                </div>
+                <div class="content">
+                    {{#autoForm id="createForm" type="insert" collection=getCourses}}
+                        {{> afQuickField name="name"}}
+                        <button type="submit" class="ui green ok button">
+                            Add
+                        </button>
+                    {{/autoForm}}
+                </div>
+                <div class="actions">
+                    <div class="ui cancel button">
+                        Cancel
+                    </div>
+                </div>
+            </div>
             <!-- Main content -->
             <div class="pusher">
                 <div class="article">
