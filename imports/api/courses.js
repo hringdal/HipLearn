@@ -2,6 +2,9 @@ import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { Tracker } from 'meteor/tracker';
 import SimpleSchema from 'simpl-schema';
+import { EasySearch } from 'meteor/matteodem:easy-search';
+
+export const Courses = new Mongo.Collection('courses');
 
 const CourseSchema = new SimpleSchema({
   owner_id: {
@@ -14,6 +17,15 @@ const CourseSchema = new SimpleSchema({
   name: {
     type: String,
     label: 'Course Name',
+    autoform: {
+      afFieldInput: {
+        options() {
+          return Courses.find({}, { name: 1, sort: { name: 1 } }).map(function createSet(c) {
+            return { label: c.name.toUpperCase(), value: c._id };
+          });
+        },
+      },
+    },
   },
   students: {
     type: Array,
@@ -34,5 +46,10 @@ const CourseSchema = new SimpleSchema({
   },
 }, { tracker: Tracker });
 
-export const Courses = new Mongo.Collection('courses');
 Courses.attachSchema(CourseSchema);
+
+export const PlayersIndex = new EasySearch.Index({
+  collection: Courses,
+  fields: ['name'],
+  engine: new EasySearch.MongoDB(),
+});
