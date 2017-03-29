@@ -4,10 +4,10 @@ import { $ } from 'meteor/jquery';
 import { ReactiveVar } from 'meteor/reactive-var';
 
 import { Books } from '../../api/books.js';
-import { Courses } from '../../api/courses.js';
+import { Courses, PlayersIndex } from '../../api/courses.js';
 
 Template.studentPage.onCreated(function init() {
-  this.course = new ReactiveVar('hello!');
+  this.course = new ReactiveVar(false);
 });
 
 Template.studentPage.onRendered(function render() {
@@ -16,10 +16,11 @@ Template.studentPage.onRendered(function render() {
 });
 
 Template.studentPage.helpers({
-  // return list of courses in current user document
+  // fixes error with getting data before collection is ready
   authInProcess() {
     return Meteor.loggingIn();
   },
+  // return list of courses in current user document
   courses() {
     if (Meteor.user()) {
       const courseIds = Meteor.user().courses;
@@ -27,7 +28,7 @@ Template.studentPage.helpers({
         $in: courseIds,
       } });
     }
-    return ['hello'];
+    return ['No courses'];
   },
   // change course based on reactivevar course
   selectedCourse() {
@@ -35,16 +36,7 @@ Template.studentPage.helpers({
     console.log(courseId);
     return Books.find({ course_id: courseId });
   },
-  // todo: remove
-  showCourse() {
-    return Template.instance().course.get();
-  },
-  // # todo: list
-  // 1. get list of course_ids from user
-  // 2. get courses from database in course_id list
-  // For each course in courses:
-  //    - display course name, clickable
-  //    - inherit data context to course template if possible
+  playersIndex: () => PlayersIndex,
 });
 
 Template.studentPage.events({
