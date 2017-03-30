@@ -1,24 +1,109 @@
 <template name="teacherPage">
     <!--content-klassen er på alle andre sider enn frontpage.html
     for å ha en padding på 47px til navbaren på disse sidene-->
-    <div class="content">
-        <div class="ui visible sidebar inverted vertical menu">
-            <a class="item">
-                Fag 1
-            </a>
-            <a class="item">
-                Fag 2
-            </a>
-            <a class="item">
-                <i class="plus icon"> </i>
-                Legg til nytt fag
-            </a>
-        </div>
-        <div class="pusher">
-            <!-- Site content !-->
-            <div class="information">Velg et fag for å få opp statistikk eller
-                legg til et nytt fag i menyen til venstre.
+    <div id="content">
+        <!-- Sidebar  -->
+        <div class="ui grid container" id="fixed-vertical">
+            <div class="ui left fixed inverted vertical menu">
+                <div class="item">
+                    <div class="header">Subjects</div>
+                </div>
+                {{#each courses}}
+                    <a class="item test">
+                        {{name}}
+                    </a>
+                {{/each}}
+                <a class="item" id="clickable2">
+                    <i class="plus icon"> </i>
+                    Create subject
+                </a>
             </div>
         </div>
+        <!-- Modal -->
+        <!-- shows when clicking "create a subject" in the menu -->
+
+        <div class="ui small modal" id="teacher">
+            <i class="close icon"></i>
+            <div class="ui header">
+                Create a new subject
+            </div>
+            <div class="content">
+                {{#autoForm id="createForm" type="insert" collection=getCourses}}
+                    {{> afQuickField name="name"}}
+                {{/autoForm}}
+            </div>
+            <div class="actions">
+                <div class="ui cancel button">
+                    Cancel
+                </div>
+                <button type="submit" class="ui green ok button" form="createForm">
+                    Add
+                </button>
+            </div>
+        </div>
+        <!-- Main content -->
+        {{#if selectedCourceBoolean}}
+            <div class="article">
+                <div class="ui grid container">
+                    <div class="sixteen wide column">
+                        <div class="column">
+                            <div class="heading">
+                                <div class=ui header>
+                                    <i class="Left arrow icon"></i>
+                                    <h1>Choose a subject or create a new subject.</h1>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="column"></div>
+                        <div class="column"></div>
+                        <div class="column"></div>
+                        <div class="column"></div>
+                        <div class="column"></div>
+                        <div class="column"></div>
+                        <div class="column"></div>
+                        <div class="column"></div>
+                        <div class="column"></div>
+                        <div class="column"></div>
+                        <div class="column"></div>
+                        <div class="column"></div>
+                        <div class="column"></div>
+                        <div class="column"></div>
+                        <div class="column"></div>
+                    </div>
+                </div>
+                <div class="ui grid container">
+                    <div class="row"></div>
+                    <div class="row"></div>
+                    <div class="row"></div>
+                    <div class="row"></div>
+                    <div class="row"></div>
+                    <div class="row"></div>
+                    <div class="row"></div>
+                    <div class="row"></div>
+                    <div class="row"></div>
+                    <div class="row"></div>
+                    <div class="row"></div>
+                    <div class="four wide column">
+                        <div class="column">
+                            <div class="ui header">
+                                <h3>"Education is the most powerful weapon
+                                    which you can use to change the world"</h3>
+                            </div>
+                            <p> - Nelson Mandela</p>
+                        </div>
+                        <div class="column"></div>
+                        <div class="column"></div>
+                        <div class="column"></div>
+                    </div>
+                </div>
+            </div>
+        {{else}}
+            {{#each selectedCourse}}
+                {{> showBook}}
+            {{/each}}
+
+        {{/if}}
+
+
     </div>
 </template>

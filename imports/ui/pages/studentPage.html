@@ -45,14 +45,10 @@
                     <i class="plus icon"> </i>
                     Add a new subject
                 </a>
-                <a class="item" id="clickable2">
-                    <i class="plus icon"> </i>
-                    Create subject
-                </a>
             </div>
         </div>
         <!-- Modal -->
-        <!-- shows when clicing "add a new subject" in the menu -->
+        <!-- shows when clicking "add a new subject" in the menu -->
         <div class="ui small modal" id="student">
             <i class="close icon"></i>
             <div class="ui header">
@@ -72,82 +68,67 @@
                 </button>
             </div>
         </div>
-        <div class="ui small modal" id="teacher">
-            <i class="close icon"></i>
-            <div class="ui header">
-                Create a new subject
-            </div>
-            <div class="content">
-                {{#autoForm id="createForm" type="insert" collection=getCourses}}
-                    {{> afQuickField name="name"}}
-                {{/autoForm}}
-            </div>
-            <div class="actions">
-                <div class="ui cancel button">
-                    Cancel
-                </div>
-                <button type="submit" class="ui green ok button" form="createForm">
-                    Add
-                </button>
-            </div>
-        </div>
         <!-- Main content -->
-        <div class="article">
-            {{#each selectedCourse}}
-                {{> showBook}}
-            {{/each}}
-            <div class="ui grid container">
-                <div class="sixteen wide column">
-                    <div class="column">
-                        <div class="heading">
-                            <div class=ui header>
-                                <i class="Left arrow icon"></i>
-                                <h1>Choose a subject or add a new subject.</h1>
+            {{#if selectedCourceBoolean}}
+                <div class="article">
+                    <div class="ui grid container">
+                        <div class="sixteen wide column">
+                            <div class="column">
+                                <div class="heading">
+                                    <div class=ui header>
+                                        <i class="Left arrow icon"></i>
+                                        <h1>Choose a subject or add a new subject.</h1>
+                                    </div>
+                                </div>
                             </div>
+                            <div class="column"></div>
+                            <div class="column"></div>
+                            <div class="column"></div>
+                            <div class="column"></div>
+                            <div class="column"></div>
+                            <div class="column"></div>
+                            <div class="column"></div>
+                            <div class="column"></div>
+                            <div class="column"></div>
+                            <div class="column"></div>
+                            <div class="column"></div>
+                            <div class="column"></div>
+                            <div class="column"></div>
+                            <div class="column"></div>
+                            <div class="column"></div>
                         </div>
                     </div>
-                    <div class="column"></div>
-                    <div class="column"></div>
-                    <div class="column"></div>
-                    <div class="column"></div>
-                    <div class="column"></div>
-                    <div class="column"></div>
-                    <div class="column"></div>
-                    <div class="column"></div>
-                    <div class="column"></div>
-                    <div class="column"></div>
-                    <div class="column"></div>
-                    <div class="column"></div>
-                    <div class="column"></div>
-                    <div class="column"></div>
-                    <div class="column"></div>
-                </div>
-            </div>
-            <div class="ui grid container">
-                <div class="row"></div>
-                <div class="row"></div>
-                <div class="row"></div>
-                <div class="row"></div>
-                <div class="row"></div>
-                <div class="row"></div>
-                <div class="row"></div>
-                <div class="row"></div>
-                <div class="row"></div>
-                <div class="row"></div>
-                <div class="row"></div>
-                <div class="four wide column">
-                    <div class="column">
-                        <div class="ui header">
-                            <h3>"Education is the most powerful weapon
-                                which you can use to change the world"</h3>
+                    <div class="ui grid container">
+                        <div class="row"></div>
+                        <div class="row"></div>
+                        <div class="row"></div>
+                        <div class="row"></div>
+                        <div class="row"></div>
+                        <div class="row"></div>
+                        <div class="row"></div>
+                        <div class="row"></div>
+                        <div class="row"></div>
+                        <div class="row"></div>
+                        <div class="row"></div>
+                        <div class="four wide column">
+                            <div class="column">
+                                <div class="ui header">
+                                    <h3>"Education is the most powerful weapon
+                                        which you can use to change the world"</h3>
+                                </div>
+                                <p> - Nelson Mandela</p>
+                            </div>
+                            <div class="column"></div>
+                            <div class="column"></div>
+                            <div class="column"></div>
                         </div>
-                        <p> - Nelson Mandela</p>
                     </div>
-                    <div class="column"></div>
-                    <div class="column"></div>
-                    <div class="column"></div>
                 </div>
-            </div>
-        </div>
+            {{else}}
+                {{#each selectedCourse}}
+                    {{> showBook}}
+                {{/each}}
+
+            {{/if}}
     </div>
 </template>

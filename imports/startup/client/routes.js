@@ -47,7 +47,7 @@ FlowRouter.route('/student', {
 FlowRouter.route('/teacher', {
   name: 'teacher.show',
   action() {
-    BlazeLayout.render('mainLayout', { main: 'studentPage' });
+    BlazeLayout.render('mainLayout', { main: 'teacherPage' });
   },
 });
 
