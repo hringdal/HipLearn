@@ -80,15 +80,15 @@
             <div class="content">
                 {{#autoForm id="createForm" type="insert" collection=getCourses}}
                     {{> afQuickField name="name"}}
-                    <button type="submit" class="ui green ok button">
-                        Add
-                    </button>
                 {{/autoForm}}
             </div>
             <div class="actions">
                 <div class="ui cancel button">
                     Cancel
                 </div>
+                <button type="submit" class="ui green ok button" form="createForm">
+                    Add
+                </button>
             </div>
         </div>
         <!-- Main content -->
