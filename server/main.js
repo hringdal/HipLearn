@@ -1,6 +1,8 @@
 import { Meteor } from 'meteor/meteor';
 import { check } from 'meteor/check';
+
 import { Courses } from '../imports/api/courses.js';
+import { Following } from '../imports/api/following.js';
 
 import '../imports/startup/both/';
 import '../imports/api/';
@@ -15,14 +17,13 @@ Meteor.publish('userData', function () {
 });
 
 Meteor.methods({
+  // connected to the 'addForm'
   addCourseStudent(doc) {
-    console.log(doc);
     check(doc, Object);
-    const id = doc._id;
-
+    const courseId = doc._id;
+    const userId = Meteor.userId();
     this.unblock();
-
-    Meteor.users.update({ _id: Meteor.userId() }, { $addToSet: { courses: id } });
+    Following.upsert({ user_id: userId, course_id: courseId }, { $set: { course_id: courseId } });
   },
   isSubjectUnique(subjectName) {
     check(subjectName, String);
