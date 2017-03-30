@@ -5,6 +5,7 @@ import { ReactiveVar } from 'meteor/reactive-var';
 
 import { Books } from '../../api/books.js';
 import { Courses, AddCourseSchema } from '../../api/courses.js';
+import { Following } from '../../api/following.js';
 
 Template.studentPage.onCreated(function init() {
   this.course = new ReactiveVar(false);
@@ -26,13 +27,16 @@ Template.studentPage.helpers({
   authInProcess() {
     return Meteor.loggingIn();
   },
-  // return list of courses in current user document
+  // return list of courses current user is following
   courses() {
     if (Meteor.user()) {
-      const courseIds = Meteor.user().courses;
+      const courseIds = Following.find({ user_id: Meteor.userId() }).map(function (c) {
+        return c.course_id;
+      });
+      console.log(courseIds);
       return Courses.find({ _id: { $in: courseIds } }, { sort: { name: 1 } });
     }
-    return ['No courses'];
+    return [];
   },
   // change course based on reactivevar course
   selectedCourse() {
