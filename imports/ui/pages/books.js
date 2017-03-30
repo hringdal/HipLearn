@@ -3,6 +3,9 @@ import { Template } from 'meteor/templating';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { _ } from 'meteor/underscore';
+// eslint-disable-next-line import/no-named-default
+import { default as swal } from 'sweetalert2';
+import 'sweetalert2/dist/sweetalert2.min.css';
 
 import { Books } from '../../api/books.js';
 import { Results } from '../../api/results.js';
@@ -16,7 +19,33 @@ Template.listBooks.helpers({
 Template.listBooks.events({
   'click .delete-book': function (event) {
     event.preventDefault();
-    Books.remove(this._id);
+    const bookId = this._id;
+    swal({
+      title: 'Are you sure?',
+      text: 'You will not be able to recover this book!',
+      type: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, delete it!',
+      cancelButtonText: 'No, keep it',
+    }).then(function () {
+      Books.remove(bookId);
+      swal({
+        title: 'Deleted!',
+        text: 'Your book has been deleted.',
+        type: 'success',
+        showConfirmButton: false,
+        timer: 2000,
+      }).catch(swal.noop);
+    }, function (dismiss) {
+      // dismiss can be 'overlay', 'cancel', 'close', 'esc', 'timer'
+      if (dismiss === 'cancel') {
+        swal(
+          'Cancelled',
+          'Your book is safe :)',
+          'error',
+        );
+      }
+    });
   },
 });
 
@@ -56,7 +85,7 @@ Template.showBook.events({
 
 Template.showBook.helpers({
   // Currently not used
-  /*results() {
+  /* results() {
     return Results.find({
       // todo: get this from template/params
       book_id: 'ngCjAKza4DDQsjqyJ',
