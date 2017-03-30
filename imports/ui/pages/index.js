@@ -12,4 +12,7 @@ import './navbar.js';
 import './studentPage.html';
 import './studentPage.js';
 
+import './teacherPage.html';
+import './teacherPage.js';
+
 import './frontpage.html';
