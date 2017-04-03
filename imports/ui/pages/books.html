@@ -43,35 +43,33 @@
 </template>
 
 <template name="showBook">
-    <div class="ui text container">
-        <div class="ui segment">
-            <h2>Progress on book: {{title}}</h2>
-            <div class="ui mini horizontal statistic">
-                <div class="value">
-                    {{uncheckedCount}}
-                </div>
-                <div class="label">
-                    Chapters left
-                </div>
+    <div class="ui segment">
+        <h2>Progress on book: {{title}}</h2>
+        <div class="ui mini horizontal statistic">
+            <div class="value">
+                {{uncheckedCount}}
             </div>
-            <div class="ui relaxed list">
-                {{#each chapter in chapters}}
-                    <div class="item">
-                        <div class="level-{{chapter.level}}">
-                            <button data-id="{{chapter._id}}"
-                                    class="ui small basic icon button chapter-status {{#if checked
-                                                                                           chapter._id}}purple{{/if}}">
-                                {{#if checked chapter._id}}
-                                    <i class="checkmark icon"></i>
-                                {{else}}
-                                    <i class="angle right icon"></i>
-                                {{/if}}
-                            </button>
-                            {{chapter.name}}
-                        </div>
+            <div class="label">
+                Chapters left
+            </div>
+        </div>
+        <div class="ui relaxed list">
+            {{#each chapter in chapters}}
+                <div class="item">
+                    <div class="level-{{chapter.level}}">
+                        <button data-id="{{chapter._id}}"
+                                class="ui small basic icon button chapter-status {{#if checked
+                                                                                       chapter._id}}purple{{/if}}">
+                            {{#if checked chapter._id}}
+                                <i class="checkmark icon"></i>
+                            {{else}}
+                                <i class="angle right icon"></i>
+                            {{/if}}
+                        </button>
+                        {{chapter.name}}
                     </div>
-                {{/each}}
-            </div>
+                </div>
+            {{/each}}
         </div>
     </div>
 </template>

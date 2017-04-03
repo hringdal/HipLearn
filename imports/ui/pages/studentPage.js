@@ -35,7 +35,11 @@ Template.studentPage.helpers({
   }, // change course based on reactivevar course
   selectedCourse() {
     const courseId = Template.instance().course.get();
-    return Books.find({ course_id: courseId });
+    const books = Books.find({ course_id: courseId });
+    if (books.count() === 0) {
+      return false;
+    }
+    return books;
   },
   addCourseSchema() {
     return AddCourseSchema;

@@ -124,10 +124,17 @@
                     </div>
                 </div>
             {{else}}
-                {{#each selectedCourse}}
-                    {{> showBook}}
-                {{/each}}
-
+                <div class="ui text container">
+                    {{#if selectedCourse}}
+                        {{#each selectedCourse}}
+                            {{> showBook}}
+                        {{/each}}
+                    {{else}}
+                        <div class="ui segment">
+                            <h3>This course currently has no books. Contact your professor for more info</h3>
+                        </div>
+                    {{/if}}
+                </div>
             {{/if}}
         </div>
     </div>
