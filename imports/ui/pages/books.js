@@ -8,15 +8,26 @@ import { default as swal } from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
 
 import { Books } from '../../api/books.js';
+import { Courses } from '../../api/courses.js';
 import { Results } from '../../api/results.js';
 
 Template.listBooks.helpers({
   books() {
-    return Books.find({});
+    console.log(this);
+    return Books.find({ course_id: this.courseId });
   },
 });
 
 Template.listBooks.events({
+  'click .delete-course': function (event) {
+    event.preventDefault();
+    console.log('clicked');
+    console.log(this);
+    const id = Courses.findOne({ _id: this.courseId });
+    console.log(id._id);
+    const od = id._id;
+    Courses.remove({ _id: od });
+  },
   'click .delete-book': function (event) {
     event.preventDefault();
     const bookId = this._id;
@@ -141,7 +152,7 @@ Template.newBook.helpers({
 // Routes "create book" and "edit book" forms to a specified template on success
 AutoForm.addHooks(['createBook', 'updateBook'], {
   onSuccess() {
-    FlowRouter.go('books.index');
+    FlowRouter.go('teacher.show');
   },
 });
 AutoForm.debug();
