@@ -2,11 +2,8 @@ import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { $ } from 'meteor/jquery';
 import { ReactiveVar } from 'meteor/reactive-var';
-import { Session } from 'meteor/session';
 
 import { Courses } from '../../api/courses.js';
-
-Session.set('course', 'tdt4100');
 
 Template.teacherPage.onCreated(function init() {
   this.course = new ReactiveVar(false);
