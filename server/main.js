@@ -19,6 +19,7 @@ Meteor.publish('userData', function () {
 Meteor.methods({
   // connected to the 'addForm'
   addCourseStudent(doc) {
+    console.log('in addCourseStudent');
     check(doc, Object);
     const courseId = doc._id;
     const userId = Meteor.userId();

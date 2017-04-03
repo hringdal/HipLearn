@@ -40,9 +40,6 @@ Template.studentPage.helpers({
   addCourseSchema() {
     return AddCourseSchema;
   },
-  getCourses() {
-    return Courses;
-  },
   noSelectedCourse() {
     return !(Template.instance().course.get());
   },
