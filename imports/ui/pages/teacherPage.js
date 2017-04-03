@@ -2,9 +2,11 @@ import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { $ } from 'meteor/jquery';
 import { ReactiveVar } from 'meteor/reactive-var';
+import { Session } from 'meteor/session';
 
-import { Books } from '../../api/books.js';
-import { Courses, AddCourseSchema } from '../../api/courses.js';
+import { Courses } from '../../api/courses.js';
+
+Session.set('course', 'tdt4100');
 
 Template.teacherPage.onCreated(function init() {
   this.course = new ReactiveVar(false);
@@ -24,17 +26,12 @@ Template.teacherPage.helpers({
   }, // return list of courses in current user document
   courses() {
     if (Meteor.user()) {
-      const courseIds = Meteor.user().courses;
-      return Courses.find({ _id: { $in: courseIds } }, { sort: { name: 1 } });
+      return Courses.find({ owner_id: Meteor.userId() }, { sort: { name: 1 } });
     }
     return ['No courses'];
   }, // change course based on reactivevar course
   selectedCourse() {
-    const courseId = Template.instance().course.get();
-    return Books.find({ course_id: courseId });
-  },
-  addCourseSchema() {
-    return AddCourseSchema;
+    return Template.instance().course.get();
   },
   getCourses() {
     return Courses;
