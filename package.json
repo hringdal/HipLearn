@@ -51,6 +51,9 @@
       ],
       "meteor/template-names": [
         "off"
+      ],
+      "meteor/no-session": [
+        0
       ]
     },
     "settings": {
