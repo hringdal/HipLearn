@@ -1,5 +1,7 @@
 <template name="frontpage">
-
+    {{#if currentUser}}
+        {{> navbar}}
+    {{/if}}
 
     <!-- del 1 av forsiden -->
     <div class="frontpage">
@@ -12,78 +14,78 @@
                     Learning has never been more <b> easy </b> or more <i> fun </i>!
                 </h2>
             </div>
-            <div class="ui hidden divider">
-            </div>
-            <div id="getStartedButton" class="ui huge primary button">
-                <a class="startKnapp" href={{pathFor 'sign-in'}}>
+            <div class="ui hidden divider"></div>
+            {{#unless currentUser}}
+                <a href="{{pathFor 'sign-in'}}" id="getStartedButton" class="ui huge primary button">
                     Get started with HipLearn (or login)
+                    <i class="right arrow icon"></i>
                 </a>
-                <i class="right arrow icon"></i>
-            </div>
-            <!-- routing til loginsiden hvis du allerede har en bruker ER DETTE RIKTIG?? -->
-            <div class="ui hidden divider">
-            </div>
+            {{/unless}}
+
         </div>
-
-
-        <!-- del 2 av forsiden-->
-
         <div class="ui hidden divider"></div>
+    </div>
 
-        <div class="ui middle aligned stackable grid container">
-            <div class="row">
-                <div class="eight wide center aligned column">
-                    <h2 class="ui center aligned header">
-                        Why HipLearn?
-                    </h2>
-                    <p class="us">
-                        HipLearn is designed for you, with the sole purpose of making your student life a little bit
-                        easier.
-                        As students ourselves, we often experience that we use a lot of time each day just to figure
-                        what to read,
-                        where to start, and how to get the best control of the curriculum. Sometimes you have read some
-                        pages here, and a chapter
-                        there, which makes you lose control of where in the book you should read this time. Our goal is
-                        to help you reach you goals with HipLearn.
-                        HipLearn makes your learning process a little easier.
-                    </p>
-                </div>
 
-                <div class="eight wide center aligned column">
-                    <h2 class="ui center aligned header">
-                        How does HipLearn work?
-                    </h2>
-                    <p class="us">
-                        HipLearn is an application designed to give you full control of exactly how much of your
-                        curriculum you have been through, so that you always know how to use your own time best
-                        possible.
-                        HipLearn gives you the opportunity to register your subjects, and then fetches the chapters in
-                        your book. When you have read a chapter or a subchapter of a book in a subject, you cross it of
-                        the list so that next time, you remember how far you got.
-                    </p>
-                </div>
+    <!-- del 2 av forsiden-->
 
-                <div class="eight wide center aligned column">
-                    <h2 class="ui center aligned header">
-                        Who are we?
-                    </h2>
-                    <p class="us">
-                        We are a team of engaged students of technology. From left: Ingeborg Lianes, Håkon Ringdal and
-                        Janne Nesse.
-                        As students, we know the challenges students usually encounter, and we try to use our technical
-                        competence
-                        to solve those problems. Many students have a lot to do, and it can be hard to keep track of
-                        everything during a
-                        hectic semester. We cannot solve everything for you, but we can make it easier for you to keep
-                        track of your studies.
-                    </p>
+    <div class="ui hidden divider"></div>
 
-                </div>
-                <div class="ui middle aligned container">
-                    <img src="/images/gruppa2.JPG" class="ui large centered bordered rounded image">
-                </div>
+    <div class="ui middle aligned stackable grid container">
+        <div class="row">
+            <div class="eight wide center aligned column">
+                <h2 class="ui center aligned header">
+                    Why HipLearn?
+                </h2>
+                <p class="us">
+                    HipLearn is designed for you, with the sole purpose of making your student life a little bit
+                    easier.
+                    As students ourselves, we often experience that we use a lot of time each day just to figure
+                    what to read,
+                    where to start, and how to get the best control of the curriculum. Sometimes you have read some
+                    pages here, and a chapter
+                    there, which makes you lose control of where in the book you should read this time. Our goal is
+                    to help you reach you goals with HipLearn.
+                    HipLearn makes your learning process a little easier.
+                </p>
             </div>
         </div>
+
+        <div class="eight wide center aligned column">
+            <h2 class="ui center aligned header">
+                How does HipLearn work?
+            </h2>
+            <p class="us">
+                HipLearn is an application designed to give you full control of exactly how much of your
+                curriculum you have been through, so that you always know how to use your own time best
+                possible.
+                HipLearn gives you the opportunity to register your subjects, and then fetches the chapters in
+                your book. When you have read a chapter or a subchapter of a book in a subject, you cross it of
+                the list so that next time, you remember how far you got.
+            </p>
+        </div>
+
+        <div class="eight wide center aligned column">
+            <h2 class="ui center aligned header">
+                Who are we?
+            </h2>
+            <p class="us">
+                We are a team of engaged students of technology. From left: Ingeborg Lianes, Håkon Ringdal and
+                Janne Nesse.
+                As students, we know the challenges students usually encounter, and we try to use our technical
+                competence
+                to solve those problems. Many students have a lot to do, and it can be hard to keep track of
+                everything during a
+                hectic semester. We cannot solve everything for you, but we can make it easier for you to keep
+                track of your studies.
+            </p>
+        </div>
+
+        <div class="ui middle aligned container">
+            <img src="/images/gruppa2.JPG" class="ui large centered bordered rounded image">
+        </div>
+
+    </div>
 
     <div class="ui divider"></div>
 
@@ -107,7 +109,4 @@
             </div>
         </div>
     </div>
-    </div>
-
-
 </template>

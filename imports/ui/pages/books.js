@@ -13,6 +13,7 @@ import 'sweetalert2/dist/sweetalert2.min.css';
 import { Books } from '../../api/books.js';
 import { Courses } from '../../api/courses.js';
 import { Results } from '../../api/results.js';
+import { Following } from '../../api/following.js';
 
 Template.listBooks.onCreated(function init() {
   this.showNewBook = new ReactiveVar(false);
@@ -84,6 +85,20 @@ Template.listBooks.events({
         ).catch(swal.noop);
       }
     });
+  },
+});
+
+Template.listStudentBooks.events({
+  'click .unfollow-course': function (event) {
+    event.preventDefault();
+    const courseId = FlowRouter.getParam('courseId');
+    const doc = Following.findOne({
+      user_id: Meteor.userId(),
+      course_id: courseId,
+    });
+    const id = doc._id;
+    Following.remove(id);
+    FlowRouter.go('student.show');
   },
 });
 
@@ -175,6 +190,10 @@ Template.editBook.helpers({
   getBook() {
     const id = FlowRouter.getParam('_id');
     return Books.findOne(id);
+  },
+  pathForCourse() {
+    const courseId = AutoForm.getFieldValue('course_id', 'updateBook');
+    return FlowRouter.path('teacher.course', { courseId });
   },
 });
 

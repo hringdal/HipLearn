@@ -50,6 +50,7 @@
 
 <template name="listStudentBooks">
     <div class="ui segment">
+        <button class="ui small unfollow-course right floated basic negative icon button">Unfollow course <i class="remove icon"></i></button>
         <h1>Overview of books</h1>
         {{#if hasBooks}}
             {{#each books}}
@@ -63,7 +64,7 @@
 </template>
 
 <template name="showBook">
-    <h2>Progress on book: {{title}}</h2>
+    <h2>Title: {{title}}</h2>
     <div class="ui mini horizontal statistic">
         <div class="value">
             {{uncheckedCount}}
@@ -94,7 +95,7 @@
 </template>
 
 <template name="editBook">
-    <div class="ui container">
+    <div class="ui container" style="margin-top: 47px">
         <div class="ui segment">
             <h2>Editing book</h2>
             {{#autoForm collection=getBooks type="update" doc=getBook id="updateBook"}}
@@ -103,7 +104,7 @@
                 <h4 class="ui header">Chapters</h4>
                 {{> afArrayField name='chapters' template="bookForm"}}
                 <button type="submit" class="ui positive button">Update</button>
-                <a href="{{pathFor 'books.index'}}" class="ui basic button">Cancel</a>
+                <a href="{{pathForCourse}}" class="ui basic button">Cancel</a>
             {{/autoForm}}
         </div>
     </div>
