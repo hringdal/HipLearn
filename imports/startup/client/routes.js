@@ -51,6 +51,13 @@ FlowRouter.route('/teacher', {
   },
 });
 
+FlowRouter.route('/teacher/course/:courseId', {
+  name: 'teacher.course',
+  action() {
+    BlazeLayout.render('mainLayout', { main: 'teacherPage' });
+  },
+});
+
 // Redirect for all unknown routes
 FlowRouter.notFound = {
   action() {

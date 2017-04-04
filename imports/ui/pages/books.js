@@ -13,8 +13,8 @@ import { Results } from '../../api/results.js';
 
 Template.listBooks.helpers({
   books() {
-    console.log(this);
-    return Books.find({ course_id: this.courseId });
+    const courseId = FlowRouter.getParam('courseId');
+    return Books.find({ course_id: courseId });
   },
 });
 

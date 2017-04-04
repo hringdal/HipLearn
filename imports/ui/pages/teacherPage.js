@@ -33,6 +33,7 @@ Template.teacherPage.helpers({
   getCourses() {
     return Courses;
   },
+
 });
 
 Template.teacherPage.events({
