@@ -1,6 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { FlowRouter } from 'meteor/kadira:flow-router';
+import { AutoForm } from 'meteor/aldeed:autoform';
 import { $ } from 'meteor/jquery';
 
 import { Courses, AddCourseSchema } from '../../api/courses.js';
@@ -61,5 +62,13 @@ Template.teacherSidebar.helpers({
   },
   activeCourse() {
     return FlowRouter.getParam('courseId') === this._id;
+  },
+});
+
+AutoForm.addHooks('addForm', {
+  onSuccess() {
+    const courseId = AutoForm.getFieldValue('_id', 'addForm');
+    // TODO : Fix error
+    FlowRouter.go('student.course', { courseId });
   },
 });

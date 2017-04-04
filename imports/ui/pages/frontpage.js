@@ -1,7 +1,10 @@
-/**
- * Created by Janne on 26.03.17.
- */
+import { $ } from 'meteor/jquery';
+import { Template } from 'meteor/templating';
 
-import ...
+Template.frontpage.onRendered(() => {
+  $('body').addClass('temporary-bg');
+});
 
-document.getElementById("getStartedButton").onclick = 
+Template.frontpage.onDestroyed(() => {
+  $('body').removeClass('temporary-bg');
+});

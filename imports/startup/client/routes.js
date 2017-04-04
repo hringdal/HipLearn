@@ -5,7 +5,11 @@ import { BlazeLayout } from 'meteor/kadira:blaze-layout';
 FlowRouter.route('/', {
   name: 'root',
   action() {
-    BlazeLayout.render('minimalLayout', { main: 'frontpage' });
+        if(Meteor.user()){
+            BlazeLayout.render('mainLayout', { main: 'frontpage' })
+        }else{
+            BlazeLayout.render('minimalLayout', { main: 'frontpage' })
+        }
   },
 });
 
@@ -62,6 +66,13 @@ FlowRouter.route('/teacher/course/:courseId', {
   name: 'teacher.course',
   action() {
     BlazeLayout.render('mainLayout', { main: 'teacherPage2', sidebar: 'teacherSidebar' });
+  },
+});
+
+FlowRouter.route('/list', {
+  name: 'list.show',
+  action() {
+    BlazeLayout.render('mainLayout', { main: 'list' });
   },
 });
 
