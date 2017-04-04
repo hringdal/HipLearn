@@ -16,3 +16,6 @@ import './teacherPage.html';
 import './teacherPage.js';
 
 import './frontpage.html';
+
+import './list.html';
+import './list.js';

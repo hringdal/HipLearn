@@ -3,6 +3,7 @@ import { check } from 'meteor/check';
 
 import { Courses } from '../imports/api/courses.js';
 import { Following } from '../imports/api/following.js';
+import { List } from '../imports/api/list.js';
 
 import '../imports/startup/both/';
 import '../imports/api/';

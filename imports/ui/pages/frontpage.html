@@ -1,5 +1,9 @@
 <template name="frontpage">
 
+    {{#if currentUser}}
+        {{>navbar}}
+    {{/if}}
+
     <!-- del 1 av forsiden -->
     <div class="frontpage">
         <div class="ui inverted vertical masthead center aligned segment">
