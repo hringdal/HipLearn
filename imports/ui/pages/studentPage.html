@@ -1,31 +1,37 @@
 <template name="studentPage">
-    <div class="context">
-        <div class="ui visible inverted vertical sidebar menu">
-            <a class="item">
-                Fag 1
-            </a>
-            <a class="item">
-                Fag 2
-            </a>
-            <a class="item">
-                <i class="plus icon"> </i>
-                Legg til nytt fag
-            </a>
-        </div>
-        <div class="pusher">
-            <div class="ui segment">
-                <h3>Hello there!</h3>
-            </div>
-            <!-- Site content !-->
+    <!--content-klassen er på alle andre sider enn frontpage.html
+    for å ha en padding på 47px til navbaren på disse sidene-->
+    <div id="content">
+        <!-- Sidebar I EGEN TEMPLATE -->
 
-            <!-- <div class = "quote">
-                "Education is the most powerful weapon <br>
-                which you can use to change the world"<br>
-                - Nelson Mandela</div>
-                Velg et fag eller
-                legg til et nytt fag i menyen til venstre.
-                !-->
-
+        <!-- Main content -->
+        <div class="ui padded grid container">
+            {{#if selectedCourse}}
+                <div class="ui row">
+                    <div class="ui column">
+                        {{> listStudentBooks}}
+                    </div>
+                </div>
+            {{else}}
+                <div class="ui row">
+                    <div class="ui column">
+                        <div class="ui compact segment">
+                            <h3><i class="left arrow icon"></i> Select one of your courses in the left menu, or
+                                add a
+                                new course</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="ui row" style="margin-top: 5rem">
+                    <div class="ui eight wide column">
+                        <div class="ui inverted header">
+                                "Education is the most powerful weapon
+                                which you can use to change the world"
+                        </div>
+                        <p style="color: rgba(255, 255, 255, 0.9)">- Nelson Mandela</p>
+                    </div>
+                </div>
+            {{/if}}
         </div>
     </div>
 </template>

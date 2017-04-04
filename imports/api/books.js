@@ -2,7 +2,6 @@ import { Mongo } from 'meteor/mongo';
 import SimpleSchema from 'simpl-schema';
 import { Tracker } from 'meteor/tracker';
 import { Random } from 'meteor/random';
-import { Courses } from './courses.js';
 
 const BookSchema = new SimpleSchema({
   title: {
@@ -12,14 +11,18 @@ const BookSchema = new SimpleSchema({
   course_id: {
     type: String,
     label: 'Course ID',
-    autoform: {
+    /* autoform: {
       afFieldInput: {
         options() {
-          return Courses.find({}, { _id: 1, sort: { _id: 1 } }).map(function createSet(c) {
-            return { label: c.name.toUpperCase(), value: c.name };
-          });
+          return Courses.find({ owner_id: Meteor.userId() },
+            { name: 1, sort: { name: 1 } }).map(function createSet(c) {
+              return { label: c.name.toUpperCase(), value: c._id };
+            });
         },
       },
+    },*/
+    autoform: {
+      type: 'hidden',
     },
   },
   chapters: {
@@ -39,9 +42,8 @@ const BookSchema = new SimpleSchema({
       // deleting books in the array on edit gives an UpdateError
       if (this.isSet) {
         return this.value;
-      } else {
-        return Random.id();
       }
+      return Random.id();
     },
     autoform: {
       type: 'hidden',

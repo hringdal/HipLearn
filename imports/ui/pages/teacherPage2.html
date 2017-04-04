@@ -1,0 +1,23 @@
+<template name="teacherPage2">
+    <!--content-klassen er på alle andre sider enn frontpage.html
+    for å ha en padding på 47px til navbaren på disse sidene-->
+    <div id="content">
+        <!-- Sidebar LIGGER I EGEN TEMPLATE NÅ -->
+        <!-- Main content -->
+        <div class="article">
+            <div class="ui padded grid container">
+                <div class="ui column">
+                    {{#if selectedCourse}}
+                        {{> listBooks}}
+                    {{else}}
+                        <div class="ui compact segment">
+                            <h3><i class="left arrow icon"></i> Select one of your courses in the left menu, or
+                                create a
+                                new course</h3>
+                        </div>
+                    {{/if}}
+                </div>
+            </div>
+        </div>
+    </div>
+</template>

@@ -14,6 +14,18 @@ Template.navbar.helpers({
   userEmail() {
     return Meteor.user().emails[0].address;
   },
+  userRole() {
+    if (Meteor.user()) {
+      const role = Meteor.user().profile.role;
+      if (role === 1) {
+        return 'student.show';
+      } else if (role === 2) {
+        return 'teacher.show';
+      }
+      return 'admin.show';
+    }
+    return '#';
+  },
 });
 
 Template.navbar.events({

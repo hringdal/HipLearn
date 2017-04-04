@@ -11,3 +11,16 @@ import './navbar.js';
 
 import './studentPage.html';
 import './studentPage.js';
+
+import './teacherPage.html';
+import './teacherPage2.html';
+import './teacherPage.js';
+
+import './frontpage.html';
+import './frontpage.js';
+
+import './sidebar.html';
+import './sidebar.js';
+
+import './list.html';
+import './list.js';

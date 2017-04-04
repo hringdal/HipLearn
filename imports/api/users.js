@@ -34,14 +34,31 @@ const UserSchema = new SimpleSchema({
     optional: true,
     blackbox: true,
   },
-  role: {
+  profile: {
+    type: Object,
+  },
+  'profile.role': {
+    // 1: student
+    // 2: teacher
+    // 3: admin
     type: Number,
     allowedValues: [
       1,
       2,
       3,
     ],
-    defaultValue: 2,
+    // defaultValue: 2,
+  },
+  courses: {
+    // contains course ids
+    // for students: a list of courses you are following
+    // for teachers: a list of the courses you have created
+    type: Array,
+    optional: true,
+    defaultValue: [],
+  },
+  'courses.$': {
+    type: String,
   },
 });
 

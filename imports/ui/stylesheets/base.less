@@ -1,6 +1,5 @@
 
 body {
-  padding-top: 47px;
   /*background: #FF5F6D; !* fallback for old browsers *!
   background: -webkit-linear-gradient(to bottom, #FF5F6D, #FFC371); !* Chrome 10-25, Safari 5.1-6 *!
   background: linear-gradient(to bottom, #FF5F6D, #FFC371); !* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ *!*/
@@ -16,6 +15,22 @@ body {
   content: "" !important;
 }
 
+#fixed-vertical.ui[class*="left fixed"].menu {
+  top: 47px;
+  border-top: 1px solid #10A3A3;
+}
+
+#content {
+  position: absolute;
+  height: auto;
+  top: 47px;
+  bottom: 0;
+  left: 15rem;
+  right: 0;
+/*  margin-top: 47px;
+  margin-left: 15rem;*/
+}
+
 #happybox {
   padding: 100px;
 }
@@ -24,26 +39,4 @@ body {
   color: #9F3F87;
   font-size: 4rem;
   padding-left: 30px;
-}
-
-h1 {
-  font-size: 2.5rem;
-}
-
-.pusher .ui.grid {
-  height: inherit;
-}
-
-.ui.menu #mobile-dropdown.ui.dropdown .menu {
-  position: fixed;
-  top: 47px;
-  width: 100%;
-  background: #1B1C1D; // @black
-}
-
-.ui.menu #mobile-dropdown.ui.dropdown .menu > .item {
-  color: rgba(255, 255, 255, 0.9) !important; // @invertedTextColor
-  padding: 0;
-  margin: 0;
-  background: red;
 }
