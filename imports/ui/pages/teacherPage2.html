@@ -2,53 +2,18 @@
     <!--content-klassen er på alle andre sider enn frontpage.html
     for å ha en padding på 47px til navbaren på disse sidene-->
     <div id="content">
-        <!-- Sidebar  -->
-        <div class="ui grid container" id="fixed-vertical">
-            <div class="ui left fixed inverted vertical menu">
-                <div class="item">
-                    <div class="header">Subjects</div>
-                </div>
-                {{#each courses}}
-                    <a class="item test">
-                        {{name}}
-                    </a>
-                {{/each}}
-                <a class="item" id="clickable2">
-                    <i class="plus icon"> </i>
-                    Create subject
-                </a>
-            </div>
-        </div>
-        <!-- Modal -->
-        <!-- shows when clicking "create a subject" in the menu -->
-
-        <div class="ui small modal" id="teacher">
-            <i class="close icon"></i>
-            <div class="ui header">
-                Create a new subject
-            </div>
-            <div class="content">
-                {{#autoForm id="createForm" type="insert" collection=getCourses}}
-                    {{> afQuickField name="name"}}
-                {{/autoForm}}
-            </div>
-            <div class="actions">
-                <div class="ui cancel button">
-                    Cancel
-                </div>
-                <button type="submit" class="ui green ok button" form="createForm">
-                    Add
-                </button>
-            </div>
-        </div>
+        <!-- Sidebar LIGGER I EGEN TEMPLATE NÅ -->
         <!-- Main content -->
         <div class="article">
-            {{#if selectedCourse}}
-                <p>A course is selected</p>
-                {{> listBooks courseId = selectedCourse }}
-            {{else}}
-                <p>No course selected</p>
-            {{/if}}
+            <div class="ui text container">
+                {{#if selectedCourse}}
+                    {{> listBooks}}
+                {{else}}
+                    <div class="ui segment">
+                        <h3>Select one of your courses in the left menu</h3>
+                    </div>
+                {{/if}}
+            </div>
         </div>
     </div>
 </template>

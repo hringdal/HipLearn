@@ -1,9 +1,7 @@
-import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import SimpleSchema from 'simpl-schema';
 import { Tracker } from 'meteor/tracker';
 import { Random } from 'meteor/random';
-import { Courses } from './courses.js';
 
 const BookSchema = new SimpleSchema({
   title: {
@@ -13,7 +11,7 @@ const BookSchema = new SimpleSchema({
   course_id: {
     type: String,
     label: 'Course ID',
-    autoform: {
+    /* autoform: {
       afFieldInput: {
         options() {
           return Courses.find({ owner_id: Meteor.userId() },
@@ -22,6 +20,9 @@ const BookSchema = new SimpleSchema({
             });
         },
       },
+    },*/
+    autoform: {
+      type: 'hidden',
     },
   },
   chapters: {
