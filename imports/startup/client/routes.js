@@ -5,11 +5,11 @@ import { BlazeLayout } from 'meteor/kadira:blaze-layout';
 FlowRouter.route('/', {
   name: 'root',
   action() {
-      if(Meteor.user()){
-          BlazeLayout.render('mainLayout', { main: 'frontpage' })
-      }else{
-          BlazeLayout.render('minimalLayout', { main: 'frontpage' })
-      }
+        if(Meteor.user()){
+            BlazeLayout.render('mainLayout', { main: 'frontpage' })
+        }else{
+            BlazeLayout.render('minimalLayout', { main: 'frontpage' })
+        }
   },
 });
 
@@ -53,6 +53,13 @@ FlowRouter.route('/teacher', {
   action() {
     BlazeLayout.render('mainLayout', { main: 'teacherPage' });
   },
+});
+
+FlowRouter.route('/list', {
+    name: 'list.show',
+    action() {
+        BlazeLayout.render('mainLayout', { main: 'list' });
+    },
 });
 
 // Redirect for all unknown routes
