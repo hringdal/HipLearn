@@ -1,85 +1,42 @@
 <template name="navbar">
-    <div class="ui grid">
-        <div class="row">
-            <div class="computer tablet only column">
-                <div class="ui inverted fixed borderless menu">
-                    <div class="ui container">
-                        <a href="{{pathFor 'root'}}" class="header item">
-                            <i class="large home icon"></i>
-                            <strong>HipLearn</strong>
-                        </a>
-                        <a href="{{pathFor 'student.show'}}" class="{{isActiveRoute 'student.show' class='active'}} item">
-                            <i class="list icon"></i>
-                            Subjects
-                        </a>
-                        <a href="{{pathFor 'teacher.show'}}" class="{{isActiveRoute 'teacher.show' class='active'}} item">
-                            <i class="list icon"></i>
-                            Teacher subjects
-                        </a>
-                        <!--<a href="{{pathFor 'books.index'}}" class="{{isActiveRoute 'books.index' class='active'}} item">
-                            <i class="book icon"></i>
-                            Books
-                        </a>-->
-                        <!--<a href="{{pathFor 'books.show'}}" class="{{isActiveRoute 'books.show' class='active'}} item">
-                            <i class="smile icon"></i>
-                            Result
-                        </a>-->
-                        <div class="right menu">
-                            <a href="" class="icon item">
-                                <i class="large lightbulb icon"></i>
-                            </a>
-                            <a class="ui dropdown item">
-                                <i class="user icon"></i>
-                                <span class="text">{{#if currentUser}}{{userEmail}}{{else}}Not logged in{{/if}}</span>
-                                <div class="menu">
-                                    {{> atNavButton}}
-                                </div>
-                            </a>
-                        </div>
+    <div class="ui inverted fixed borderless menu">
+        <div class="ui container">
+            <a href="{{pathFor 'root'}}" class="header item">
+                <i class="large home icon"></i>
+                <strong>HipLearn</strong>
+            </a>
+            <a href="{{pathFor 'student.show'}}" class="{{isActiveRoute 'student.show' class='active'}} item">
+                <i class="list icon"></i>
+                Subjects
+            </a>
+            <a href="{{pathFor 'teacher.show'}}" class="{{isActiveRoute 'teacher.show' class='active'}} item">
+                <i class="list icon"></i>
+                Teacher subjects
+            </a>
+            <div class="right menu">
+                <a href="" class="icon item">
+                    <i class="large lightbulb icon"></i>
+                </a>
+                <a class="ui dropdown item">
+                    <i class="user icon"></i>
+                    <span class="text">{{#if currentUser}}{{userEmail}}{{else}}Not logged in{{/if}}</span>
+                    <div class="menu">
+                        {{> atNavButton}}
                     </div>
-                </div>
-            </div>
-            <div class="mobile only column">
-                <div class="ui fluid inverted fixed borderless menu">
-                    <a href="{{pathFor 'root'}}" class="header item">
-                        <i class="large home icon"></i>
-                        <strong>HipLearn</strong>
-                    </a>
-                    <div class="right menu">
-                        <a class="ui inverted dropdown item">
-                            <i class="user icon"></i>
-                            <span class="text">{{#if currentUser}}{{userEmail}}{{else}}Not logged in{{/if}}</span>
-                            <div class="ui menu">
-                                {{> atNavButton}}
-                            </div>
-                        </a>
-                        <div id="mobile-dropdown" class="ui fluid dropdown item">
-                            <i class="content icon"></i>
-                            <div class="menu">
-                                <a href="{{pathFor 'student.show'}}" class="item">
-                                    <i class="right floated list icon"></i>
-                                    Subjects
-                                </a>
-                                <a href="{{pathFor 'books.index'}}" class="item">
-                                    <i class="right floated book icon"></i>
-                                    Books
-                                </a>
-                                <a href="{{pathFor 'books.show'}}" class="item">
-                                    <i class="right floated smile icon"></i>
-                                    Result
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                </a>
             </div>
         </div>
     </div>
+
 </template>
 
 <template name="atNavButtonCustom">
     <div class="item" id="at-nav-button">
-        <i class="sign out icon"></i>
-        <span class="text">Sign out</span>
+        {{#if currentUser}}
+            <i class="sign out icon"></i>
+        {{else}}
+            <i class="sign in icon"></i>
+        {{/if}}
+        <span class="text">{{text}}</span>
     </div>
 </template>

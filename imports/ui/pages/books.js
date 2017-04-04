@@ -5,6 +5,7 @@ import { AutoForm } from 'meteor/aldeed:autoform';
 import { _ } from 'meteor/underscore';
 import { $ } from 'meteor/jquery';
 import { ReactiveVar } from 'meteor/reactive-var';
+import { Tracker } from 'meteor/tracker';
 // eslint-disable-next-line import/no-named-default
 import { default as swal } from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
@@ -31,8 +32,24 @@ Template.listBooks.events({
   'click .delete-course': function (event) {
     event.preventDefault();
     const id = FlowRouter.getParam('courseId');
-    Courses.remove({ _id: id });
-    FlowRouter.go('teacher.show');
+    swal({
+      title: 'Are you sure?',
+      text: 'This course will be deleted forever!',
+      type: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, delete it!',
+      cancelButtonText: 'No, keep it',
+    }).then(function () {
+      Courses.remove({ _id: id });
+      swal({
+        title: 'Deleted!',
+        text: 'Your course has been deleted.',
+        type: 'success',
+        showConfirmButton: false,
+        timer: 2000,
+      }).catch(swal.noop);
+      FlowRouter.go('teacher.show');
+    }).catch(swal.noop);
   },
   'click .show-new-book': function toggle(event, instance) {
     const state = instance.showNewBook.get();
@@ -64,39 +81,21 @@ Template.listBooks.events({
           'Cancelled',
           'Your book is safe :)',
           'error',
-        );
+        ).catch(swal.noop);
       }
     });
   },
 });
 
 Template.listStudentBooks.helpers({
+  hasBooks() {
+    const courseId = FlowRouter.getParam('courseId');
+    return Books.find({ course_id: courseId }).count() > 0;
+  },
   books() {
     const courseId = FlowRouter.getParam('courseId');
     return Books.find({ course_id: courseId });
   },
-});
-
-Template.showBook.onRendered(function () {
-  $('#complete-count').progress({
-    text: {
-      success: 'All chapters completed!',
-    },
-  }).progress('set percent', function () {
-    console.log('hello!');
-    const book = this;
-    console.log(book);
-    if (typeof book.chapters !== 'undefined') {
-      const count = book.chapters.length;
-      const checked = Results.find({
-        book_id: book._id,
-        user_id: Meteor.userId(),
-        checked: true,
-      }).count();
-      return checked / count;
-    }
-    return 0;
-  });
 });
 
 Template.showBook.events({

@@ -1,19 +1,17 @@
 <template name="studentSidebar">
-    <div class="ui grid container" id="fixed-vertical">
-        <div class="ui left fixed inverted vertical menu">
-            <div class="item">
-                <div class="header">Courses</div>
-            </div>
-            {{#each courses}}
-                <a class="item {{#if activeCourse}}active{{/if}}" href={{pathForCourse}}>
-                    {{name}}
-                </a>
-            {{/each}}
-            <a class="item" id="clickable">
-                <i class="plus icon"> </i>
-                Add a new course
-            </a>
+    <div id="fixed-vertical" class="ui left fixed inverted vertical menu">
+        <div class="item">
+            <div class="header">Courses</div>
         </div>
+        {{#each courses}}
+            <a class="item {{#if activeCourse}}active{{/if}}" href={{pathForCourse}}>
+                {{name}}
+            </a>
+        {{/each}}
+        <a class="item" id="clickable">
+            <i class="plus icon"> </i>
+            Add a new course
+        </a>
     </div>
 
     <!-- Modal -->
@@ -40,21 +38,19 @@
 </template>
 
 <template name="teacherSidebar">
-    <div class="ui grid container" id="fixed-vertical">
-        <div class="ui left fixed inverted vertical menu">
-            <div class="item">
-                <div class="header">Courses</div>
-            </div>
-            {{#each courses}}
-                <a class="item {{#if activeCourse}}active{{/if}}" href={{pathForCourse}}>
-                    {{name}}
-                </a>
-            {{/each}}
-            <a class="item" id="clickable2">
-                <i class="plus icon"> </i>
-                Create course
-            </a>
+    <div id="fixed-vertical" class="ui left fixed inverted vertical menu">
+        <div class="item">
+            <div class="header">Courses</div>
         </div>
+        {{#each courses}}
+            <a class="item {{#if activeCourse}}active{{/if}}" href={{pathForCourse}}>
+                {{name}}
+            </a>
+        {{/each}}
+        <a class="item" id="clickable2">
+            <i class="plus icon"> </i>
+            Create course
+        </a>
     </div>
 
     <!-- Modal -->
