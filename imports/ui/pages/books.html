@@ -1,28 +1,30 @@
 <template name="listBooks">
-    <div class="ui text container">
-        <table class="ui fluid striped table">
-            <thead>
-            <tr>
-                <th colspan="2">
-                    Books
-                    <button class="ui negative delete-course button">Delete course</button>
-                </th>
-            </tr>
-            </thead>
-            <tbody>
-            {{#each books}}
-                {{> book}}
-            {{/each}}
-            <tr>
-                <td colspan="2">
-                    <a href="{{pathFor 'books.new'}}" class="ui green basic button"><i class="book icon"></i>New
-                        Book
-                    </a>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
+    <table class="ui fluid striped table">
+        <thead>
+        <tr>
+            <th colspan="2">
+                Books
+                <button class="ui negative delete-course button">Delete course</button>
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        {{#each books}}
+            {{> book}}
+        {{/each}}
+        <tr>
+            <td colspan="2">
+                <a class="show-new-book ui green basic button"><i class="book icon"></i>New
+                    Book
+                </a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    {{#if showNewBook}}
+        {{> newBook}}
+    {{/if}}
+
 </template>
 
 <template name="book">
@@ -42,9 +44,19 @@
     </tr>
 </template>
 
+<template name="listStudentBooks">
+    {{#each books}}
+        {{> showBook}}
+    {{/each}}
+</template>
+
 <template name="showBook">
     <div class="ui segment">
         <h2>Progress on book: {{title}}</h2>
+        <div class="ui indicating progress" id="complete-count">
+            <div class="bar"></div>
+            <div class="label">Progress</div>
+        </div>
         <div class="ui mini horizontal statistic">
             <div class="value">
                 {{uncheckedCount}}
@@ -75,7 +87,7 @@
 </template>
 
 <template name="editBook">
-    <div class="ui text container">
+    <div class="ui container">
         <div class="ui segment">
             <h2>Editing book</h2>
             {{#autoForm collection=getBooks type="update" doc=getBook id="updateBook"}}
@@ -91,18 +103,16 @@
 </template>
 
 <template name="newBook">
-    <div class="ui text container">
-        <div class="ui segment">
-            <h2>Creating New Book</h2>
-            {{#autoForm collection=getBooks type="insert" id="createBook"}}
-                {{> afQuickField name='title'}}
-                {{> afQuickField name='course_id' search=true placeholder='Select a course'}}
-                <h4 class="ui header">Chapters</h4>
-                {{> afArrayField name='chapters' template="bookForm"}}
-                <button type="submit" class="ui positive button">Insert</button>
-                <a href="{{pathFor 'books.index'}}" class="ui basic button">Cancel</a>
-            {{/autoForm}}
-        </div>
+    <div class="ui segment">
+        <h2>Creating New Book</h2>
+        {{#autoForm collection=getBooks type="insert" id="createBook"}}
+            {{> afQuickField name='title'}}
+            {{> afQuickField name='course_id' search=true placeholder='Select a course'}}
+            <h4 class="ui header">Chapters</h4>
+            {{> afArrayField name='chapters' template="bookForm"}}
+            <button type="submit" class="ui positive button">Insert</button>
+            <a href="{{pathFor 'books.index'}}" class="ui basic button">Cancel</a>
+        {{/autoForm}}
     </div>
 </template>
 

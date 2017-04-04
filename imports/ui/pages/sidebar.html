@@ -1,0 +1,82 @@
+<template name="studentSidebar">
+    <div class="ui grid container" id="fixed-vertical">
+        <div class="ui left fixed inverted vertical menu">
+            <div class="item">
+                <div class="header">Courses</div>
+            </div>
+            {{#each courses}}
+                <a class="item {{#if activeCourse}}active{{/if}}" href={{pathForCourse}}>
+                    {{name}}
+                </a>
+            {{/each}}
+            <a class="item" id="clickable">
+                <i class="plus icon"> </i>
+                Add a new course
+            </a>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <!-- shows when clicking "add a new course" in the menu -->
+    <div class="ui small modal" id="student">
+        <i class="close icon"></i>
+        <div class="ui header">
+            Select a course to add
+        </div>
+        <div class="content">
+            {{#autoForm schema=addCourseSchema id="addForm" type="method" meteormethod="addCourseStudent"}}
+                {{> afFieldInput name="_id" search=true placeholder="Select a course"}}
+            {{/autoForm}}
+        </div>
+        <div class="actions">
+            <div class="ui cancel button">
+                Cancel
+            </div>
+            <button type="submit" class="ui green ok button" form="addForm">
+                Add
+            </button>
+        </div>
+    </div>
+</template>
+
+<template name="teacherSidebar">
+    <div class="ui grid container" id="fixed-vertical">
+        <div class="ui left fixed inverted vertical menu">
+            <div class="item">
+                <div class="header">Courses</div>
+            </div>
+            {{#each courses}}
+                <a class="item {{#if activeCourse}}active{{/if}}" href={{pathForCourse}}>
+                    {{name}}
+                </a>
+            {{/each}}
+            <a class="item" id="clickable2">
+                <i class="plus icon"> </i>
+                Create course
+            </a>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <!-- shows when clicking "create a course" in the menu -->
+    <div class="ui small modal" id="teacher">
+        <i class="close icon"></i>
+        <div class="ui header">
+            Create a new course
+        </div>
+        <div class="content">
+            {{#autoForm id="createForm" type="insert" collection=formCourses}}
+                {{> afQuickField name="name"}}
+            {{/autoForm}}
+        </div>
+        <div class="actions">
+            <div class="ui cancel button">
+                Cancel
+            </div>
+            <button type="submit" class="ui green ok button" form="createForm">
+                Add
+            </button>
+        </div>
+    </div>
+
+</template>
