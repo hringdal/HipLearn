@@ -2,6 +2,11 @@ import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { Tracker } from 'meteor/tracker';
 import SimpleSchema from 'simpl-schema';
+import { check } from 'meteor/check';
+
+import { Following } from './following.js';
+import { Results } from './results.js';
+import { Books } from './books.js';
 
 SimpleSchema.extendOptions(['autoform']);
 
@@ -17,7 +22,7 @@ const CourseSchema = new SimpleSchema({
   },
   name: {
     type: String,
-    label: 'Course Name',
+    label: 'Course Code',
     unique: true,
     custom() {
       // used for checking whether a new subject <name> is unique
@@ -82,3 +87,13 @@ export const AddCourseSchema = new SimpleSchema({
     },
   },
 }, { tracker: Tracker });
+
+Meteor.methods({
+  'courses.delete': function deleteCourse(courseId) {
+    check(courseId, String);
+    Results.remove({ course_id: courseId });
+    Following.remove({ course_id: courseId });
+    Books.remove({ course_id: courseId });
+    Courses.remove(courseId);
+  },
+});

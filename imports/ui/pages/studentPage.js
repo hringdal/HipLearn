@@ -13,8 +13,3 @@ Template.studentPage.helpers({
   },
 });
 
-Template.studentPage.events({
-  'click .test': function (event, instance) {
-    instance.course.set(this._id);
-  },
-});

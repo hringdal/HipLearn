@@ -20,14 +20,14 @@ Template.studentSidebar.onRendered(function render() {
 Template.studentSidebar.helpers({
   // return list of courses current user is following
   courses() {
-    if (Meteor.user()) {
-      const courseIds = Following.find({ user_id: Meteor.userId() }).map(function (c) {
-        return c.course_id;
-      });
-      console.log(courseIds);
-      return Courses.find({ _id: { $in: courseIds } }, { sort: { name: 1 } });
+    if (!Meteor.user()) {
+      return undefined;
     }
-    return undefined;
+    const courseIds = Following.find({ user_id: Meteor.userId() }).map(function (c) {
+      return c.course_id;
+    });
+    console.log(courseIds);
+    return Courses.find({ _id: { $in: courseIds } }, { sort: { name: 1 } });
   },
   addCourseSchema() {
     return AddCourseSchema;
@@ -68,7 +68,6 @@ Template.teacherSidebar.helpers({
 AutoForm.addHooks('addForm', {
   onSuccess() {
     const courseId = AutoForm.getFieldValue('_id', 'addForm');
-    // TODO : Fix error
     FlowRouter.go('student.course', { courseId });
   },
 });

@@ -98,9 +98,9 @@
     <div class="ui container" style="margin-top: 47px">
         <div class="ui segment">
             <h2>Editing book</h2>
-            {{#autoForm collection=getBooks type="update" doc=getBook id="updateBook"}}
+            {{#autoForm collection=getBooks type="method-update" meteormethod="books.update" doc=getBook id="updateBook"}}
                 {{> afQuickField name='title'}}
-                {{> afQuickField name='course_id' search=true placeholder='Select a course'}}
+                {{> afQuickField name='course_id'}}
                 <h4 class="ui header">Chapters</h4>
                 {{> afArrayField name='chapters' template="bookForm"}}
                 <button type="submit" class="ui positive button">Update</button>
@@ -113,9 +113,8 @@
 <template name="newBook">
     <div id="new-book" class="ui segment">
         <h2>Creating New Book</h2>
-        {{#autoForm collection=getBooks type="insert" id="createBook"}}
+        {{#autoForm collection=getBooks type="method" meteormethod="books.insert" id="createBook"}}
             {{> afQuickField name='title'}}
-            {{> afQuickField name='course_id' search=true placeholder='Select a course'}}
             <h4 class="ui header">Chapters</h4>
             {{> afArrayField name='chapters' template="bookForm"}}
             <button type="submit" class="ui positive button">Insert</button>

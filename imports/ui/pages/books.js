@@ -3,17 +3,13 @@ import { Template } from 'meteor/templating';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { _ } from 'meteor/underscore';
-import { $ } from 'meteor/jquery';
 import { ReactiveVar } from 'meteor/reactive-var';
-import { Tracker } from 'meteor/tracker';
 // eslint-disable-next-line import/no-named-default
 import { default as swal } from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
 
 import { Books } from '../../api/books.js';
-import { Courses } from '../../api/courses.js';
 import { Results } from '../../api/results.js';
-import { Following } from '../../api/following.js';
 
 Template.listBooks.onCreated(function init() {
   this.showNewBook = new ReactiveVar(false);
@@ -30,9 +26,9 @@ Template.listBooks.helpers({
 });
 
 Template.listBooks.events({
-  'click .delete-course': function (event) {
+  'click .delete-course': function confirmDelete(event) {
     event.preventDefault();
-    const id = FlowRouter.getParam('courseId');
+    const courseId = FlowRouter.getParam('courseId');
     swal({
       title: 'Are you sure?',
       text: 'This course will be deleted forever!',
@@ -40,8 +36,8 @@ Template.listBooks.events({
       showCancelButton: true,
       confirmButtonText: 'Yes, delete it!',
       cancelButtonText: 'No, keep it',
-    }).then(function () {
-      Courses.remove({ _id: id });
+    }).then(function deleteCourse() {
+      Meteor.call('courses.delete', courseId);
       swal({
         title: 'Deleted!',
         text: 'Your course has been deleted.',
@@ -52,11 +48,11 @@ Template.listBooks.events({
       FlowRouter.go('teacher.show');
     }).catch(swal.noop);
   },
-  'click .show-new-book': function toggle(event, instance) {
+  'click .show-new-book': function toggleView(event, instance) {
     const state = instance.showNewBook.get();
     instance.showNewBook.set(!state);
   },
-  'click .delete-book': function (event) {
+  'click .delete-book': function confirmDelete(event) {
     event.preventDefault();
     const bookId = this._id;
     swal({
@@ -66,8 +62,8 @@ Template.listBooks.events({
       showCancelButton: true,
       confirmButtonText: 'Yes, delete it!',
       cancelButtonText: 'No, keep it',
-    }).then(function () {
-      Books.remove(bookId);
+    }).then(function deleteBook() {
+      Meteor.call('books.delete', bookId);
       swal({
         title: 'Deleted!',
         text: 'Your book has been deleted.',
@@ -75,7 +71,7 @@ Template.listBooks.events({
         showConfirmButton: false,
         timer: 2000,
       }).catch(swal.noop);
-    }, function (dismiss) {
+    }, function cancel(dismiss) {
       // dismiss can be 'overlay', 'cancel', 'close', 'esc', 'timer'
       if (dismiss === 'cancel') {
         swal(
@@ -89,15 +85,10 @@ Template.listBooks.events({
 });
 
 Template.listStudentBooks.events({
-  'click .unfollow-course': function (event) {
+  'click .unfollow-course': function unfollowCourse(event) {
     event.preventDefault();
     const courseId = FlowRouter.getParam('courseId');
-    const doc = Following.findOne({
-      user_id: Meteor.userId(),
-      course_id: courseId,
-    });
-    const id = doc._id;
-    Following.remove(id);
+    Meteor.call('following.unfollow', courseId);
     FlowRouter.go('student.show');
   },
 });
@@ -118,32 +109,8 @@ Template.showBook.events({
   'click .chapter-status': function (event) {
     const chapterId = event.currentTarget.getAttribute('data-id');
     const bookId = this._id;
-
-    const doc = Results.findOne({
-      book_id: bookId,
-      chapter_id: chapterId,
-      user_id: Meteor.userId(),
-    });
-    if (!doc) {
-      // Create new result
-      console.log('Inserting', chapterId);
-      Results.insert({
-        chapter_id: chapterId,
-        book_id: bookId,
-        checked: true,
-        // UserId is automatically set to current user
-      });
-    } else {
-      // Result already in database
-      console.log('Updating ', chapterId);
-      Results.update(
-        doc._id
-      , {
-        $set: {
-          checked: !doc.checked,
-        },
-      });
-    }
+    const courseId = this.course_id;
+    Meteor.call('results.toggle', chapterId, bookId, courseId);
   },
 });
 
@@ -152,16 +119,17 @@ Template.showBook.helpers({
   // Issue: does not include chapters that don't have a result in the Results collection
   uncheckedCount() {
     const book = this;
-    if (typeof book.chapters !== 'undefined') {
-      const count = book.chapters.length;
-      const checked = Results.find({
-        book_id: book._id,
-        user_id: Meteor.userId(),
-        checked: true,
-      }).count();
-      return count - checked;
+    if (typeof book.chapters === 'undefined') {
+      // no chapters in selected book
+      return 0;
     }
-    return 0;
+    const count = book.chapters.length;
+    const checked = Results.find({
+      book_id: book._id,
+      user_id: Meteor.userId(),
+      checked: true,
+    }).count();
+    return count - checked;
   },
   // Function for checking checked results in the database
   checked(chapterId) {
@@ -207,10 +175,10 @@ Template.newBook.helpers({
 // Routes "create book" and "edit book" forms to a specified template on success
 AutoForm.addHooks('createBook', {
   before: {
-    insert(doc) {
-      const document = doc;
-      document.course_id = FlowRouter.getParam('courseId');
-      return document;
+    method(doc) {
+      const book = doc;
+      book.course_id = FlowRouter.getParam('courseId');
+      return book;
     },
   },
   onSuccess() {
@@ -220,7 +188,7 @@ AutoForm.addHooks('createBook', {
   },
 });
 
-AutoForm.addHooks(['updateBook'], {
+AutoForm.addHooks('updateBook', {
   onSuccess() {
     FlowRouter.go('teacher.course', { courseId: AutoForm.getFieldValue('course_id', 'updateBook') });
   },
@@ -228,10 +196,10 @@ AutoForm.addHooks(['updateBook'], {
 
 AutoForm.debug();
 
-// Temporary fix for deleting array objects other than the last one on update
+// Fix for deleting array objects other than the last one on update
 AutoForm.addHooks(null, {
   before: {
-    update(doc) {
+    'method-update': function methodUpdate(doc) {
       _.each(doc.$set, function (value, setter) {
         if (_.isArray(value)) {
           const newValue = _.compact(value);

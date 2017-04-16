@@ -1,7 +1,11 @@
+import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import SimpleSchema from 'simpl-schema';
 import { Tracker } from 'meteor/tracker';
 import { Random } from 'meteor/random';
+import { check } from 'meteor/check';
+
+import { Results } from './results.js';
 
 const BookSchema = new SimpleSchema({
   title: {
@@ -11,16 +15,6 @@ const BookSchema = new SimpleSchema({
   course_id: {
     type: String,
     label: 'Course ID',
-    /* autoform: {
-      afFieldInput: {
-        options() {
-          return Courses.find({ owner_id: Meteor.userId() },
-            { name: 1, sort: { name: 1 } }).map(function createSet(c) {
-              return { label: c.name.toUpperCase(), value: c._id };
-            });
-        },
-      },
-    },*/
     autoform: {
       type: 'hidden',
     },
@@ -61,15 +55,31 @@ const BookSchema = new SimpleSchema({
     allowedValues: [1, 2, 3],
     label: 'Chapter level ( 1 means a main chapter )',
     autoform: {
-      type: 'select-radio',
-      options: [
-        { label: '1', value: 1 },
-        { label: '2', value: 2 },
-        { label: '3', value: 3 },
-      ],
+      type: 'select-radio', options: [{ label: '1', value: 1 }, { label: '2', value: 2 }, { label: '3', value: 3 },],
     },
   },
 }, { tracker: Tracker });
 
 export const Books = new Mongo.Collection('books');
 Books.attachSchema(BookSchema);
+
+if (Meteor.isServer) {
+  Meteor.publish('books', function booksPublication() {
+    return Books.find();
+  });
+}
+
+Meteor.methods({
+  'books.insert': function insertBook(book) {
+    Books.insert(book);
+  },
+  'books.update': function updateBook(data) {
+    // check for permissions
+    Books.update(data._id, data.modifier);
+  },
+  'books.delete': function deleteBook(bookId) {
+    check(bookId, String);
+    Results.remove({ book_id: bookId });
+    Books.remove(bookId);
+  },
+});
