@@ -1,29 +1,14 @@
 <template name="listBooks">
-    <table class="ui large striped table">
-        <thead>
-        <tr>
-            <th>
-                Books
-            </th>
-            <th class="right aligned">
-                <button class="ui basic negative delete-course button">Delete course</button>
-            </th>
-        </tr>
-        </thead>
-        <tbody>
+    <button class="ui basic negative delete-course button">Delete course</button>
+    <h1>Books</h1>
+    <div class="ui divided items">
         {{#each books}}
             {{> book}}
         {{/each}}
-
-        <tr>
-            <td colspan="2">
-                <a class="show-new-book ui green basic button"><i class="book icon"></i>New
-                    Book
-                </a>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+        <a class="show-new-book ui green basic button"><i class="book icon"></i>
+            Create a New Book
+        </a>
+    </div>
     {{#momentum plugin="slide-height"}}
         {{#if showNewBook}}
             {{> newBook}}
@@ -32,7 +17,31 @@
 </template>
 
 <template name="book">
-    <tr>
+    <div class="item">
+        <div class="image">
+            <img src="/images/book-placeholder.png">
+        </div>
+        <div class="content">
+            <a class="header">{{title}}</a>
+            <div class="meta">
+                <span class="cinema">IFC Cinema</span>
+            </div>
+            <div class="description">
+                <p>
+                    Description goes in this here box
+                </p>
+            </div>
+            <div class="extra">
+                <a href="{{pathFor 'books.edit' _id=this._id}}" title="{{title}}"
+                   class="ui right floated primary button">
+                    Edit book
+                    <i class="right chevron icon"></i>
+                </a>
+                <div class="ui label">Limited</div>
+            </div>
+        </div>
+    </div>
+    <!--<tr>
         <td>
             <i class="book icon"></i>
             {{title}} ({{chapters.length}})
@@ -45,13 +54,21 @@
                 <i class="trash icon"></i>
             </button>
         </td>
-    </tr>
+    </tr>-->
 </template>
 
 <template name="listStudentBooks">
     <div class="ui segment">
-        <button class="ui small unfollow-course right floated basic negative icon button">Unfollow course <i class="remove icon"></i></button>
+        <h1>{{name}}</h1>
+        <button class="ui small unfollow-course right floated basic negative icon button">Unfollow course <i
+                class="remove icon"></i></button>
         <h1>Overview of books</h1>
+        <div class="ui indicating progress" id="course-progress">
+            <div class="bar">
+                <div class="progress"></div>
+            </div>
+            <div class="label">Completed chapters</div>
+        </div>
         {{#if hasBooks}}
             {{#each books}}
                 {{> showBook}}
@@ -75,19 +92,17 @@
     </div>
     <div class="ui relaxed list">
         {{#each chapter in chapters}}
-            <div class="item">
-                <div class="level-{{chapter.level}}">
-                    <button data-id="{{chapter._id}}"
-                            class="ui small basic icon button chapter-status {{#if checked
-                                                                                   chapter._id}}purple{{/if}}">
-                        {{#if checked chapter._id}}
-                            <i class="checkmark icon"></i>
-                        {{else}}
-                            <i class="angle right icon"></i>
-                        {{/if}}
-                    </button>
-                    {{chapter.name}}
-                </div>
+            <div class="item level-{{chapter.level}}">
+                <button data-id="{{chapter._id}}"
+                        class="ui small basic icon button chapter-status {{#if checked
+                                                                               chapter._id}}purple{{/if}}">
+                    {{#if checked chapter._id}}
+                        <i class="checkmark icon"></i>
+                    {{else}}
+                        <i class="angle right icon"></i>
+                    {{/if}}
+                </button>
+                {{chapter.title}}
             </div>
         {{/each}}
     </div>
@@ -98,7 +113,8 @@
     <div class="ui container" style="margin-top: 47px">
         <div class="ui segment">
             <h2>Editing book</h2>
-            {{#autoForm collection=getBooks type="method-update" meteormethod="books.update" doc=getBook id="updateBook"}}
+            {{#autoForm collection=getBooks type="method-update" meteormethod="books.update" doc=getBook
+                        id="updateBook"}}
                 {{> afQuickField name='title'}}
                 {{> afQuickField name='course_id'}}
                 <h4 class="ui header">Chapters</h4>

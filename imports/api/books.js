@@ -4,8 +4,11 @@ import SimpleSchema from 'simpl-schema';
 import { Tracker } from 'meteor/tracker';
 import { Random } from 'meteor/random';
 import { check } from 'meteor/check';
+import { HTTP } from 'meteor/http';
 
 import { Results } from './results.js';
+
+SimpleSchema.extendOptions(['autoform']);
 
 const BookSchema = new SimpleSchema({
   title: {
@@ -43,11 +46,11 @@ const BookSchema = new SimpleSchema({
       type: 'hidden',
     },
   },
-  'chapters.$.name': {
+  'chapters.$.title': {
     type: String,
     label: 'Chapter',
     autoform: {
-      placeholder: 'Chapter name',
+      placeholder: 'Chapter title',
     },
   },
   'chapters.$.level': {
@@ -76,10 +79,48 @@ Meteor.methods({
   'books.update': function updateBook(data) {
     // check for permissions
     Books.update(data._id, data.modifier);
+    // if chapter has been deleted, remove results
+    const book = Books.findOne(data._id);
+    const chapterIds = book.chapters.map(function getId(chapter) {
+      return chapter._id;
+    }); // compare results with chapters in book
+    Results.remove({ book_id: data._id, chapter_id: { $nin: chapterIds } });
   },
   'books.delete': function deleteBook(bookId) {
     check(bookId, String);
     Results.remove({ book_id: bookId });
     Books.remove(bookId);
+  },
+  bookInfo(isbn) {
+    check(isbn, String);
+    // Call the openlibrary api to get info about chapters in a book
+    // There are few books that have a table_of_contents, but we often
+    // get at least the title
+
+    this.unblock();
+    const id = `ISBN:${isbn}`;
+
+    try {
+      const response = HTTP.call('GET', 'https://openlibrary.org/api/books', {
+        params: {
+          bibkeys: id, // AIMA ISBN: 9780136042594
+          format: 'json',
+          jscmd: 'details',
+        },
+      });
+
+      const details = JSON.parse(response.content)[id].details;
+
+      return {
+        title: details.title,
+        isbn,
+        chapters: details.table_of_contents,  // TODO: change names inside here?
+      };
+    } catch (e) {
+      // Got a network error, timeout, or HTTP error in the 400 or 500 range.
+      // Or JSON parse error
+      console.log(e);
+      return false;
+    }
   },
 });

@@ -3,12 +3,14 @@ import { Template } from 'meteor/templating';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { _ } from 'meteor/underscore';
+import { $ } from 'meteor/jquery';
 import { ReactiveVar } from 'meteor/reactive-var';
 // eslint-disable-next-line import/no-named-default
 import { default as swal } from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
 
 import { Books } from '../../api/books.js';
+import { Courses } from '../../api/courses.js';
 import { Results } from '../../api/results.js';
 
 Template.listBooks.onCreated(function init() {
@@ -19,6 +21,10 @@ Template.listBooks.helpers({
   books() {
     const courseId = FlowRouter.getParam('courseId');
     return Books.find({ course_id: courseId });
+  },
+  course() {
+    const courseId = FlowRouter.getParam('courseId');
+    return Courses.findOne(courseId);
   },
   showNewBook() {
     return Template.instance().showNewBook.get();
@@ -84,6 +90,22 @@ Template.listBooks.events({
   },
 });
 
+Template.listStudentBooks.onRendered(function () {
+  Meteor.call('stats', function (err, res) {
+    // Use plot functon here with the data to insert graph in template
+    $('#course-progress')
+      .progress({
+        showActivity: false,
+        total: res.chapterCount,
+        value: res.completedCount,
+        text: {
+          active: 'Completed {value} of {total} chapters',
+          success: 'All chapters completed! Good job!',
+        },
+      });
+  });
+});
+
 Template.listStudentBooks.events({
   'click .unfollow-course': function unfollowCourse(event) {
     event.preventDefault();
@@ -105,12 +127,32 @@ Template.listStudentBooks.helpers({
 });
 
 Template.showBook.events({
-  // creating/editing results and checking them off in the database
+  // create/edit results and set/toggle checked status in Results collection
   'click .chapter-status': function (event) {
     const chapterId = event.currentTarget.getAttribute('data-id');
     const bookId = this._id;
     const courseId = this.course_id;
     Meteor.call('results.toggle', chapterId, bookId, courseId);
+    // TODO: muligens helt feil måte. Kan dette gjøres i metoden? Sjekk påfølgende kpt. i mongo
+    /* const parent = event.currentTarget.parentElement;
+    let parentLevel = parent.classList.item(1);
+    parentLevel = parseInt(parentLevel.match(/[0-9]+/)[0], 10);
+    $(parent).nextAll().each(function toggle() {
+      if (parseInt((this.classList.item(1)).match(/[0-9]+/)[0], 10) > parentLevel) {
+        const childChapterId = (this.children[0].getAttribute('data-id'));
+        Meteor.call('results.toggle', childChapterId, bookId, courseId);
+      } else {
+        console.log('breaking');
+        return false;
+      }
+    });*/
+    // update progress bar
+    Meteor.call('stats', function stats(err, res) {
+      // Use plot functon here with the data to insert graph in template
+      $('#course-progress')
+        .progress('set total', res.chapterCount) // maybe unnecessary?
+        .progress('set progress', res.completedCount);
+    });
   },
 });
 

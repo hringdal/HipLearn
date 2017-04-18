@@ -1,23 +1,50 @@
 <template name="teacherPage2">
     <!--content-klassen er på alle andre sider enn frontpage.html
     for å ha en padding på 47px til navbaren på disse sidene-->
-    <div id="content">
-        <!-- Sidebar LIGGER I EGEN TEMPLATE NÅ -->
-        <!-- Main content -->
-        <div class="article">
-            <div class="ui padded grid container">
-                <div class="ui column">
-                    {{#if selectedCourse}}
-                        {{> listBooks}}
-                    {{else}}
-                        <div class="ui compact segment">
-                            <h3><i class="left arrow icon"></i> Select one of your courses in the left menu, or
-                                create a
-                                new course</h3>
-                        </div>
-                    {{/if}}
-                </div>
+    <!-- Sidebar LIGGER I EGEN TEMPLATE NÅ -->
+    <!-- Main content -->
+    <div class="article">
+        <div class="ui padded grid container">
+            <div class="ui column">
+                {{#if course }}
+                    <h1>{{ course.name }}</h1>
+                    <h3>Description</h3>
+                    <p>
+                        {{ course.courseContent }}
+                    </p>
+                    <h3>Learning Goals</h3>
+                    <p>
+                        {{ course.learningGoal }}
+                    </p>
+                    {{> listBooks}}
+                {{else}}
+                    <div class="ui compact segment">
+                        <h3><i class="left arrow icon"></i> Select one of your courses in the left menu, or
+                            create a
+                            new course</h3>
+                    </div>
+                {{/if}}
             </div>
         </div>
     </div>
+</template>
+
+<template name="createCourse">
+    <div class="ui padded segment">
+        <h1>Create a New Course</h1>
+        <p>You can add books after your course has been created. To automatically populate the values, fill in a course
+            code and press the awesome button</p>
+        {{#autoForm id="createForm" type="insert" collection=formCourses}}
+            {{> afQuickField name="code"}}
+            <div class="ui button" id="fill">Fill</div>
+            {{> afQuickField name="name"}}
+            {{> afQuickField name="courseContent" rows=5}}
+            {{> afQuickField name="learningGoal" rows=5}}
+        {{/autoForm}}
+        <div class="ui hidden divider"></div>
+        <button type="submit" class="ui green ok button" form="createForm">
+            Create Course
+        </button>
+    </div>
+
 </template>

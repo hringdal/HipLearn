@@ -3,6 +3,8 @@ import { Mongo } from 'meteor/mongo';
 import { Tracker } from 'meteor/tracker';
 import SimpleSchema from 'simpl-schema';
 import { check } from 'meteor/check';
+import { HTTP } from 'meteor/http';
+import cheerio from 'cheerio';
 
 import { Following } from './following.js';
 import { Results } from './results.js';
@@ -13,6 +15,26 @@ SimpleSchema.extendOptions(['autoform']);
 export const Courses = new Mongo.Collection('courses');
 
 const CourseSchema = new SimpleSchema({
+  year: {
+    type: Number,
+    optional: true,
+  },
+  courseContent: {
+    type: String,
+    label: 'Description',
+    optional: true,
+    autoform: {
+      placeholder: 'Optional',
+    },
+  },
+  learningGoal: {
+    type: String,
+    label: 'Learning Goals',
+    optional: true,
+    autoform: {
+      placeholder: 'Optional',
+    },
+  },
   owner_id: {
     type: String,
     label: 'Created by',
@@ -20,7 +42,7 @@ const CourseSchema = new SimpleSchema({
       return Meteor.userId();
     },
   },
-  name: {
+  code: {
     type: String,
     label: 'Course Code',
     unique: true,
@@ -30,7 +52,7 @@ const CourseSchema = new SimpleSchema({
         Meteor.call('isSubjectUnique', this.value, (error, result) => {
           if (!result) {
             this.validationContext.addValidationErrors([{
-              name: 'username',
+              name: 'courseCode',
               type: 'notUnique',
             }]);
           }
@@ -43,6 +65,10 @@ const CourseSchema = new SimpleSchema({
       }
       return this.unset();
     },
+  },
+  name: {
+    type: String,
+    label: 'Course Name',
   },
   students: {
     type: Array,
@@ -95,5 +121,46 @@ Meteor.methods({
     Following.remove({ course_id: courseId });
     Books.remove({ course_id: courseId });
     Courses.remove(courseId);
+  },
+  courseInfo(courseId, year) {
+    // Call the openlibrary api to get info about chapters in a book
+    // There are few books that have a table_of_contents, but we often
+    // get at least the title
+
+    // meteor add http
+    // meteor npm install --save cherio
+    if (Meteor.isServer) {
+      this.unblock();
+
+      try {
+        // encode to allow non-ascii characters
+        const url = encodeURI(`https://www.ntnu.no/studier/emner/${courseId}/${year}`);
+        console.log(url);
+        // Change to callback style if you want to run on client
+        const response = HTTP.call('GET', url, {});
+        const reCredits = /Studiepoeng:&nbsp;(\d+\.?\d+)/g;
+        const match = reCredits.exec(response.content);
+        let credits = '';
+        if (match && match.length > 1) {
+          credits = match[1];
+        }
+        const $ = cheerio.load(response.content);
+
+        const result = {
+          name: $('#course-details > h1').text(),
+          courseContent: $('.content-course-content').text(),
+          learningGoal: $('.content-learning-goal').text(),
+          credits,
+        };
+        return result;
+      } catch (e) {
+        // Maybe better to not catch error and let caller handle it?
+
+        // Got a network error, timeout, or HTTP error in the 400 or 500 range.
+        // Or JSON parse error
+        console.log(e);
+        return false;
+      }
+    }
   },
 });

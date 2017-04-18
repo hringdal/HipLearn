@@ -61,3 +61,7 @@ useraccounts:core
 aldeed:template-extension
 aldeed:schema-index
 percolate:momentum
+http
+meteorhacks:aggregate
+simple:reactive-method
+email

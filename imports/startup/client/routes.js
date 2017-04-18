@@ -69,6 +69,13 @@ FlowRouter.route('/teacher/course/:courseId', {
   },
 });
 
+FlowRouter.route('/teacher/new/', {
+  name: 'teacher.new',
+  action() {
+    BlazeLayout.render('mainLayout', { main: 'createCourse', sidebar: 'teacherSidebar' });
+  },
+});
+
 FlowRouter.route('/list', {
   name: 'list.show',
   action() {

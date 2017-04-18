@@ -7,11 +7,6 @@ import { $ } from 'meteor/jquery';
 import { Courses, AddCourseSchema } from '../../api/courses.js';
 import { Following } from '../../api/following.js';
 
-Template.teacherSidebar.onRendered(function render() {
-  $('#teacher')
-    .modal('attach events', '#clickable2', 'show');
-});
-
 Template.studentSidebar.onRendered(function render() {
   $('#student')
     .modal('attach events', '#clickable', 'show');
@@ -51,9 +46,6 @@ Template.teacherSidebar.helpers({
     }
     return undefined;
   },
-  formCourses() {
-    return Courses;
-  },
   pathForCourse() {
     const course = this;
     const id = course._id;
@@ -64,6 +56,7 @@ Template.teacherSidebar.helpers({
     return FlowRouter.getParam('courseId') === this._id;
   },
 });
+
 
 AutoForm.addHooks('addForm', {
   onSuccess() {
