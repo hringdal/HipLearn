@@ -4,33 +4,15 @@
     <!-- Sidebar I EGEN TEMPLATE -->
 
     <!-- Main content -->
-    <div class="ui padded grid container">
-        {{#if course}}
-            <div class="ui row">
-                <div class="ui column">
-                    {{> listStudentBooks course}}
-                </div>
-            </div>
-        {{else}}
-            <div class="ui row">
-                <div class="ui column">
-                    <div class="ui compact segment">
-                        <h3><i class="left arrow icon"></i> Select one of your courses in the left menu, or
-                            add a
-                            new course</h3>
-                    </div>
-                </div>
-            </div>
-            <div class="ui row" style="margin-top: 5rem">
-                <div class="ui eight wide column">
-                    <div class="ui inverted header">
-                        "Education is the most powerful weapon
-                        which you can use to change the world"
-                    </div>
-                    <p style="color: rgba(255, 255, 255, 0.9)">- Nelson Mandela</p>
-                </div>
-            </div>
-        {{/if}}
+    <div class="ui relaxed grid container">
+        <div class="ui column">
+            {{#if course}}
+                {{> listStudentBooks course}}
+            {{else}}
+                <h1>Welcome back!</h1>
+                <h3>Select one of your courses in the left menu, or follow a new course</h3>
+            {{/if}}
+        </div>
     </div>
 </template>
 

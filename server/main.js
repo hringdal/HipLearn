@@ -19,7 +19,6 @@ Meteor.publish('userData', function () {
 Meteor.methods({
   // connected to the 'addForm'
   addCourseStudent(doc) {
-    console.log('in addCourseStudent');
     check(doc, Object);
     const courseId = doc._id;
     const userId = Meteor.userId();
@@ -29,7 +28,7 @@ Meteor.methods({
   isSubjectUnique(subjectName) {
     check(subjectName, String);
     return Courses.find({
-      name: subjectName.toUpperCase(),
+      code: subjectName.toUpperCase(),
     }).count() === 0;
   },
 });

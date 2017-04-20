@@ -7,12 +7,14 @@
                 {{> showBook}}
             </div>
         {{/each}}
+        <div class="ui divider"></div>
         <a href="{{pathFor 'books.new' courseId=_id }}" class="ui green basic button"><i class="book icon"></i>
             Create a New Book
         </a>
         <a href="{{pathFor 'books.new.isbn' courseId=_id }}" class="ui basic button"><i class="book icon"></i>
             Create Book from ISBN code
         </a>
+        <div class="ui hidden divider"></div>
     </div>
 
 </template>
@@ -46,38 +48,24 @@
             </div>
         </div>
     </div>
-    <!--<tr>
-        <td>
-            <i class="book icon"></i>
-            {{title}} ({{chapters.length}})
-        </td>
-        <td class="right aligned">
-            <a href="{{pathFor 'books.edit' _id=this._id}}" title="{{title}}" class="ui basic button">
-                Edit Book
-            </a>
-            <button class="ui basic icon negative button delete-book">
-                <i class="trash icon"></i>
-            </button>
-        </td>
-    </tr>-->
 </template>
 
 <template name="listStudentBooks">
-    <div class="ui segment">
-        <h1>{{name}}</h1>
-        <button class="ui small unfollow-course right floated basic negative icon button">Unfollow course <i
-                class="remove icon"></i></button>
-        <h1>Overview of books</h1>
-        {{> progressBar}}
-        {{#if hasBooks}}
-            {{#each books}}
-                {{> showBook}}
-            {{/each}}
-        {{else}}
-            <p>Oops! This course currently has no listed books.<br>
-                Contact your lecturer to get your curriculum included.</p>
-        {{/if}}
-    </div>
+    <button class="ui right floated basic negative unfollow-course button">
+        Unfollow course
+    </button>
+    <h1 class="ui header">{{name}}</h1>
+
+    <h1>Overview of books</h1>
+    {{> progressBar}}
+    {{#if hasBooks}}
+        {{#each books}}
+            {{> showBook}}
+        {{/each}}
+    {{else}}
+        <p>Oops! This course currently has no listed books.<br>
+            Contact your lecturer to get your curriculum included.</p>
+    {{/if}}
 </template>
 
 <template name="showBook">
@@ -95,7 +83,7 @@
             <div class="item level-{{chapter.level}}">
                 <button data-id="{{chapter._id}}"
                         class="ui small basic icon button chapter-status {{#if checked
-                                                                               chapter._id}}purple{{/if}}">
+                                                                               chapter._id}}green{{/if}}">
                     {{#if checked chapter._id}}
                         <i class="checkmark icon"></i>
                     {{else}}
@@ -110,53 +98,46 @@
 </template>
 
 <template name="editBook">
-    <div class="ui container" style="margin-top: 47px">
-        <div class="ui segment">
-            <h3>Editing book</h3>
-            <h2>{{getBook.title}}</h2>
-            {{#autoForm collection=getBooks type="method-update" meteormethod="books.update" doc=getBook
-                        id="updateBook"}}
-                {{> afQuickField name='title'}}
-                {{> afQuickField name='course_id'}}
-                {{> afQuickField name='description' rows=3 }}
-                <h4 class="ui header">Chapters</h4>
-                {{> afArrayField name='chapters' template="bookForm"}}
-                <button type="submit" class="ui positive button">Update</button>
-                <a href="{{pathForCourse}}" class="ui basic button">Cancel</a>
-            {{/autoForm}}
-        </div>
-    </div>
+    <h3>Editing book</h3>
+    <h2>{{getBook.title}}</h2>
+    {{#autoForm collection=getBooks type="method-update" meteormethod="books.update" doc=getBook
+                id="updateBook"}}
+        {{> afQuickField name='title'}}
+        {{> afQuickField name='course_id'}}
+        {{> afQuickField name='description' rows=3 }}
+        {{> afArrayField name='chapters' template="bookForm"}}
+        <button type="submit" class="ui positive button">Update</button>
+        <a href="{{pathForCourse}}" class="ui basic button">Cancel</a>
+    {{/autoForm}}
 </template>
 
 <template name="newBook">
-    <div id="new-book" class="ui segment">
-        <h2>Creating New Book</h2>
+    <div id="new-book">
+        <h2>Creating New Book in course {{getCourseCode}}</h2>
         {{#autoForm collection=getBooks type="method" meteormethod="books.insert" id="createBook"}}
             {{> afQuickField name='title'}}
             {{> afQuickField name='description' rows=3 }}
-            <h4 class="ui header">Chapters</h4>
+            <h5 class="ui header">Chapters</h5>
             {{> afArrayField name='chapters' template="bookForm"}}
-            <button type="submit" class="ui positive button">Insert</button>
+            <button type="submit" class="ui positive button">Create Book</button>
             <a href='{{pathForCourse}}' class="ui show-new-book basic button">Cancel</a>
         {{/autoForm}}
     </div>
 </template>
 
 <template name="newBookISBN">
-    <div class="ui segment">
-        <h2>Creating New Book from ISBN Code</h2>
-        {{#autoForm schema=isbnSchema type="method" meteormethod="books.insertISBN" id="createBookISBN"}}
-            {{> afQuickField name='isbn'}}
-            <button type="submit" class="ui positive button">Insert</button>
-            <a href='{{pathForCourse}}' class="ui basic button">Cancel</a>
-        {{/autoForm}}
-    </div>
+    <h2>Creating New Book from ISBN Code</h2>
+    {{#autoForm schema=isbnSchema type="method" meteormethod="books.insertISBN" id="createBookISBN"}}
+        {{> afQuickField name='isbn'}}
+        <button type="submit" class="ui positive button">Insert</button>
+        <a href='{{pathForCourse}}' class="ui basic button">Cancel</a>
+    {{/autoForm}}
 </template>
 
 <template name="afArrayField_bookForm">
-    <!--<h4 class="ui top attached bheader">
+    <h4 class="ui top attached bheader">
         {{afFieldLabelText name=this.atts.name}}
-    </h4>-->
+    </h4>
     <div class="ui basic segment">
         {{#if afFieldIsInvalid name=this.atts.name}}
             <div class="ui pointing red basic label">

@@ -1,0 +1,74 @@
+<template name="teacherPage">
+    <!-- Main content -->
+    <div class="ui relaxed grid container">
+        <div class="ui column">
+            {{#if courseSelected }}
+                {{> course courseSelected}}
+            {{else}}
+                <h1>Welcome back!</h1>
+                <h3>Select one of your courses in the left menu, or create a new course if none exist</h3>
+            {{/if}}
+        </div>
+    </div>
+</template>
+
+<template name="course">
+    <button class="ui right floated basic negative delete-course button">
+        Delete course
+    </button>
+    <a href="{{pathFor 'teacher.edit' courseId=_id data=name}}" title="{{title}}"
+       class="ui right floated secondary button">
+        Edit Course Info
+        <i class="right chevron icon"></i>
+    </a>
+    <h1>{{ name }}</h1>
+    {{> pieChart}}
+    <p>Students following this course: {{studentCount}}</p>
+    <h3>Description</h3>
+    <p>
+        {{ courseContent }}
+    </p>
+    <h3>Learning Goals</h3>
+    <p>
+        {{ learningGoal }}
+    </p>
+    {{> listBooks}}
+</template>
+
+<template name="pieChart">
+    <div id="chart" style="height: 400px"></div>
+</template>
+
+<template name="createCourse">
+    <div class="ui inverted dimmer">
+        <div class="ui large loader"></div>
+    </div>
+    <h1>Create a New Course</h1>
+    <p>You can add books after your course has been created. To automatically populate the values, fill in a course
+        code and press the <em>Autofill</em> button</p>
+    {{#autoForm id="createCourse" type="method" meteormethod="courses.insert" collection=formCourses}}
+        {{> afQuickField name="code" size="10"}}
+        {{> afQuickField name="name"}}
+        {{> afQuickField name="courseContent" rows=5}}
+        {{> afQuickField name="learningGoal" rows=5}}
+    {{/autoForm}}
+    <div class="ui hidden divider"></div>
+    <button type="submit" class="ui green ok button" form="createCourse">
+        Create Course
+    </button>
+</template>
+
+<template name="editCourse">
+    <div class="ui container" style="margin-top: 47px">
+        <h3>Editing course</h3>
+        <h2> {{getCourse.name}}</h2>
+        <h3>Course code: {{getCourse.code}}</h3>
+        {{#autoForm collection=courses type="method-update" meteormethod="courses.update" doc=getCourse id="updateCourse"}}
+            {{> afQuickField name='name'}}
+            {{> afQuickField name='courseContent' rows=5 }}
+            {{> afQuickField name="learningGoal" rows=5}}
+            <button type="submit" class="ui positive button">Update Course</button>
+            <a href="{{pathFor 'teacher.course' courseId=getCourse._id }}" class="ui basic button">Cancel</a>
+        {{/autoForm}}
+    </div>
+</template>

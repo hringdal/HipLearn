@@ -5,11 +5,7 @@ import { BlazeLayout } from 'meteor/kadira:blaze-layout';
 FlowRouter.route('/', {
   name: 'root',
   action() {
-    if (Meteor.user()) {
-      BlazeLayout.render('mainLayout', { main: 'frontpage' });
-    } else {
-      BlazeLayout.render('minimalLayout', { main: 'frontpage' });
-    }
+    BlazeLayout.render('minimalLayout', { main: 'frontpage' });
   },
 });
 
@@ -54,14 +50,14 @@ FlowRouter.route('/student/course/:courseId', {
 FlowRouter.route('/teacher', {
   name: 'teacher.show',
   action() {
-    BlazeLayout.render('mainLayout', { main: 'teacherPage2', sidebar: 'teacherSidebar' });
+    BlazeLayout.render('mainLayout', { main: 'teacherPage', sidebar: 'teacherSidebar' });
   },
 });
 
 FlowRouter.route('/teacher/course/:courseId', {
   name: 'teacher.course',
   action() {
-    BlazeLayout.render('mainLayout', { main: 'teacherPage2', sidebar: 'teacherSidebar' });
+    BlazeLayout.render('mainLayout', { main: 'teacherPage', sidebar: 'teacherSidebar' });
   },
 });
 

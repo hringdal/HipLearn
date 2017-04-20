@@ -38,6 +38,12 @@ Template.studentSidebar.helpers({
   },
 });
 
+Template.studentSidebar.events({
+  'click a.item': function scrollTop() {
+    window.scrollTo(0, 0);
+  },
+});
+
 Template.teacherSidebar.helpers({
   // return list of courses in current user document
   courses() {
@@ -57,6 +63,11 @@ Template.teacherSidebar.helpers({
   },
 });
 
+Template.teacherSidebar.events({
+  'click a.item': function scrollTop() {
+    window.scrollTo(0, 0);
+  },
+});
 
 AutoForm.addHooks('addForm', {
   onSuccess() {

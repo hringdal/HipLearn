@@ -115,6 +115,14 @@ export const AddCourseSchema = new SimpleSchema({
 }, { tracker: Tracker });
 
 Meteor.methods({
+  'courses.insert': function insertCourse(course) {
+    check(course, Object);
+    return Courses.insert(course);
+  },
+  'courses.update': function updateCourse(data) {
+    check(data, Object);
+    Courses.update(data._id, data.modifier);
+  },
   'courses.delete': function deleteCourse(courseId) {
     check(courseId, String);
     Results.remove({ course_id: courseId });

@@ -13,7 +13,7 @@ SimpleSchema.extendOptions(['autoform']);
 const BookSchema = new SimpleSchema({
   title: {
     type: String,
-    label: 'Title',
+    label: 'Book title',
   },
   course_id: {
     type: String,
@@ -62,17 +62,17 @@ const BookSchema = new SimpleSchema({
   },
   'chapters.$.title': {
     type: String,
-    label: 'Chapter',
+    label: 'Chapter Title',
     autoform: {
-      placeholder: 'Chapter title',
+      placeholder: 'Title',
     },
   },
   'chapters.$.level': {
     type: Number,
     allowedValues: [1, 2, 3],
-    label: 'Chapter level ( 1 means a main chapter )',
+    label: 'Chapter type. Sections are connected to the nearest chapter above',
     autoform: {
-      type: 'select-radio', options: [{ label: '1', value: 1 }, { label: '2', value: 2 }, { label: '3', value: 3 },],
+      type: 'select-radio', options: [{ label: 'Chapter ( i )', value: 1 }, { label: 'Section ( i.i )', value: 2 }, { label: 'Subsection ( i.i.i )', value: 3 }],
     },
   },
 }, { tracker: Tracker });
@@ -91,8 +91,9 @@ Meteor.methods({
     check(book, Object);
     Books.insert(book);
   },
-  'books.insertISBN': function insertBookISBN(isbn) {
-    Meteor.call('bookInfo', isbn.isbn);
+  'books.insertISBN': function insertBookISBN(book) {
+    check(book, Object);
+    Meteor.call('bookInfo', book.isbn, book.course_id);
   },
 
   'books.update': function updateBook(data) {
@@ -111,8 +112,9 @@ Meteor.methods({
     Results.remove({ book_id: bookId });
     Books.remove(bookId);
   },
-  bookInfo(isbn) {
+  bookInfo(isbn, courseId) {
     check(isbn, String);
+    check(courseId, String);
     // Call the openlibrary api to get info about chapters in a book
     // There are few books that have a table_of_contents, but we often
     // get at least the title
@@ -128,14 +130,13 @@ Meteor.methods({
             jscmd: 'details',
           },
         });
-
         const details = JSON.parse(response.content)[id].details;
 
         const book = {
           title: details.title,
           isbn,
           chapters: details.table_of_contents,  // TODO: change names inside here?
-          course_id: 'sFoGFr33tjFcrNoGR',
+          course_id: courseId,
         };
         Meteor.call('books.insert', book);
       } catch (e) {
@@ -145,5 +146,6 @@ Meteor.methods({
         return false;
       }
     }
+    return false;
   },
 });

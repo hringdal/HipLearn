@@ -11,6 +11,7 @@
     "bcrypt": "^1.0.2",
     "chart.js": "^2.5.0",
     "cheerio": "^0.22.0",
+    "highcharts": "^5.0.10",
     "jquery": "^3.2.1",
     "meteor-node-stubs": "~0.2.0",
     "simpl-schema": "^0.2.2",

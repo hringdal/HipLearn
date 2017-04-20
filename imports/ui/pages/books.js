@@ -11,6 +11,7 @@ import 'sweetalert2/dist/sweetalert2.min.css';
 
 import { Books } from '../../api/books.js';
 import { Results } from '../../api/results.js';
+import { Courses } from '../../api/courses.js';
 
 Template.listBooks.helpers({
   books() {
@@ -20,6 +21,7 @@ Template.listBooks.helpers({
 });
 
 Template.listBooks.events({
+  // show/hide chapters in book on click
   'click .book-preview': function toggleView(event) {
     const $this = $(event.currentTarget);
     const id = $this.data('id');
@@ -27,6 +29,7 @@ Template.listBooks.events({
     console.log(id);
     $(`.book-slider[data-id="${id}"]`).slideToggle();
   },
+  // confirmation popup on book deletion
   'click .delete-book': function confirmDelete(event) {
     event.preventDefault();
     const bookId = this._id;
@@ -165,18 +168,29 @@ Template.editBook.events({
   },
 });
 
+Template.newBook.onRendered(function init() {
+  window.scrollTo(0, 0);
+});
+
 Template.newBook.helpers({
   // Helper function for the new book form to specify collection
   getBooks() {
     return Books;
   },
+  // path for returning to the course page
   pathForCourse() {
     const courseId = FlowRouter.getParam('courseId');
     return FlowRouter.path('teacher.course', { courseId });
   },
+  // display selected course code in form
+  getCourseCode() {
+    const course = Courses.findOne({ _id: FlowRouter.getParam('courseId') }, { fields: { code: 1 } });
+    return course.code;
+  },
 });
 
 Template.newBook.events({
+  // indent chapter based on value of selected radio in the form
   'change input:radio': function indent(event) {
     const $this = $(event.target);
     const level = $this.val();
@@ -198,19 +212,24 @@ Template.newBookISBN.helpers({
       isbn: {
         type: String,
       },
+      course_id: {
+        type: String,
+      },
     });
   },
 });
 
 // Routes "create book" and "edit book" forms to a specified template on success
-AutoForm.addHooks('createBook', {
+AutoForm.addHooks(['createBook', 'createBookISBN'], {
   before: {
+    // Add courseId to book document before insert
     method(doc) {
       const book = doc;
       book.course_id = FlowRouter.getParam('courseId');
       return book;
     },
   },
+  // Route to course on successful book creation
   onSuccess() {
     const courseId = FlowRouter.getParam('courseId');
     FlowRouter.go('teacher.course', { courseId });
@@ -218,12 +237,11 @@ AutoForm.addHooks('createBook', {
 });
 
 AutoForm.addHooks('updateBook', {
+  // Route to course on successful book update
   onSuccess() {
     FlowRouter.go('teacher.course', { courseId: AutoForm.getFieldValue('course_id', 'updateBook') });
   },
 });
-
-AutoForm.debug();
 
 // Fix for deleting array objects other than the last one on update
 AutoForm.addHooks(null, {
@@ -239,3 +257,5 @@ AutoForm.addHooks(null, {
     },
   },
 });
+// TODO: remove
+AutoForm.debug();
