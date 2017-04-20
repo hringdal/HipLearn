@@ -9,6 +9,7 @@
   "dependencies": {
     "babel-runtime": "6.18.0",
     "bcrypt": "^1.0.2",
+    "chart.js": "^2.5.0",
     "cheerio": "^0.22.0",
     "jquery": "^3.2.1",
     "meteor-node-stubs": "~0.2.0",
@@ -26,6 +27,12 @@
     "eslint-plugin-react": "^6.10.0"
   },
   "eslintConfig": {
+    "env": {
+      "browser": true,
+      "node": true,
+      "es6": true,
+      "meteor": true
+    },
     "parserOptions": {
       "allowImportExportEverywhere": true
     },

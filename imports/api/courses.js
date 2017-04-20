@@ -123,19 +123,14 @@ Meteor.methods({
     Courses.remove(courseId);
   },
   courseInfo(courseId, year) {
-    // Call the openlibrary api to get info about chapters in a book
-    // There are few books that have a table_of_contents, but we often
-    // get at least the title
-
-    // meteor add http
-    // meteor npm install --save cherio
+    check(courseId, String);
+    check(year, String);
     if (Meteor.isServer) {
       this.unblock();
 
       try {
         // encode to allow non-ascii characters
         const url = encodeURI(`https://www.ntnu.no/studier/emner/${courseId}/${year}`);
-        console.log(url);
         // Change to callback style if you want to run on client
         const response = HTTP.call('GET', url, {});
         const reCredits = /Studiepoeng:&nbsp;(\d+\.?\d+)/g;
@@ -146,13 +141,12 @@ Meteor.methods({
         }
         const $ = cheerio.load(response.content);
 
-        const result = {
-          name: $('#course-details > h1').text(),
+        return {
+          name: $('#course-details').find('> h1').text(),
           courseContent: $('.content-course-content').text(),
           learningGoal: $('.content-learning-goal').text(),
           credits,
         };
-        return result;
       } catch (e) {
         // Maybe better to not catch error and let caller handle it?
 
@@ -162,5 +156,6 @@ Meteor.methods({
         return false;
       }
     }
+    return false;
   },
 });

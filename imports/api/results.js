@@ -2,7 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { Tracker } from 'meteor/tracker';
 import SimpleSchema from 'simpl-schema';
-import { check, Match } from 'meteor/check';
+import { check } from 'meteor/check';
 import { Books } from './books.js';
 
 SimpleSchema.extendOptions(['autoform']);

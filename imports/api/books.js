@@ -22,6 +22,20 @@ const BookSchema = new SimpleSchema({
       type: 'hidden',
     },
   },
+  description: {
+    type: String,
+    optional: true,
+    autoform: {
+      placeholder: 'Book description',
+    },
+  },
+  isbn: {
+    type: String,
+    optional: true,
+    autoform: {
+      type: 'hidden',
+    },
+  },
   chapters: {
     type: Array,
     label: 'Chapters',
@@ -74,9 +88,15 @@ if (Meteor.isServer) {
 
 Meteor.methods({
   'books.insert': function insertBook(book) {
+    check(book, Object);
     Books.insert(book);
   },
+  'books.insertISBN': function insertBookISBN(isbn) {
+    Meteor.call('bookInfo', isbn.isbn);
+  },
+
   'books.update': function updateBook(data) {
+    check(data, Object);
     // check for permissions
     Books.update(data._id, data.modifier);
     // if chapter has been deleted, remove results
@@ -96,31 +116,34 @@ Meteor.methods({
     // Call the openlibrary api to get info about chapters in a book
     // There are few books that have a table_of_contents, but we often
     // get at least the title
+    if (Meteor.isServer) {
+      this.unblock();
+      const id = `ISBN:${isbn}`;
 
-    this.unblock();
-    const id = `ISBN:${isbn}`;
+      try {
+        const response = HTTP.call('GET', 'https://openlibrary.org/api/books', {
+          params: {
+            bibkeys: id, // AIMA ISBN: 9780136042594
+            format: 'json',
+            jscmd: 'details',
+          },
+        });
 
-    try {
-      const response = HTTP.call('GET', 'https://openlibrary.org/api/books', {
-        params: {
-          bibkeys: id, // AIMA ISBN: 9780136042594
-          format: 'json',
-          jscmd: 'details',
-        },
-      });
+        const details = JSON.parse(response.content)[id].details;
 
-      const details = JSON.parse(response.content)[id].details;
-
-      return {
-        title: details.title,
-        isbn,
-        chapters: details.table_of_contents,  // TODO: change names inside here?
-      };
-    } catch (e) {
-      // Got a network error, timeout, or HTTP error in the 400 or 500 range.
-      // Or JSON parse error
-      console.log(e);
-      return false;
+        const book = {
+          title: details.title,
+          isbn,
+          chapters: details.table_of_contents,  // TODO: change names inside here?
+          course_id: 'sFoGFr33tjFcrNoGR',
+        };
+        Meteor.call('books.insert', book);
+      } catch (e) {
+        // Got a network error, timeout, or HTTP error in the 400 or 500 range.
+        // Or JSON parse error
+        console.log(e);
+        return false;
+      }
     }
   },
 });

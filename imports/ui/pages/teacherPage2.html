@@ -6,17 +6,8 @@
     <div class="article">
         <div class="ui padded grid container">
             <div class="ui column">
-                {{#if course }}
-                    <h1>{{ course.name }}</h1>
-                    <h3>Description</h3>
-                    <p>
-                        {{ course.courseContent }}
-                    </p>
-                    <h3>Learning Goals</h3>
-                    <p>
-                        {{ course.learningGoal }}
-                    </p>
-                    {{> listBooks}}
+                {{#if courseSelected }}
+                    {{> course courseSelected}}
                 {{else}}
                     <div class="ui compact segment">
                         <h3><i class="left arrow icon"></i> Select one of your courses in the left menu, or
@@ -29,12 +20,44 @@
     </div>
 </template>
 
+<template name="course">
+    <button class="ui right floated basic negative delete-course button">
+        Delete course
+    </button>
+    <a href="{{pathFor 'teacher.edit' courseId=_id}}" title="{{title}}"
+       class="ui right floated secondary button">
+        Edit Course
+        <i class="right chevron icon"></i>
+    </a>
+    <h1>{{ name }}</h1>
+    {{> pieChart}}
+    <p>Students following this course: {{studentCount}}</p>
+    <h3>Description</h3>
+    <p>
+        {{ courseContent }}
+    </p>
+    <h3>Learning Goals</h3>
+    <p>
+        {{ learningGoal }}
+    </p>
+    {{> listBooks}}
+</template>
+
+<template name="pieChart">
+    <div style="width: 400px; height: 400px">
+        <canvas id="chart1" width="200" height="200"></canvas>
+    </div>
+</template>
+
 <template name="createCourse">
     <div class="ui padded segment">
+        <div class="ui inverted dimmer">
+            <div class="ui loader">Loading</div>
+        </div>
         <h1>Create a New Course</h1>
         <p>You can add books after your course has been created. To automatically populate the values, fill in a course
             code and press the awesome button</p>
-        {{#autoForm id="createForm" type="insert" collection=formCourses}}
+        {{#autoForm id="createCourseForm" type="insert" collection=formCourses}}
             {{> afQuickField name="code"}}
             <div class="ui button" id="fill">Fill</div>
             {{> afQuickField name="name"}}
@@ -42,9 +65,25 @@
             {{> afQuickField name="learningGoal" rows=5}}
         {{/autoForm}}
         <div class="ui hidden divider"></div>
-        <button type="submit" class="ui green ok button" form="createForm">
+        <button type="submit" class="ui green ok button" form="createCourseForm">
             Create Course
         </button>
     </div>
+</template>
 
+<template name="editCourse">
+    <div class="ui container" style="margin-top: 47px">
+        <div class="ui segment">
+            <h3>Editing course</h3>
+            <h2> {{getCourse.name}}</h2>
+            <h3>Course code: {{getCourse.code}}</h3>
+            {{#autoForm collection=courses type="update" doc=getCourse id="updateCourse"}}
+                {{> afQuickField name='name'}}
+                {{> afQuickField name='courseContent' rows=5 }}
+                {{> afQuickField name="learningGoal" rows=5}}
+                <button type="submit" class="ui positive button">Update</button>
+                <a href="{{pathFor 'teacher.course' courseId=getCourse._id }}" class="ui basic button">Cancel</a>
+            {{/autoForm}}
+        </div>
+    </div>
 </template>

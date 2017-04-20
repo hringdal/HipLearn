@@ -5,39 +5,35 @@ import { BlazeLayout } from 'meteor/kadira:blaze-layout';
 FlowRouter.route('/', {
   name: 'root',
   action() {
-        if(Meteor.user()){
-            BlazeLayout.render('mainLayout', { main: 'frontpage' })
-        }else{
-            BlazeLayout.render('minimalLayout', { main: 'frontpage' })
-        }
-  },
-});
-
-FlowRouter.route('/books', {
-  name: 'books.index',
-  action() {
-    BlazeLayout.render('mainLayout', { main: 'listBooks' });
+    if (Meteor.user()) {
+      BlazeLayout.render('mainLayout', { main: 'frontpage' });
+    } else {
+      BlazeLayout.render('minimalLayout', { main: 'frontpage' });
+    }
   },
 });
 
 FlowRouter.route('/books/:_id/edit', {
   name: 'books.edit',
   action() {
-    BlazeLayout.render('mainLayout', { main: 'editBook' });
+    BlazeLayout.render('mainLayout', { main: 'editBook', sidebar: 'teacherSidebar' });
   },
+  triggersEnter: [() => {
+    window.scrollTo(0, 0);
+  }],
 });
 
-FlowRouter.route('/books/new', {
+FlowRouter.route('/books/new/:courseId', {
   name: 'books.new',
   action() {
-    BlazeLayout.render('mainLayout', { main: 'newBook' });
+    BlazeLayout.render('mainLayout', { main: 'newBook', sidebar: 'teacherSidebar' });
   },
 });
 
-FlowRouter.route('/books/show', {
-  name: 'books.show',
+FlowRouter.route('/books/new/isbn/:courseId', {
+  name: 'books.new.isbn',
   action() {
-    BlazeLayout.render('mainLayout', { main: 'listStudentBooks' });
+    BlazeLayout.render('mainLayout', { main: 'newBookISBN', sidebar: 'teacherSidebar' });
   },
 });
 
@@ -66,6 +62,13 @@ FlowRouter.route('/teacher/course/:courseId', {
   name: 'teacher.course',
   action() {
     BlazeLayout.render('mainLayout', { main: 'teacherPage2', sidebar: 'teacherSidebar' });
+  },
+});
+
+FlowRouter.route('/teacher/course/:courseId/edit', {
+  name: 'teacher.edit',
+  action() {
+    BlazeLayout.render('mainLayout', { main: 'editCourse', sidebar: 'teacherSidebar' });
   },
 });
 

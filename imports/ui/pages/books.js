@@ -4,66 +4,35 @@ import { FlowRouter } from 'meteor/kadira:flow-router';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { _ } from 'meteor/underscore';
 import { $ } from 'meteor/jquery';
-import { ReactiveVar } from 'meteor/reactive-var';
+import SimpleSchema from 'simpl-schema';
 // eslint-disable-next-line import/no-named-default
 import { default as swal } from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
 
 import { Books } from '../../api/books.js';
-import { Courses } from '../../api/courses.js';
 import { Results } from '../../api/results.js';
-
-Template.listBooks.onCreated(function init() {
-  this.showNewBook = new ReactiveVar(false);
-});
 
 Template.listBooks.helpers({
   books() {
     const courseId = FlowRouter.getParam('courseId');
     return Books.find({ course_id: courseId });
   },
-  course() {
-    const courseId = FlowRouter.getParam('courseId');
-    return Courses.findOne(courseId);
-  },
-  showNewBook() {
-    return Template.instance().showNewBook.get();
-  },
 });
 
 Template.listBooks.events({
-  'click .delete-course': function confirmDelete(event) {
-    event.preventDefault();
-    const courseId = FlowRouter.getParam('courseId');
-    swal({
-      title: 'Are you sure?',
-      text: 'This course will be deleted forever!',
-      type: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Yes, delete it!',
-      cancelButtonText: 'No, keep it',
-    }).then(function deleteCourse() {
-      Meteor.call('courses.delete', courseId);
-      swal({
-        title: 'Deleted!',
-        text: 'Your course has been deleted.',
-        type: 'success',
-        showConfirmButton: false,
-        timer: 2000,
-      }).catch(swal.noop);
-      FlowRouter.go('teacher.show');
-    }).catch(swal.noop);
-  },
-  'click .show-new-book': function toggleView(event, instance) {
-    const state = instance.showNewBook.get();
-    instance.showNewBook.set(!state);
+  'click .book-preview': function toggleView(event) {
+    const $this = $(event.currentTarget);
+    const id = $this.data('id');
+    console.log($this);
+    console.log(id);
+    $(`.book-slider[data-id="${id}"]`).slideToggle();
   },
   'click .delete-book': function confirmDelete(event) {
     event.preventDefault();
     const bookId = this._id;
     swal({
-      title: 'Are you sure?',
-      text: 'You will not be able to recover this book!',
+      title: 'Are you sure you want to delete this book?',
+      text: 'You will not be able to recover it later!',
       type: 'warning',
       showCancelButton: true,
       confirmButtonText: 'Yes, delete it!',
@@ -90,22 +59,6 @@ Template.listBooks.events({
   },
 });
 
-Template.listStudentBooks.onRendered(function () {
-  Meteor.call('stats', function (err, res) {
-    // Use plot functon here with the data to insert graph in template
-    $('#course-progress')
-      .progress({
-        showActivity: false,
-        total: res.chapterCount,
-        value: res.completedCount,
-        text: {
-          active: 'Completed {value} of {total} chapters',
-          success: 'All chapters completed! Good job!',
-        },
-      });
-  });
-});
-
 Template.listStudentBooks.events({
   'click .unfollow-course': function unfollowCourse(event) {
     event.preventDefault();
@@ -128,26 +81,14 @@ Template.listStudentBooks.helpers({
 
 Template.showBook.events({
   // create/edit results and set/toggle checked status in Results collection
-  'click .chapter-status': function (event) {
+  'click .chapter-status': function toggle(event) {
     const chapterId = event.currentTarget.getAttribute('data-id');
     const bookId = this._id;
     const courseId = this.course_id;
     Meteor.call('results.toggle', chapterId, bookId, courseId);
-    // TODO: muligens helt feil måte. Kan dette gjøres i metoden? Sjekk påfølgende kpt. i mongo
-    /* const parent = event.currentTarget.parentElement;
-    let parentLevel = parent.classList.item(1);
-    parentLevel = parseInt(parentLevel.match(/[0-9]+/)[0], 10);
-    $(parent).nextAll().each(function toggle() {
-      if (parseInt((this.classList.item(1)).match(/[0-9]+/)[0], 10) > parentLevel) {
-        const childChapterId = (this.children[0].getAttribute('data-id'));
-        Meteor.call('results.toggle', childChapterId, bookId, courseId);
-      } else {
-        console.log('breaking');
-        return false;
-      }
-    });*/
+
     // update progress bar
-    Meteor.call('stats', function stats(err, res) {
+    Meteor.call('userStats', courseId, function stats(err, res) {
       // Use plot functon here with the data to insert graph in template
       $('#course-progress')
         .progress('set total', res.chapterCount) // maybe unnecessary?
@@ -191,6 +132,15 @@ Template.showBook.helpers({
   },
 });
 
+Template.editBook.onRendered(function init() {
+  $('input:checked').each(function indent() {
+    const $this = $(this);
+    const level = $this.val();
+    console.log(level);
+    $this.parents('.autoform-array-item:first').addClass(`level-${level}`);
+  });
+});
+
 Template.editBook.helpers({
   // Helper function for the edit form to specify collection
   getBooks() {
@@ -207,10 +157,48 @@ Template.editBook.helpers({
   },
 });
 
+Template.editBook.events({
+  'change input:radio': function indent(event) {
+    const $this = $(event.target);
+    const level = $this.val();
+    $this.parents('.autoform-array-item').removeClass('level-2 level-3').addClass(`level-${level}`);
+  },
+});
+
 Template.newBook.helpers({
   // Helper function for the new book form to specify collection
   getBooks() {
     return Books;
+  },
+  pathForCourse() {
+    const courseId = FlowRouter.getParam('courseId');
+    return FlowRouter.path('teacher.course', { courseId });
+  },
+});
+
+Template.newBook.events({
+  'change input:radio': function indent(event) {
+    const $this = $(event.target);
+    const level = $this.val();
+    $this.parents('.autoform-array-item').removeClass('level-2 level-3').addClass(`level-${level}`);
+  },
+});
+
+Template.newBookISBN.helpers({
+  // Helper function for the new book form to specify collection
+  getBooks() {
+    return Books;
+  },
+  pathForCourse() {
+    const courseId = FlowRouter.getParam('courseId');
+    return FlowRouter.path('teacher.course', { courseId });
+  },
+  isbnSchema() {
+    return new SimpleSchema({
+      isbn: {
+        type: String,
+      },
+    });
   },
 });
 
@@ -224,9 +212,8 @@ AutoForm.addHooks('createBook', {
     },
   },
   onSuccess() {
-    this.template.parent(2).showNewBook.set(false);
-    // TODO : Fix error
-    window.scrollTo(0, 0);
+    const courseId = FlowRouter.getParam('courseId');
+    FlowRouter.go('teacher.course', { courseId });
   },
 });
 
@@ -242,10 +229,10 @@ AutoForm.debug();
 AutoForm.addHooks(null, {
   before: {
     'method-update': function methodUpdate(doc) {
-      _.each(doc.$set, function (value, setter) {
+      const document = doc;
+      _.each(document.$set, function removeNull(value, setter) {
         if (_.isArray(value)) {
-          const newValue = _.compact(value);
-          doc.$set[setter] = newValue;
+          document.$set[setter] = _.compact(value);
         }
       });
       return doc;

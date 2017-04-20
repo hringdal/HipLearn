@@ -1,19 +1,20 @@
 <template name="listBooks">
-    <button class="ui basic negative delete-course button">Delete course</button>
     <h1>Books</h1>
     <div class="ui divided items">
         {{#each books}}
             {{> book}}
+            <div class="book-slider" style="display: none" data-id="{{_id}}">
+                {{> showBook}}
+            </div>
         {{/each}}
-        <a class="show-new-book ui green basic button"><i class="book icon"></i>
+        <a href="{{pathFor 'books.new' courseId=_id }}" class="ui green basic button"><i class="book icon"></i>
             Create a New Book
         </a>
+        <a href="{{pathFor 'books.new.isbn' courseId=_id }}" class="ui basic button"><i class="book icon"></i>
+            Create Book from ISBN code
+        </a>
     </div>
-    {{#momentum plugin="slide-height"}}
-        {{#if showNewBook}}
-            {{> newBook}}
-        {{/if}}
-    {{/momentum}}
+
 </template>
 
 <template name="book">
@@ -22,22 +23,26 @@
             <img src="/images/book-placeholder.png">
         </div>
         <div class="content">
-            <a class="header">{{title}}</a>
+            <a class="header book-preview" data-id="{{_id}}">{{title}}</a>
             <div class="meta">
-                <span class="cinema">IFC Cinema</span>
+                <span>Description</span>
             </div>
             <div class="description">
                 <p>
-                    Description goes in this here box
+                    {{description}}
                 </p>
             </div>
             <div class="extra">
+                <span>Chapters: {{chapters.length}}</span>
+                <div class="book-preview ui button" data-id="{{_id}}">Show</div>
+                <button class="ui basic right floated icon negative button delete-book">
+                    <i class="trash icon"></i>
+                </button>
                 <a href="{{pathFor 'books.edit' _id=this._id}}" title="{{title}}"
-                   class="ui right floated primary button">
+                   class="ui right floated secondary button">
                     Edit book
                     <i class="right chevron icon"></i>
                 </a>
-                <div class="ui label">Limited</div>
             </div>
         </div>
     </div>
@@ -63,12 +68,7 @@
         <button class="ui small unfollow-course right floated basic negative icon button">Unfollow course <i
                 class="remove icon"></i></button>
         <h1>Overview of books</h1>
-        <div class="ui indicating progress" id="course-progress">
-            <div class="bar">
-                <div class="progress"></div>
-            </div>
-            <div class="label">Completed chapters</div>
-        </div>
+        {{> progressBar}}
         {{#if hasBooks}}
             {{#each books}}
                 {{> showBook}}
@@ -112,11 +112,13 @@
 <template name="editBook">
     <div class="ui container" style="margin-top: 47px">
         <div class="ui segment">
-            <h2>Editing book</h2>
+            <h3>Editing book</h3>
+            <h2>{{getBook.title}}</h2>
             {{#autoForm collection=getBooks type="method-update" meteormethod="books.update" doc=getBook
                         id="updateBook"}}
                 {{> afQuickField name='title'}}
                 {{> afQuickField name='course_id'}}
+                {{> afQuickField name='description' rows=3 }}
                 <h4 class="ui header">Chapters</h4>
                 {{> afArrayField name='chapters' template="bookForm"}}
                 <button type="submit" class="ui positive button">Update</button>
@@ -131,10 +133,22 @@
         <h2>Creating New Book</h2>
         {{#autoForm collection=getBooks type="method" meteormethod="books.insert" id="createBook"}}
             {{> afQuickField name='title'}}
+            {{> afQuickField name='description' rows=3 }}
             <h4 class="ui header">Chapters</h4>
             {{> afArrayField name='chapters' template="bookForm"}}
             <button type="submit" class="ui positive button">Insert</button>
-            <a class="ui show-new-book basic button">Cancel</a>
+            <a href='{{pathForCourse}}' class="ui show-new-book basic button">Cancel</a>
+        {{/autoForm}}
+    </div>
+</template>
+
+<template name="newBookISBN">
+    <div class="ui segment">
+        <h2>Creating New Book from ISBN Code</h2>
+        {{#autoForm schema=isbnSchema type="method" meteormethod="books.insertISBN" id="createBookISBN"}}
+            {{> afQuickField name='isbn'}}
+            <button type="submit" class="ui positive button">Insert</button>
+            <a href='{{pathForCourse}}' class="ui basic button">Cancel</a>
         {{/autoForm}}
     </div>
 </template>

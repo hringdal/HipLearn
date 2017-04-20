@@ -22,7 +22,7 @@ Template.studentSidebar.helpers({
       return c.course_id;
     });
     console.log(courseIds);
-    return Courses.find({ _id: { $in: courseIds } }, { sort: { name: 1 } });
+    return Courses.find({ _id: { $in: courseIds } }, { sort: { code: 1 } });
   },
   addCourseSchema() {
     return AddCourseSchema;
@@ -42,7 +42,7 @@ Template.teacherSidebar.helpers({
   // return list of courses in current user document
   courses() {
     if (Meteor.user()) {
-      return Courses.find({ owner_id: Meteor.userId() }, { sort: { name: 1 } });
+      return Courses.find({ owner_id: Meteor.userId() }, { sort: { code: 1 } });
     }
     return undefined;
   },
