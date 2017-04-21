@@ -7,6 +7,13 @@ import { $ } from 'meteor/jquery';
 import { Courses, AddCourseSchema } from '../../api/courses.js';
 import { Following } from '../../api/following.js';
 
+Template.studentSidebar.onCreated(function created() {
+  this.autorun(() => {
+    this.subscribe('courses.student');
+    this.subscribe('following');
+  });
+});
+
 Template.studentSidebar.onRendered(function render() {
   $('#student')
     .modal('attach events', '#clickable', 'show');
@@ -15,17 +22,11 @@ Template.studentSidebar.onRendered(function render() {
 Template.studentSidebar.helpers({
   // return list of courses current user is following
   courses() {
-    if (!Meteor.user()) {
-      return undefined;
-    }
     const courseIds = Following.find({ user_id: Meteor.userId() }).map(function (c) {
       return c.course_id;
     });
     console.log(courseIds);
     return Courses.find({ _id: { $in: courseIds } }, { sort: { code: 1 } });
-  },
-  addCourseSchema() {
-    return AddCourseSchema;
   },
   pathForCourse() {
     const course = this;
@@ -42,6 +43,18 @@ Template.studentSidebar.events({
   'click a.item': function scrollTop() {
     window.scrollTo(0, 0);
   },
+});
+
+Template.followCourseModal.helpers({
+  addCourseSchema() {
+    return AddCourseSchema;
+  },
+});
+
+Template.teacherSidebar.onCreated(function created() {
+  this.autorun(() => {
+    this.subscribe('courses.teacher');
+  });
 });
 
 Template.teacherSidebar.helpers({
@@ -69,9 +82,9 @@ Template.teacherSidebar.events({
   },
 });
 
-AutoForm.addHooks('addForm', {
+AutoForm.addHooks('followCourse', {
   onSuccess() {
-    const courseId = AutoForm.getFieldValue('_id', 'addForm');
+    const courseId = AutoForm.getFieldValue('_id', 'followCourse');
     FlowRouter.go('student.course', { courseId });
   },
 });

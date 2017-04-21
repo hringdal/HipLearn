@@ -36,7 +36,7 @@
             </div>
             <div class="extra">
                 <span>Chapters: {{chapters.length}}</span>
-                <div class="book-preview ui button" data-id="{{_id}}">Show</div>
+                <div class="book-preview ui teal toggle button" data-id="{{_id}}" style="width: 6rem">Show</div>
                 <button class="ui basic right floated icon negative button delete-book">
                     <i class="trash icon"></i>
                 </button>
@@ -54,46 +54,107 @@
     <button class="ui right floated basic negative unfollow-course button">
         Unfollow course
     </button>
+
     <h1 class="ui header">{{name}}</h1>
 
-    <h1>Overview of books</h1>
-    {{> progressBar}}
-    {{#if hasBooks}}
-        {{#each books}}
-            {{> showBook}}
-        {{/each}}
+    <div class="ui basic segment">
+        <div class="ui fluid accordion" id="course-info">
+            {{# if courseContent}}
+                <div class="title">
+                    <i class="dropdown icon"></i>
+                    Description
+                </div>
+                <div class="content">
+                    <p class="transition hidden">{{courseContent}}</p>
+                </div>
+            {{/if}}
+            {{#if learningGoal}}
+                <div class="title">
+                    <i class="dropdown icon"></i>
+                    Learning Goals
+                </div>
+                <div class="content">
+                    <p class="transition hidden">{{learningGoal}}</p>
+                </div>
+            {{/if}}
+        </div>
+
+        <div class="ui hidden divider"></div>
+
+        {{> progressBar}}
+    </div>
+
+    <h1 class="ui header">Overview of books</h1>
+
+    {{#if Template.subscriptionsReady}}
+        {{#if hasBooks}}
+            {{#each books}}
+                <div class="ui divider"></div>
+                <div class="ui grid container">
+                    <div class="tablet doubling two column row">
+                        {{> showBook}}
+                    </div>
+                </div>
+            {{/each}}
+        {{else}}
+            <p>Oops! This course currently has no listed books.<br>
+                Contact your lecturer to get your curriculum included.</p>
+        {{/if}}
     {{else}}
-        <p>Oops! This course currently has no listed books.<br>
-            Contact your lecturer to get your curriculum included.</p>
+        <div class="ui active inverted dimmer">
+            <div class="ui loader"></div>
+        </div>
     {{/if}}
 </template>
 
+<template name="progressBar">
+    <div class="ui indicating progress" id="course-progress">
+        <div class="bar">
+            <div class="progress"></div>
+        </div>
+        <div class="label">Completed chapters</div>
+    </div>
+</template>
+
 <template name="showBook">
-    <h2>Title: {{title}}</h2>
-    <div class="ui mini horizontal statistic">
-        <div class="value">
-            {{uncheckedCount}}
-        </div>
-        <div class="label">
-            Chapters left
-        </div>
-    </div>
-    <div class="ui relaxed list">
-        {{#each chapter in chapters}}
-            <div class="item level-{{chapter.level}}">
-                <button data-id="{{chapter._id}}"
-                        class="ui small basic icon button chapter-status {{#if checked
-                                                                               chapter._id}}green{{/if}}">
-                    {{#if checked chapter._id}}
-                        <i class="checkmark icon"></i>
-                    {{else}}
-                        <i class="angle right icon"></i>
-                    {{/if}}
-                </button>
-                {{chapter.title}}
+    <div class="column">
+        <h2>{{title}}</h2>
+        <div class="ui mini horizontal statistic">
+            <div class="value">
+                {{uncheckedCount}}
             </div>
-        {{/each}}
+            <div class="label">
+                Chapters left
+            </div>
+        </div>
+        <div class="ui relaxed list">
+            {{#each chapter in chapters}}
+                <div class="item level-{{chapter.level}}">
+                    <button data-id="{{chapter._id}}"
+                            class="ui small basic icon button chapter-status {{#if checked chapter._id}}green{{/if}}">
+                        {{#if checked chapter._id}}
+                            <i class="checkmark icon"></i>
+                        {{else}}
+                            <i class="angle right icon"></i>
+                        {{/if}}
+                    </button>
+                    {{chapter.title}}
+                </div>
+            {{/each}}
+        </div>
     </div>
+    {{#if description}}
+        <div class="column">
+            <div class="ui fluid card">
+                <div class="content">
+                    <div class="header">Description</div>
+                    <div class="description">
+                        {{description}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    {{/if}}
     <div class="ui hidden divider"></div>
 </template>
 

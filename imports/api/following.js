@@ -15,6 +15,16 @@ const FollowingSchema = new SimpleSchema({
 export const Following = new Mongo.Collection('following');
 Following.attachSchema(FollowingSchema);
 
+if (Meteor.isServer) {
+  Meteor.publish('following', function followingPublication() {
+    return Following.find({ user_id: this.userId });
+  });
+  Meteor.publish('following.count', function followingCountPublication(courseId) {
+    check(courseId, String);
+    return Following.find({ course_id: courseId });
+  });
+}
+
 Meteor.methods({
   'following.unfollow': function unfollowCourse(courseId) {
     check(courseId, String);

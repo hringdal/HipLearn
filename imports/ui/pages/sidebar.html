@@ -3,11 +3,17 @@
         <div class="item">
             <div class="header">Courses</div>
         </div>
-        {{#each courses}}
-            <a class="item {{#if activeCourse}}teal active{{/if}}" href={{pathForCourse}}>
-                {{name}}
-            </a>
-        {{/each}}
+        {{#if Template.subscriptionsReady}}
+            {{#each courses}}
+                <a class="item {{#if activeCourse}}teal active{{/if}}" href={{pathForCourse}}>
+                    {{name}}
+                </a>
+            {{/each}}
+        {{else}}
+            <div class="ui active inverted dimmer">
+                <div class="ui loader"></div>
+            </div>
+        {{/if}}
         <a class="item" id="clickable">
             <i class="plus icon"> </i>
             Follow a new course
@@ -16,13 +22,18 @@
 
     <!-- Modal -->
     <!-- shows when clicking "add a new course" in the menu -->
+    {{> followCourseModal}}
+
+</template>
+
+<template name="followCourseModal">
     <div class="ui small modal" id="student">
         <i class="close icon"></i>
         <div class="ui header">
             Select a new course to follow
         </div>
         <div class="content">
-            {{#autoForm schema=addCourseSchema id="addForm" type="method" meteormethod="addCourseStudent"}}
+            {{#autoForm schema=addCourseSchema id="followCourse" type="method" meteormethod="followCourseStudent"}}
                 {{> afFieldInput name="_id" search=true placeholder="Select a course"}}
             {{/autoForm}}
         </div>
@@ -30,7 +41,7 @@
             <div class="ui cancel button">
                 Cancel
             </div>
-            <button type="submit" class="ui green ok button" form="addForm">
+            <button type="submit" class="ui green ok button" form="followCourse">
                 Follow Course
             </button>
         </div>
@@ -42,11 +53,17 @@
         <div class="item">
             <div class="header">My Courses</div>
         </div>
-        {{#each courses}}
-            <a class="item {{#if activeCourse}}teal active{{/if}}" href={{pathForCourse}}>
-                {{code}}
-            </a>
-        {{/each}}
+        {{#if Template.subscriptionsReady}}
+            {{#each courses}}
+                <a class="item {{#if activeCourse}}teal active{{/if}}" href={{pathForCourse}}>
+                    {{code}}
+                </a>
+            {{/each}}
+        {{else}}
+            <div class="ui active inverted dimmer">
+                <div class="ui loader"></div>
+            </div>
+        {{/if}}
         <a href="{{pathFor 'teacher.new'}}" class="green item">
             <i class="plus icon"> </i>
             Create a new course

@@ -43,10 +43,17 @@ Template.teacherPage.events({
   },
 });
 
+Template.course.onCreated(function created() {
+  this.getCourseId = () => FlowRouter.getParam('courseId');
+
+  this.autorun(() => {
+    this.subscribe('following.count', this.getCourseId());
+  });
+});
+
 Template.course.helpers({
   studentCount() {
-    const courseId = FlowRouter.getParam('courseId');
-    return Following.find({ course_id: courseId }).count();
+    return Following.find({}).count();
   },
 });
 

@@ -2,37 +2,53 @@
     <!-- Main content -->
     <div class="ui relaxed grid container">
         <div class="ui column">
-            {{#if courseSelected }}
-                {{> course courseSelected}}
+            {{#if Template.subscriptionsReady}}
+                {{#if courseSelected }}
+                    {{> course courseSelected}}
+                {{else}}
+                    <h1>Welcome back!</h1>
+                    <h3>Select one of your courses in the left menu, or create a new course if none exist</h3>
+                {{/if}}
             {{else}}
-                <h1>Welcome back!</h1>
-                <h3>Select one of your courses in the left menu, or create a new course if none exist</h3>
+                <div class="ui active inverted dimmer">
+                    <div class="ui loader"></div>
+                </div>
             {{/if}}
         </div>
     </div>
 </template>
 
 <template name="course">
-    <button class="ui right floated basic negative delete-course button">
-        Delete course
-    </button>
-    <a href="{{pathFor 'teacher.edit' courseId=_id data=name}}" title="{{title}}"
-       class="ui right floated secondary button">
-        Edit Course Info
-        <i class="right chevron icon"></i>
-    </a>
-    <h1>{{ name }}</h1>
-    {{> pieChart}}
-    <p>Students following this course: {{studentCount}}</p>
-    <h3>Description</h3>
-    <p>
-        {{ courseContent }}
-    </p>
-    <h3>Learning Goals</h3>
-    <p>
-        {{ learningGoal }}
-    </p>
-    {{> listBooks}}
+    {{#if Template.subscriptionsReady}}
+        <button class="ui right floated basic negative delete-course button">
+            Delete course
+        </button>
+        <a href="{{pathFor 'teacher.edit' courseId=_id data=name}}" title="{{title}}"
+           class="ui right floated secondary button">
+            Edit Course Info
+            <i class="right chevron icon"></i>
+        </a>
+        <h1>{{ name }}</h1>
+        {{> pieChart}}
+        <p>Students following this course: {{studentCount}}</p>
+        {{#if courseContent}}
+            <h3>Description</h3>
+            <p>
+                {{ courseContent }}
+            </p>
+        {{/if}}
+        {{#if learningGoal}}
+            <h3>Learning Goals</h3>
+            <p>
+                {{ learningGoal }}
+            </p>
+        {{/if}}
+        {{> listBooks}}
+    {{else}}
+        <div class="ui active inverted dimmer">
+            <div class="ui loader"></div>
+        </div>
+    {{/if}}
 </template>
 
 <template name="pieChart">
@@ -63,7 +79,8 @@
         <h3>Editing course</h3>
         <h2> {{getCourse.name}}</h2>
         <h3>Course code: {{getCourse.code}}</h3>
-        {{#autoForm collection=courses type="method-update" meteormethod="courses.update" doc=getCourse id="updateCourse"}}
+        {{#autoForm collection=courses type="method-update" meteormethod="courses.update" doc=getCourse
+                    id="updateCourse"}}
             {{> afQuickField name='name'}}
             {{> afQuickField name='courseContent' rows=5 }}
             {{> afQuickField name="learningGoal" rows=5}}

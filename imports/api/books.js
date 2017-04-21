@@ -81,8 +81,13 @@ export const Books = new Mongo.Collection('books');
 Books.attachSchema(BookSchema);
 
 if (Meteor.isServer) {
-  Meteor.publish('books', function booksPublication() {
-    return Books.find();
+  Meteor.publish('books', function booksPublication(courseId) {
+    check(courseId, String);
+    return Books.find({ course_id: courseId });
+  });
+  Meteor.publish('books.edit', function editBookPublication(bookId) {
+    check(bookId, String);
+    return Books.find({ _id: bookId });
   });
 }
 

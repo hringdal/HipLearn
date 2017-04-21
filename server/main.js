@@ -17,8 +17,8 @@ Meteor.publish('userData', function () {
 });
 
 Meteor.methods({
-  // connected to the 'addForm'
-  addCourseStudent(doc) {
+  // connected to the 'followCourse' form
+  followCourseStudent(doc) {
     check(doc, Object);
     const courseId = doc._id;
     const userId = Meteor.userId();
@@ -31,4 +31,8 @@ Meteor.methods({
       code: subjectName.toUpperCase(),
     }).count() === 0;
   },
+});
+
+Meteor.users.deny({
+  update() { return true; },
 });

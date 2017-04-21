@@ -4,23 +4,15 @@
     <!-- Sidebar I EGEN TEMPLATE -->
 
     <!-- Main content -->
-    <div class="ui relaxed grid container">
-        <div class="ui column">
-            {{#if course}}
-                {{> listStudentBooks course}}
-            {{else}}
-                <h1>Welcome back!</h1>
-                <h3>Select one of your courses in the left menu, or follow a new course</h3>
-            {{/if}}
+        <div class="ui grid container">
+            <div class="ui column">
+                {{#if course}}
+                    {{> listStudentBooks course}}
+                {{else}}
+                    <h1>Welcome back!</h1>
+                    <h3>Select one of your courses in the left menu, or follow a new course</h3>
+                {{/if}}
+            </div>
         </div>
-    </div>
-</template>
 
-<template name="progressBar">
-    <div class="ui indicating progress" id="course-progress">
-        <div class="bar">
-            <div class="progress"></div>
-        </div>
-        <div class="label">Completed chapters</div>
-    </div>
 </template>

@@ -2,7 +2,7 @@
   "name": "hiplearn",
   "private": true,
   "scripts": {
-    "start": "meteor run",
+    "start": "meteor --no-release-check",
     "lint": "eslint --quiet ./imports",
     "test": "meteor test --driver-package practicalmeteor:mocha"
   },

@@ -13,10 +13,17 @@ import { Books } from '../../api/books.js';
 import { Results } from '../../api/results.js';
 import { Courses } from '../../api/courses.js';
 
+Template.listBooks.onCreated(function created() {
+  this.autorun(() => {
+    this.getCourseId = () => FlowRouter.getParam('courseId');
+
+    this.subscribe('books', this.getCourseId());
+  });
+});
+
 Template.listBooks.helpers({
   books() {
-    const courseId = FlowRouter.getParam('courseId');
-    return Books.find({ course_id: courseId });
+    return Books.find({});
   },
 });
 
@@ -25,9 +32,10 @@ Template.listBooks.events({
   'click .book-preview': function toggleView(event) {
     const $this = $(event.currentTarget);
     const id = $this.data('id');
-    console.log($this);
-    console.log(id);
     $(`.book-slider[data-id="${id}"]`).slideToggle();
+    $(`.book-preview.button[data-id="${id}"]`).text(function toggleText(i, text) {
+      return text === 'Show' ? 'Hide' : 'Show';
+    });
   },
   // confirmation popup on book deletion
   'click .delete-book': function confirmDelete(event) {
@@ -62,13 +70,16 @@ Template.listBooks.events({
   },
 });
 
-Template.listStudentBooks.events({
-  'click .unfollow-course': function unfollowCourse(event) {
-    event.preventDefault();
-    const courseId = FlowRouter.getParam('courseId');
-    Meteor.call('following.unfollow', courseId);
-    FlowRouter.go('student.show');
-  },
+Template.listStudentBooks.onCreated(function created() {
+  this.getCourseId = () => FlowRouter.getParam('courseId');
+
+  this.autorun(() => {
+    this.subscribe('books', this.getCourseId());
+  });
+});
+
+Template.listStudentBooks.onRendered(function init() {
+  $('#course-info').accordion('open', 0);
 });
 
 Template.listStudentBooks.helpers({
@@ -79,6 +90,80 @@ Template.listStudentBooks.helpers({
   books() {
     const courseId = FlowRouter.getParam('courseId');
     return Books.find({ course_id: courseId });
+  },
+});
+
+Template.listStudentBooks.events({
+  'click .unfollow-course': function unfollowCourse(event) {
+    event.preventDefault();
+    const courseId = FlowRouter.getParam('courseId');
+    Meteor.call('following.unfollow', courseId);
+    FlowRouter.go('student.show');
+  },
+});
+
+Template.progressBar.onRendered(function init() {
+  this.autorun(function render() {
+    const courseId = FlowRouter.getParam('courseId');
+    if (typeof courseId !== 'undefined') { // make sure that a course is selected
+      Meteor.call('userStats', courseId, function updateProgress(err, res) {
+        // Use plot functon here with the data to insert graph in template
+        $('#course-progress')
+          .progress({
+            showActivity: false,
+            total: res.chapterCount,
+            value: res.completedCount,
+            text: {
+              active: 'Completed {value} of {total} total chapters',
+              success: 'All chapters completed! Good job!',
+            },
+          });
+      });
+      Meteor.call('averageUserStats', courseId, function avg(err, res) {
+        // Use plot functon here with the data to insert graph in template
+        console.log(res);
+      });
+    }
+  });
+});
+
+Template.showBook.onCreated(function created() {
+  this.getBookId = () => this.data._id;
+
+  this.autorun(() => {
+    this.subscribe('results.checked', this.getBookId());
+  });
+});
+
+Template.showBook.helpers({
+  // Returns a count of the results in this book that have a checked: false status
+  uncheckedCount() {
+    const book = this;
+    if (typeof book.chapters === 'undefined') {
+      // no chapters in selected book
+      return 0;
+    }
+    const count = book.chapters.length;
+    const checked = Results.find({
+      book_id: book._id,
+      user_id: Meteor.userId(),
+      checked: true,
+    }).count();
+    return count - checked;
+  },
+  // Function for checking checked results in the database
+  checked(chapterId) {
+    // loop through results to find a chapter with the same id
+    // if it exists, change values
+    const result = Results.findOne({
+      book_id: this._id,
+      user_id: Meteor.userId(),
+      chapter_id: chapterId,
+    });
+    if (result) {
+      return result.checked;
+    }
+    return false;
   },
 });
 
@@ -100,39 +185,12 @@ Template.showBook.events({
   },
 });
 
-Template.showBook.helpers({
-  // Returns a count of the results in this book that have a checked: false status
-  // Issue: does not include chapters that don't have a result in the Results collection
-  uncheckedCount() {
-    const book = this;
-    if (typeof book.chapters === 'undefined') {
-      // no chapters in selected book
-      return 0;
-    }
-    const count = book.chapters.length;
-    const checked = Results.find({
-      book_id: book._id,
-      user_id: Meteor.userId(),
-      checked: true,
-    }).count();
-    return count - checked;
-  },
-  // Function for checking checked results in the database
-  checked(chapterId) {
-    // loop through results to find a chapter with the same id
-    // if it exists, change values
-    const result = Results.findOne({
-      // todo: get this from template/params
-      // done
-      book_id: this._id,
-      user_id: Meteor.userId(),
-      chapter_id: chapterId,
-    });
-    if (result) {
-      return result.checked;
-    }
-    return false;
-  },
+Template.editBook.onCreated(function created() {
+  this.getBookId = () => FlowRouter.getParam('_id');
+
+  this.autorun(() => {
+    this.subscribe('books.edit', this.getBookId());
+  });
 });
 
 Template.editBook.onRendered(function init() {

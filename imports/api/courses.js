@@ -38,8 +38,12 @@ const CourseSchema = new SimpleSchema({
   owner_id: {
     type: String,
     label: 'Created by',
+    optional: true,
     autoValue() {
-      return Meteor.userId();
+      if (this.isInsert && (!this.isSet || this.value.length === 0)) {
+        return this.userId;
+      }
+      return undefined;
     },
   },
   code: {
@@ -113,6 +117,22 @@ export const AddCourseSchema = new SimpleSchema({
     },
   },
 }, { tracker: Tracker });
+
+if (Meteor.isServer) {
+  /* Meteor.publish('courses.following', function followingCourses() {
+    const courseIds = Following.find({ user_id: this.userId }).map(function getId(c) {
+      return c.course_id;
+    });
+    return Courses.find({ _id: { $in: courseIds } });
+  });*/
+  Meteor.publish('courses.student', function allCourses() {
+    return Courses.find({});
+  });
+  Meteor.publish('courses.teacher', function teacherCourses() {
+    return Courses.find({ owner_id: this.userId });
+  });
+}
+
 
 Meteor.methods({
   'courses.insert': function insertCourse(course) {

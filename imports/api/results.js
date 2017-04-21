@@ -10,8 +10,13 @@ SimpleSchema.extendOptions(['autoform']);
 const ResultSchema = new SimpleSchema({
   user_id: {
     type: String,
+    optional: true,
     autoValue() {
-      return this.userId;
+      // return this.userId;
+      if (this.isInsert && (!this.isSet || this.value.length === 0)) {
+        return this.userId;
+      }
+      return undefined;
     },
   },
   course_id: {
@@ -39,6 +44,14 @@ const ResultSchema = new SimpleSchema({
 
 export const Results = new Mongo.Collection('results');
 Results.attachSchema(ResultSchema);
+
+if (Meteor.isServer) {
+  Meteor.publish('results.checked', function resultsCheckedPublication(bookId) {
+    check(bookId, String);
+
+    return Results.find({ book_id: bookId, user_id: this.userId });
+  });
+}
 
 Meteor.methods({
   // Create a new result if none exists, or toggle the checked value of an existing result
