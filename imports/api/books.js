@@ -5,7 +5,6 @@ import { Tracker } from 'meteor/tracker';
 import { Random } from 'meteor/random';
 import { check } from 'meteor/check';
 import { HTTP } from 'meteor/http';
-
 import { Results } from './results.js';
 
 SimpleSchema.extendOptions(['autoform']);
@@ -94,7 +93,10 @@ if (Meteor.isServer) {
 Meteor.methods({
   'books.insert': function insertBook(book) {
     check(book, Object);
-    Books.insert(book);
+    const bookId = Books.insert(book);
+
+    // Create a new notification
+    Meteor.call('notifications.create', bookId, 'added');
   },
   'books.insertISBN': function insertBookISBN(book) {
     check(book, Object);
@@ -105,8 +107,14 @@ Meteor.methods({
     check(data, Object);
     // check for permissions
     Books.update(data._id, data.modifier);
-    // if chapter has been deleted, remove results
+
+    // get updated book
     const book = Books.findOne(data._id);
+
+    // create a new notification
+    Meteor.call('notifications.create', data._id, 'updated');
+
+    // if chapter has been deleted, remove results
     const chapterIds = book.chapters.map(function getId(chapter) {
       return chapter._id;
     }); // compare results with chapters in book

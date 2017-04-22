@@ -13,6 +13,8 @@ import { Books } from '../../api/books.js';
 import { Results } from '../../api/results.js';
 import { Courses } from '../../api/courses.js';
 
+import './books.html';
+
 Template.listBooks.onCreated(function created() {
   this.autorun(() => {
     this.getCourseId = () => FlowRouter.getParam('courseId');
@@ -175,13 +177,35 @@ Template.showBook.events({
     const courseId = this.course_id;
     Meteor.call('results.toggle', chapterId, bookId, courseId);
 
-    // update progress bar
-    Meteor.call('userStats', courseId, function stats(err, res) {
-      // Use plot functon here with the data to insert graph in template
-      $('#course-progress')
-        .progress('set total', res.chapterCount) // maybe unnecessary?
-        .progress('set progress', res.completedCount);
-    });
+    // update progress bar if in student page
+    if (FlowRouter.getRouteName() === 'student.course') {
+      Meteor.call('userStats', courseId, function stats(err, res) {
+        // Use plot functon here with the data to insert graph in template
+        $('#course-progress')
+          .progress('set total', res.chapterCount) // maybe unnecessary?
+          .progress('set progress', res.completedCount);
+      });
+    }
+
+    // update charts if teacher page
+    if (FlowRouter.getRouteName() === 'teacher.course') {
+      Meteor.call('userStats', courseId, function userStats(err, res) {
+        const $teacherChart = $('#teacherChart');
+        $teacherChart.highcharts().series[0].setData([
+          res.chapterCount - res.completedCount,
+          res.completedCount,
+        ]);
+        $teacherChart.highcharts().setTitle({ text: `<b>${res.completedCount}</b><br>Completed<br>chapters` });
+      });
+      Meteor.call('averageUserStats', courseId, function userStats(err, res) {
+        const $studentChart = $('#studentChart');
+        $studentChart.highcharts().series[0].setData([
+          res.chapterCount - res.averageCount,
+          res.averageCount,
+        ]);
+        $studentChart.highcharts().setTitle({ text: `<b>${res.averageCount}</b><br>Completed<br>chapters` });
+      });
+    }
   },
 });
 

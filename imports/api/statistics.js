@@ -40,14 +40,15 @@ const chaptersCompletedByUser = function chaptersCompletedByUser(courseId, userI
 };
 
 // return an array of the number of completed chapters by each student in course with id courseId
-const chaptersCompletedByStudents = function chaptersCompletedByStudents(courseId) {
+const chaptersCompletedByStudents = function chaptersCompletedByStudents(courseId, userId) {
   const pipeline = [
-    { // Comment out this pair of braces to include all books
-      $match: { course_id: courseId, checked: true },
+    { // Comment out this pair of braces to include all chapters
+      // Except id of course owner
+      $match: { course_id: courseId, checked: true, user_id: { $ne: userId } },
     },
     {
       $group: {
-        _id: '$user_id',  // Set to null to aggregate over all books,
+        _id: '$user_id',  // Set to null to aggregate over all chapters,
         // Set to course_id to aggregate over course id
         count: { $sum: 1 },
       },
@@ -84,6 +85,8 @@ Meteor.methods({
   averageUserStats(courseId) {
     check(courseId, String);
 
+    const userId = this.userId;
+
     let chapterCount = 0;
     let sum = 0;
     let studentCount = 1; // prevent divide-by-zero error
@@ -93,7 +96,9 @@ Meteor.methods({
       chapterCount = chapterArray[0].count;
     }
 
-    const completedByStudentsArray = chaptersCompletedByStudents(courseId);
+    const completedByStudentsArray = chaptersCompletedByStudents(courseId, userId);
+
+    // update counts
     if (completedByStudentsArray.length !== 0) {
       studentCount = completedByStudentsArray.length;
 
@@ -102,7 +107,8 @@ Meteor.methods({
       }
     }
 
-    const averageCount = sum / studentCount;
+    // get student average completed
+    const averageCount = Math.round(sum / studentCount);
 
     return {
       chapterCount,

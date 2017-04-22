@@ -85,7 +85,6 @@ Template.createCourse.events({
       });
     }
     const courseCode = AutoForm.getFieldValue('code', 'createCourse');
-    console.log(courseCode);
     // TODO: notify if course not found
     $('.ui.dimmer').addClass('active');
     Meteor.call('courseInfo', courseCode, '2016', function callback(err, res) {
@@ -96,44 +95,149 @@ Template.createCourse.events({
   },
 });
 
-Template.pieChart.onRendered(function init() {
+Template.pieCharts.onRendered(function init() {
+  const courseId = FlowRouter.getParam('courseId');
   this.autorun(function run() {
-    $('#chart').highcharts({
+    $('#teacherChart').highcharts({
       chart: {
-        type: 'pie',
+        style: { fontFamily: 'Roboto, Sans-serif', color: '#aeafb1' },
       },
       title: {
-        text: 'Completed chapters',
+        style: { background: '#fafafa', color: '#767676' },
+        text: '<b>0</b><br>Total chapters',
+        align: 'center',
+        verticalAlign: 'middle',
+        y: 0,
       },
       tooltip: {
         pointFormat: '{series.name}: <b>{point.y}</b>',
       },
-      colors: ['lightblue', 'green'],
+      /* legend: {
+        itemStyle: { color: '#767676' },
+        symbolWidth: 10,
+        symbolHeight: 5,
+        itemWidth: 170,
+        symbolRadius: 0,
+        itemMarginBottom: 15,
+        align: 'bottom',
+        borderWidth: 0,
+        width: 20,
+        height: 40,
+        x: 0,
+        y: 20,
+      },*/
       plotOptions: {
         pie: {
-          allowPointSelect: true,
+          allowPointSelect: false,
           cursor: 'pointer',
-          dataLabels: {
-            enabled: true,
-            format: '<b>{point.name}</b>: {point.percentage:.0f} %',
-            style: {
-              color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black',
+          dataLabels: { enabled: false },
+          colors: ['#00B5AD', '#21BA45'],
+          // showInLegend: true,
+          center: ['50%', '50%'],
+          point: {
+            events: {
+              legendItemClick() {
+                return false;
+              },
             },
           },
         },
       },
       series: [{
+        type: 'pie',
         name: 'Chapters',
-        colorByPoint: true,
-        data: [{
-          name: 'Incomplete',
-          y: 46,
-        }, {
-          name: 'Completed',
-          y: 72,
-        }],
+        innerSize: '70%',
+        data: [
+          {
+            name: 'Incomplete',
+            y: 0,
+          },
+          {
+            name: 'Completed',
+            y: 0,
+          },
+        ],
       }],
+      credits: {
+        enabled: false,
+      },
     });
+
+    $('#studentChart').highcharts({
+      chart: {
+        style: { fontFamily: 'Roboto, Sans-serif', color: '#aeafb1' },
+      },
+      title: {
+        style: { background: '#fafafa', color: '#767676' },
+        text: '<b>0</b><br>Total chapters',
+        align: 'center',
+        verticalAlign: 'middle',
+        y: 0,
+      },
+      tooltip: {
+        pointFormat: '{series.name}: <b>{point.y}</b>',
+      },
+      /* legend: {
+        itemStyle: { color: '#767676' },
+        symbolWidth: 10,
+        symbolHeight: 5,
+        itemWidth: 170,
+        symbolRadius: 0,
+        itemMarginBottom: 15,
+        align: 'bottom',
+        borderWidth: 0,
+        width: 20,
+        height: 40,
+        x: 0,
+        y: 20,
+      },*/
+      plotOptions: {
+        pie: {
+          allowPointSelect: false,
+          cursor: 'pointer',
+          dataLabels: { enabled: false },
+          colors: ['#00B5AD', '#21BA45'],
+          // showInLegend: true,
+          center: ['50%', '50%'],
+          point: {
+            events: {
+              legendItemClick() {
+                return false;
+              },
+            },
+          },
+        },
+      },
+      series: [{
+        type: 'pie',
+        name: 'Chapters',
+        innerSize: '70%',
+        data: [
+          {
+            name: 'Incomplete',
+            y: 0,
+          },
+          {
+            name: 'Completed',
+            y: 0,
+          },
+        ],
+      }],
+      credits: {
+        enabled: false,
+      },
+    });
+  });
+  Meteor.call('userStats', courseId, function userStats(err, res) {
+    // Use plot functon here with the data to insert graph in template
+    const $teacherChart = $('#teacherChart');
+    $teacherChart.highcharts().series[0].setData([res.chapterCount - res.completedCount, res.completedCount]);
+    $teacherChart.highcharts().setTitle({ text: `<b>${res.completedCount}</b><br>Completed<br>chapters` });
+  });
+  Meteor.call('averageUserStats', courseId, function averageStats(err, res) {
+    const $studentChart = $('#studentChart');
+    $studentChart.highcharts().series[0].setData([res.chapterCount - res.averageCount, res.averageCount]);
+    $studentChart.highcharts().setTitle({ text: `<b>${res.averageCount}</b><br>Completed<br>chapters` });
   });
 });
 

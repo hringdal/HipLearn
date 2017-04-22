@@ -18,7 +18,7 @@ AccountsTemplates.configure({
   // ugly text on not logged in redirect
   texts: {
     errors: {
-      mustBeLoggedIn: "Ugly text because you've been redirected",
+      mustBeLoggedIn: "You must login to be able to view this page",
     },
   },
 });

@@ -1,4 +1,5 @@
 /* eslint-env mocha */
+/* eslint-disable func-names */
 
 import { Meteor } from 'meteor/meteor';
 import { expect } from 'meteor/practicalmeteor:chai';
@@ -260,7 +261,7 @@ if (Meteor.isServer) {
         bookId = 'test book';
         courseId = 'test course';
 
-        // create a book with a single chapter
+        // create a result with a single chapter
         resultId = Results.insert({
           user_id: userId,
           chapter_id: chapterId,
@@ -268,22 +269,42 @@ if (Meteor.isServer) {
           course_id: courseId,
           checked: true,
         });
-        console.log(Results.findOne(resultId));
       });
 
       describe('toggle', function () {
-        it('can toggle a result', function () {
+        it('can create a new result', function () {
           // get method
-          const createCourse = Meteor.server.method_handlers['results.toggle'];
+          const createResult = Meteor.server.method_handlers['results.toggle'];
 
           // set invocation
           const invocation = { userId };
 
-          // create a course object
-
+          // set arguments
+          const args = ['new chapter', bookId, courseId];
           // call method
+          createResult.apply(invocation, args);
 
-          // check that the new course has been inserted
+          // check that result h
+          // as been added
+          expect(Results.find().count()).to.equal(2);
+        });
+
+        it('can toggle an existing result', function () {
+          // get method
+          const toggleResult = Meteor.server.method_handlers['results.toggle'];
+
+          // set invocation
+          const invocation = { userId };
+
+          // set arguments
+          const args = [chapterId, bookId, courseId];
+          // call method
+          toggleResult.apply(invocation, args);
+
+          // check that result h
+          // as been added
+          expect(Results.find().count()).to.equal(1);
+          expect(Results.findOne(resultId).checked).to.equal(false);
         });
       });
     });

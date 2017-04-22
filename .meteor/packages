@@ -63,3 +63,4 @@ http@1.2.12
 meteorhacks:aggregate
 simple:reactive-method
 email@1.2.0
+dburles:factory

@@ -1,3 +1,20 @@
 /*******************************
          Site Overrides
 *******************************/
+@media only screen and (min-width: @mobileBreakpoint) and (max-width: @largestMobileScreen) {
+  .ui.grid > .row > [class*="sixteen-wide-mobile"].column,
+  .ui.grid > .column.row > [class*="sixteen-wide-mobile"].column,
+  .ui.grid > [class*="sixteen-wide-mobile"].column,
+  .ui.column.grid > [class*="sixteen-wide-mobile"].column {
+    width: @sixteenWide !important;
+  }
+}
+
+@media only screen and (min-width: @tabletBreakpoint) and (max-width: @largestTabletScreen) {
+  .ui.grid > .row > [class*="eight-wide-tablet"].column,
+  .ui.grid > .column.row > [class*="eight-wide-tablet"].column,
+  .ui.grid > [class*="eight-wide-tablet"].column,
+  .ui.column.grid > [class*="eight-wide-tablet"].column {
+    width: @eightWide !important;
+  }
+}

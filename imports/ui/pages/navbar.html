@@ -14,9 +14,9 @@
                 List
             </a>-->
             <div class="right menu">
-                <a href="" class="icon item">
-                    <i class="large lightbulb icon"></i>
-                </a>
+                {{#if isStudent}}
+                    {{> notifications}}
+                {{/if}}
                 <a class="ui dropdown item">
                     <i class="user icon"></i>
                     <span class="text">{{#if currentUser}}{{userEmail}}{{else}}Not logged in{{/if}}</span>
@@ -27,6 +27,42 @@
             </div>
         </div>
     </div>
+
+</template>
+
+<template name="notifications">
+    <a class="ui scrolling pointing dropdown item">
+        Notifications
+        {{#if notificationCount}}
+            <div class="ui red label">{{notificationCount}}</div>
+        {{/if}}
+        <i class="large lightbulb icon"></i>
+
+        <div class="ui menu" style="right: 0;left: auto;">
+            <div class="header">
+                Notifications
+            </div>
+            <div id="clear-notifications" class="ui small right fluid floated basic button">Clear all</div>
+            <div class="divider"></div>
+            {{#if notificationCount}}
+                {{#each notifications}}
+                    {{> notificationItem}}
+                {{/each}}
+            {{else}}
+                <div class="disabled item">
+                    <i class="smile icon"></i>
+                    No new notifications
+                </div>
+            {{/if}}
+        </div>
+    </a>
+</template>
+
+<template name="notificationItem">
+    <a class="notification item" href="{{pathFor 'student.course' courseId=course_id}}">
+        <h4><i class="book icon"></i>{{courseName}}</h4>
+        The book <strong>{{bookTitle}}</strong> has been {{type}}
+    </a>
 
 </template>
 

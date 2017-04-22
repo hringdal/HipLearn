@@ -8,7 +8,7 @@
             </div>
         {{/each}}
         <div class="ui divider"></div>
-        <a href="{{pathFor 'books.new' courseId=_id }}" class="ui green basic button"><i class="book icon"></i>
+        <a href="{{pathFor 'books.new' courseId=_id }}" class="ui primary button"><i class="book icon"></i>
             Create a New Book
         </a>
         <a href="{{pathFor 'books.new.isbn' courseId=_id }}" class="ui basic button"><i class="book icon"></i>
@@ -90,11 +90,7 @@
         {{#if hasBooks}}
             {{#each books}}
                 <div class="ui divider"></div>
-                <div class="ui grid container">
-                    <div class="tablet doubling two column row">
-                        {{> showBook}}
-                    </div>
-                </div>
+                {{> showBook}}
             {{/each}}
         {{else}}
             <p>Oops! This course currently has no listed books.<br>
@@ -117,7 +113,7 @@
 </template>
 
 <template name="showBook">
-    <div class="column">
+    <div class="ui basic segment">
         <h2>{{title}}</h2>
         <div class="ui mini horizontal statistic">
             <div class="value">
@@ -143,60 +139,60 @@
             {{/each}}
         </div>
     </div>
-    {{#if description}}
-        <div class="column">
-            <div class="ui fluid card">
-                <div class="content">
-                    <div class="header">Description</div>
-                    <div class="description">
-                        {{description}}
-                    </div>
-                </div>
-            </div>
-        </div>
-    {{/if}}
     <div class="ui hidden divider"></div>
 </template>
 
 <template name="editBook">
-    <h3>Editing book</h3>
-    <h2>{{getBook.title}}</h2>
-    {{#autoForm collection=getBooks type="method-update" meteormethod="books.update" doc=getBook
-                id="updateBook"}}
-        {{> afQuickField name='title'}}
-        {{> afQuickField name='course_id'}}
-        {{> afQuickField name='description' rows=3 }}
-        {{> afArrayField name='chapters' template="bookForm"}}
-        <button type="submit" class="ui positive button">Update</button>
-        <a href="{{pathForCourse}}" class="ui basic button">Cancel</a>
-    {{/autoForm}}
+    <div class="ui stackable grid container">
+        <div class="column">
+            <h3>Editing book</h3>
+            <h2>{{getBook.title}}</h2>
+            {{#autoForm collection=getBooks type="method-update" meteormethod="books.update" doc=getBook
+                        id="updateBook"}}
+                {{> afQuickField name='title'}}
+                {{> afQuickField name='course_id'}}
+                {{> afQuickField name='description' rows=3 }}
+                {{> afArrayField name='chapters' template="bookForm"}}
+                <button type="submit" class="ui positive button">Update</button>
+                <a href="{{pathForCourse}}" class="ui basic button">Cancel</a>
+            {{/autoForm}}
+        </div>
+    </div>
 </template>
 
 <template name="newBook">
-    <div id="new-book">
-        <h2>Creating New Book in course {{getCourseCode}}</h2>
-        {{#autoForm collection=getBooks type="method" meteormethod="books.insert" id="createBook"}}
-            {{> afQuickField name='title'}}
-            {{> afQuickField name='description' rows=3 }}
-            <h5 class="ui header">Chapters</h5>
-            {{> afArrayField name='chapters' template="bookForm"}}
-            <button type="submit" class="ui positive button">Create Book</button>
-            <a href='{{pathForCourse}}' class="ui show-new-book basic button">Cancel</a>
-        {{/autoForm}}
+    <div class="ui stackable grid container">
+        <div class="column">
+            <div id="new-book">
+                <h2>Creating New Book in course {{getCourseCode}}</h2>
+                {{#autoForm collection=getBooks type="method" meteormethod="books.insert" id="createBook"}}
+                    {{> afQuickField name='title'}}
+                    {{> afQuickField name='description' rows=3 }}
+                    {{> afArrayField name='chapters' template="bookForm"}}
+                    <button type="submit" class="ui primary button">Create Book</button>
+                    <a href='{{pathForCourse}}' class="ui show-new-book button">Cancel</a>
+                {{/autoForm}}
+            </div>
+        </div>
     </div>
 </template>
 
 <template name="newBookISBN">
-    <h2>Creating New Book from ISBN Code</h2>
-    {{#autoForm schema=isbnSchema type="method" meteormethod="books.insertISBN" id="createBookISBN"}}
-        {{> afQuickField name='isbn'}}
-        <button type="submit" class="ui positive button">Insert</button>
-        <a href='{{pathForCourse}}' class="ui basic button">Cancel</a>
-    {{/autoForm}}
+    <div class="ui stackable grid container">
+        <div class="column">
+            <h2>Creating New Book from ISBN Code</h2>
+            <h3>* This feature is experimental and may cause errors *</h3>
+            {{#autoForm schema=isbnSchema type="method" meteormethod="books.insertISBN" id="createBookISBN"}}
+                {{> afQuickField name='isbn'}}
+                <button type="submit" class="ui positive button">Insert</button>
+                <a href='{{pathForCourse}}' class="ui button">Cancel</a>
+            {{/autoForm}}
+        </div>
+    </div>
 </template>
 
 <template name="afArrayField_bookForm">
-    <h4 class="ui top attached bheader">
+    <h4 class="ui header">
         {{afFieldLabelText name=this.atts.name}}
     </h4>
     <div class="ui basic segment">
@@ -222,6 +218,7 @@
                 <div class="ui small green icon button autoform-add-item" data-autoform-field="{{this.atts.name}}"
                      data-autoform-minCount="{{this.atts.minCount}}" data-autoform-maxCount="{{this.atts.maxCount}}">
                     <i class="icon plus"></i>
+                    Add chapter
                 </div>
             </div>
         {{/if}}
