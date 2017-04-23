@@ -51,16 +51,12 @@ mobile-experience@1.0.4       # Packages for a great mobile UX
 fastclick@1.0.13
 check@1.2.5
 msavin:mongol
-alanning:roles
 aldeed:autoform
 aldeed:collection2-core
 eoliphant:autoform-semantic-ui
 useraccounts:core
 aldeed:template-extension
 aldeed:schema-index
-percolate:momentum
 http@1.2.12
 meteorhacks:aggregate
-simple:reactive-method
 email@1.2.0
-dburles:factory

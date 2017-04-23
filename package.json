@@ -9,7 +9,6 @@
   "dependencies": {
     "babel-runtime": "6.18.0",
     "bcrypt": "^1.0.2",
-    "chart.js": "^2.5.0",
     "cheerio": "^0.22.0",
     "highcharts": "^5.0.10",
     "jquery": "^3.2.1",
@@ -25,8 +24,7 @@
     "eslint-plugin-import": "^2.2.0",
     "eslint-plugin-jsx-a11y": "^4.0.0",
     "eslint-plugin-meteor": "^4.0.1",
-    "eslint-plugin-react": "^6.10.0",
-    "faker": "^4.1.0"
+    "eslint-plugin-react": "^6.10.0"
   },
   "eslintConfig": {
     "env": {

@@ -131,7 +131,7 @@ Template.pieCharts.onRendered(function init() {
           allowPointSelect: false,
           cursor: 'pointer',
           dataLabels: { enabled: false },
-          colors: ['#00B5AD', '#21BA45'],
+          colors: ['#54C8FF', '#2ECC40'],
           // showInLegend: true,
           center: ['50%', '50%'],
           point: {
@@ -168,7 +168,7 @@ Template.pieCharts.onRendered(function init() {
         style: { fontFamily: 'Roboto, Sans-serif', color: '#aeafb1' },
       },
       title: {
-        style: { background: '#fafafa', color: '#767676' },
+        style: { color: '#767676' },
         text: '<b>0</b><br>Total chapters',
         align: 'center',
         verticalAlign: 'middle',
@@ -196,7 +196,7 @@ Template.pieCharts.onRendered(function init() {
           allowPointSelect: false,
           cursor: 'pointer',
           dataLabels: { enabled: false },
-          colors: ['#00B5AD', '#21BA45'],
+          colors: ['#54C8FF', '#2ECC40'],
           // showInLegend: true,
           center: ['50%', '50%'],
           point: {
