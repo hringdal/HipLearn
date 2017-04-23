@@ -9,5 +9,5 @@ Ingeborg, 20
 1. Clone the repository
 2. `cd` into repository
 3. `meteor npm install`to install required packages
-4. `meteor` to run the application
+4. `meteor npm start` to run the application
 
