@@ -72,7 +72,6 @@ Meteor.methods({
     });
     if (!result) {
       // Create new result
-      console.log('Inserting', chapterId);
       Results.insert({
         chapter_id: chapterId,
         book_id: bookId,
@@ -82,7 +81,6 @@ Meteor.methods({
       // UserId is automatically set to current user
     } else {
       // Result already in database
-      console.log('Updating ', chapterId);
       Results.update(
         result._id
         , {
@@ -111,7 +109,6 @@ Meteor.methods({
         });
         if (!subResult) {
           // Create new result
-          console.log('Inserting subresult', chapterId);
           Results.insert({
             chapter_id: chapters[i]._id,
             book_id: bookId,
@@ -121,7 +118,6 @@ Meteor.methods({
           // UserId is automatically set to current user
         } else {
           // Result already in database
-          console.log('Updating subresult', chapterId);
           Results.update(
             subResult._id
             , {
@@ -132,7 +128,7 @@ Meteor.methods({
         }
       }
     } catch (e) {
-      console.log(e);
+      return false;
     }
   },
 });

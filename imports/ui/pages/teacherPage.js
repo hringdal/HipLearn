@@ -85,10 +85,9 @@ Template.createCourse.events({
       });
     }
     const courseCode = AutoForm.getFieldValue('code', 'createCourse');
-    // TODO: notify if course not found
+
     $('.ui.dimmer').addClass('active');
     Meteor.call('courseInfo', courseCode, '2016', function callback(err, res) {
-      console.log(res);
       populate('#createCourse', res);
       $('.ui.dimmer').removeClass('active');
     });
@@ -112,27 +111,12 @@ Template.pieCharts.onRendered(function init() {
       tooltip: {
         pointFormat: '{series.name}: <b>{point.y}</b>',
       },
-      /* legend: {
-        itemStyle: { color: '#767676' },
-        symbolWidth: 10,
-        symbolHeight: 5,
-        itemWidth: 170,
-        symbolRadius: 0,
-        itemMarginBottom: 15,
-        align: 'bottom',
-        borderWidth: 0,
-        width: 20,
-        height: 40,
-        x: 0,
-        y: 20,
-      },*/
       plotOptions: {
         pie: {
           allowPointSelect: false,
           cursor: 'pointer',
           dataLabels: { enabled: false },
           colors: ['#54C8FF', '#2ECC40'],
-          // showInLegend: true,
           center: ['50%', '50%'],
           point: {
             events: {
@@ -177,27 +161,12 @@ Template.pieCharts.onRendered(function init() {
       tooltip: {
         pointFormat: '{series.name}: <b>{point.y}</b>',
       },
-      /* legend: {
-        itemStyle: { color: '#767676' },
-        symbolWidth: 10,
-        symbolHeight: 5,
-        itemWidth: 170,
-        symbolRadius: 0,
-        itemMarginBottom: 15,
-        align: 'bottom',
-        borderWidth: 0,
-        width: 20,
-        height: 40,
-        x: 0,
-        y: 20,
-      },*/
       plotOptions: {
         pie: {
           allowPointSelect: false,
           cursor: 'pointer',
           dataLabels: { enabled: false },
           colors: ['#54C8FF', '#2ECC40'],
-          // showInLegend: true,
           center: ['50%', '50%'],
           point: {
             events: {
@@ -231,21 +200,24 @@ Template.pieCharts.onRendered(function init() {
   Meteor.call('userStats', courseId, function userStats(err, res) {
     // Use plot functon here with the data to insert graph in template
     const $teacherChart = $('#teacherChart');
-    $teacherChart.highcharts().series[0].setData([res.chapterCount - res.completedCount, res.completedCount]);
+    $teacherChart.highcharts().series[0].setData([
+      res.chapterCount - res.completedCount,
+      res.completedCount]);
     $teacherChart.highcharts().setTitle({ text: `<b>${res.completedCount}</b><br>Completed<br>chapters` });
   });
   Meteor.call('averageUserStats', courseId, function averageStats(err, res) {
     const $studentChart = $('#studentChart');
-    $studentChart.highcharts().series[0].setData([res.chapterCount - res.averageCount, res.averageCount]);
+    $studentChart.highcharts().series[0].setData([
+      res.chapterCount - res.averageCount,
+      res.averageCount,
+    ]);
     $studentChart.highcharts().setTitle({ text: `<b>${res.averageCount}</b><br>Completed<br>chapters` });
   });
 });
 
 AutoForm.addHooks('createCourse', {
-  after: {
-    method: function route(error, result) {
-      FlowRouter.go('teacher.course', { courseId: result });
-    },
+  onSuccess(formType, result) {
+    FlowRouter.go('teacher.course', { courseId: result });
   },
 });
 

@@ -4,6 +4,7 @@ import { check } from 'meteor/check';
 import { Courses } from '../imports/api/courses.js';
 import { Following } from '../imports/api/following.js';
 
+import '../imports/startup/server';
 import '../imports/startup/both/';
 import '../imports/api/';
 
@@ -25,14 +26,19 @@ Meteor.methods({
     this.unblock();
     Following.upsert({ user_id: userId, course_id: courseId }, { $set: { course_id: courseId } });
   },
-  isSubjectUnique(subjectName) {
-    check(subjectName, String);
+  isSubjectUnique(subjectCode) {
+    check(subjectCode, String);
     return Courses.find({
-      code: subjectName.toUpperCase(),
+      code: subjectCode.toUpperCase(),
     }).count() === 0;
   },
 });
 
 Meteor.users.deny({
   update() { return true; },
+});
+
+// TODO: remove
+Meteor.startup(function () {
+  process.env.MAIL_URL = 'smtp://postmaster@hiplearn.me:428910f8aacf9f60daa3449627573939@smtp.mailgun.org:587';
 });

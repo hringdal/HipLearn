@@ -121,10 +121,6 @@ Template.progressBar.onRendered(function init() {
             },
           });
       });
-      Meteor.call('averageUserStats', courseId, function avg(err, res) {
-        // Use plot functon here with the data to insert graph in template
-        console.log(res);
-      });
     }
   });
 });
@@ -221,7 +217,6 @@ Template.editBook.onRendered(function init() {
   $('input:checked').each(function indent() {
     const $this = $(this);
     const level = $this.val();
-    console.log(level);
     $this.parents('.autoform-array-item:first').addClass(`level-${level}`);
   });
 });

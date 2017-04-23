@@ -16,7 +16,6 @@ Template.studentPage.helpers({
     return Meteor.loggingIn();
   },
   selectedCourse() {
-    console.log('selected course id: ', FlowRouter.getParam('courseId'));
     return FlowRouter.getParam('courseId');
   },
   course() {

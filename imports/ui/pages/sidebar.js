@@ -25,7 +25,6 @@ Template.studentSidebar.helpers({
     const courseIds = Following.find({ user_id: Meteor.userId() }).map(function (c) {
       return c.course_id;
     });
-    console.log(courseIds);
     return Courses.find({ _id: { $in: courseIds } }, { sort: { code: 1 } });
   },
   pathForCourse() {

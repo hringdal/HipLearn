@@ -9,6 +9,7 @@ import { Books } from './books.js';
 import { Courses } from './courses.js';
 import { Following } from './following.js';
 import { Results } from './results.js';
+import { Notifications } from './notifications.js';
 
 if (Meteor.isServer) {
   describe('Books', function () {
@@ -94,7 +95,7 @@ if (Meteor.isServer) {
       });
 
       describe('insertISBN', function () {
-        it('can create a new book from ISBN code', function () {
+        it('can create a new book from ISBN code', function (done) {
           // get method
           const createBookISBN = Meteor.server.method_handlers['books.insertISBN'];
 
@@ -111,8 +112,14 @@ if (Meteor.isServer) {
           createBookISBN.apply(invocation, [book]);
 
           // check that the new book has been inserted, and contains the correct data
-          expect(Books.find().count()).to.equal(2);
-          expect(Books.findOne({ isbn: '9780136042594' }).course_id).to.equal('isbn id');
+          // try except block handles the async method call, and waits until finished
+          try {
+            expect(Books.find().count()).to.equal(2);
+            expect(Books.findOne({ isbn: '9780136042594' }).course_id).to.equal('isbn id');
+          } catch (err) {
+            done(err);
+          }
+          done();
         });
       });
     });
@@ -305,6 +312,115 @@ if (Meteor.isServer) {
           // as been added
           expect(Results.find().count()).to.equal(1);
           expect(Results.findOne(resultId).checked).to.equal(false);
+        });
+      });
+    });
+  });
+
+  describe('Notifications', function () {
+    describe('methods', function () {
+      let userId;
+      let bookId;
+      let courseId;
+      let notificationId;
+
+      beforeEach(function () {
+        // clear
+        Notifications.remove({});
+        Books.remove({});
+        Courses.remove({});
+        Following.remove({});
+
+        // generate a user
+        userId = Random.id();
+
+        // create a test course
+        courseId = Courses.insert({
+          owner_id: 'teacher',
+          code: 'test code',
+          name: 'test name',
+        });
+
+        // create a book in given course
+        bookId = Books.insert({
+          title: 'test book',
+          course_id: courseId,
+          chapters: [{ _id: 'test id', title: 'test chapter', level: 1 }],
+        });
+
+        // follow the course for current user
+        Following.insert({
+          user_id: userId,
+          course_id: courseId,
+        });
+
+        // create a notification for user in same course
+        notificationId = Notifications.insert({
+          user_id: userId,
+          bookTitle: 'test book',
+          courseName: 'test name',
+          course_id: courseId,
+          seen: false,
+          type: 'added',
+        });
+      });
+
+      describe('create', function () {
+        it('can create a new notification', function () {
+          // get method
+          const createNotification = Meteor.server.method_handlers['notifications.create'];
+
+          // set invocation
+          const invocation = { userId };
+
+          // set arguments
+          const args = [bookId, 'added'];
+          // call method
+          createNotification.apply(invocation, args);
+
+          // check that notification has been created
+          expect(Notifications.find().count()).to.equal(2);
+        });
+      });
+      describe('seen', function () {
+        it('can set a notification status to "seen"', function () {
+          // get method
+          const seenNotification = Meteor.server.method_handlers['notifications.seen'];
+
+          // set invocation
+          const invocation = { userId };
+
+          // call method
+          seenNotification.apply(invocation, [notificationId]);
+
+          // check that following document has been deleted
+          expect(Notifications.findOne(notificationId).seen).to.equal(true);
+        });
+      });
+      describe('clear', function () {
+        it('can clear all notifications for a user', function () {
+          // get method
+          const clearNotifications = Meteor.server.method_handlers['notifications.clear'];
+
+          // create a second unseen notification
+          Notifications.insert({
+            user_id: userId,
+            bookTitle: 'test book',
+            courseName: 'test name',
+            course_id: courseId,
+            seen: false,
+            type: 'added',
+          });
+
+          // set invocation
+          const invocation = { userId };
+
+          // call method
+          clearNotifications.apply(invocation);
+
+          // check that all notifications are set to seen
+          expect(Notifications.find({ user_id: userId }).count()).to.equal(2);
+          expect(Notifications.find({ user_id: userId, seen: false }).count()).to.equal(0);
         });
       });
     });

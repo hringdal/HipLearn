@@ -9,21 +9,30 @@ meteor-base@1.0.4             # Packages every Meteor app needs to have
 ecmascript@0.7.2              # Enable ECMAScript2015+ syntax in app code
 es5-shim@4.6.15                # ECMAScript 5 compatibility for older browsers.
 tracker@1.1.2                 # Meteor's client-side reactive programming library
+http@1.2.12
 
 # Standard libraries
-jquery@1.11.10                  # Helpful client-side library
+jquery@1.11.10                  # Helpful client-side library. Automatically overwritten by npm package
 underscore@1.0.10
 less@2.7.9
 
 # UI
-blaze-html-templates@1.0.4 # Compile .html files into Meteor Blaze views
-reactive-var@1.0.11            # Reactive variable for tracker
+blaze-html-templates@1.0.4           # Compile .html files into Meteor Blaze views
+reactive-var@1.0.11                  # Reactive variable for tracker
 semantic:ui
+aldeed:template-extension
+eoliphant:autoform-semantic-ui
 
 # Data
-mongo@1.1.16                   # The database Meteor supports right now
+mongo@1.1.16                         # The database Meteor supports right now
+meteorhacks:aggregate                # Enable mongodb aggregate function
+aldeed:collection2-core              # Data validation server-side
+aldeed:schema-index
+aldeed:autoform                      # forms of all kinds
+check@1.2.5                          # simple data validation
 
 # Development
+msavin:mongol                        # Development only database viewer TODO: remove
 
 # Testing
 practicalmeteor:mocha
@@ -36,9 +45,11 @@ standard-minifier-js@2.0.0    # JS minifier run for production mode
 wizonesolutions:canonical
 
 # Accounts
-accounts-password@1.3.5
+accounts-password@1.3.5       # Account system base
+useraccounts:core
 useraccounts:semantic-ui
 useraccounts:flow-routing
+email@1.2.0
 
 # Routing
 kadira:flow-router
@@ -49,14 +60,3 @@ zimme:active-route
 # Mobile
 mobile-experience@1.0.4       # Packages for a great mobile UX
 fastclick@1.0.13
-check@1.2.5
-msavin:mongol
-aldeed:autoform
-aldeed:collection2-core
-eoliphant:autoform-semantic-ui
-useraccounts:core
-aldeed:template-extension
-aldeed:schema-index
-http@1.2.12
-meteorhacks:aggregate
-email@1.2.0

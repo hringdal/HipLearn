@@ -56,7 +56,7 @@ const CourseSchema = new SimpleSchema({
         Meteor.call('isSubjectUnique', this.value, (error, result) => {
           if (!result) {
             this.validationContext.addValidationErrors([{
-              name: 'courseCode',
+              name: 'code',
               type: 'notUnique',
             }]);
           }
@@ -96,7 +96,7 @@ const CourseSchema = new SimpleSchema({
 // #11 - Makes the error for creating new non-unique courses more descriptive
 CourseSchema.messageBox.messages({
   en: {
-    notUnique: '{{label}} already exists',
+    notUnique: '{{label}} has already been created by a different teacher',
   },
 });
 

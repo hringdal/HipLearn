@@ -11,17 +11,18 @@ AccountsTemplates.configure({
   defaultLayoutRegions: {},
   // Hooks
   onLogoutHook() {
-    console.log('onLogoutHook');
     FlowRouter.go('root'); // redirect to sign-in or eventually homepage
-    FlowRouter.reload(); // removes the navbar. TODO: this is too hacky
+    FlowRouter.reload(); // removes the navbar
   },
   // ugly text on not logged in redirect
   texts: {
     errors: {
-      mustBeLoggedIn: "You must login to be able to view this page",
+      mustBeLoggedIn: 'You must login to be able to view this page',
+      loginForbidden: 'Your username or password seems to be wrong. Try again',
     },
   },
 });
+
 // Configure signup-fields
 AccountsTemplates.addField({
   _id: 'role',
@@ -45,12 +46,10 @@ AccountsTemplates.configureRoute('signIn', {
     if (user) {
       if (user.profile.role === 1) {
         FlowRouter.go('student.show');
-        console.log('student');
       } else if (user.profile.role === 2) {
         FlowRouter.go('teacher.show');
-        console.log('teacher');
       } else {
-        console.log('should be an admin (role 3)');
+        // should be an admin -> role === 3
         FlowRouter.go('teacher.show');
       }
     }
@@ -63,16 +62,18 @@ AccountsTemplates.configureRoute('signUp', {
     if (user) {
       if (user.profile.role === 1) {
         FlowRouter.go('student.show');
-        console.log('student');
       } else if (user.profile.role === 2) {
         FlowRouter.go('teacher.show');
-        console.log('teacher');
       } else {
-        console.log('should be an admin (role 3)');
         FlowRouter.go('teacher.show');
       }
     }
   },
 });
+
+AccountsTemplates.configureRoute('changePwd');
+AccountsTemplates.configureRoute('forgotPwd');
+AccountsTemplates.configureRoute('resetPwd');
+
 // Redirects every route to sign-in if user not logged in
 FlowRouter.triggers.enter([AccountsTemplates.ensureSignedIn], { except: ['root'] });

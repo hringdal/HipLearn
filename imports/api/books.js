@@ -122,7 +122,12 @@ Meteor.methods({
   },
   'books.delete': function deleteBook(bookId) {
     check(bookId, String);
+    // remove related results
     Results.remove({ book_id: bookId });
+
+    // create a notification for following users
+    Meteor.call('notifications.create', bookId, 'deleted');
+
     Books.remove(bookId);
   },
   bookInfo(isbn, courseId) {
