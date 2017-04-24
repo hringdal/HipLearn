@@ -13,9 +13,6 @@ const NotificationSchema = new SimpleSchema({
   user_id: {
     type: String,
   },
-  bookTitle: {
-    type: String,
-  },
   courseName: {
     type: String,
   },
@@ -25,7 +22,7 @@ const NotificationSchema = new SimpleSchema({
   seen: {
     type: Boolean,
   },
-  type: {
+  message: {
     type: String,
   },
 }, { tracker: Tracker });
@@ -39,32 +36,27 @@ if (Meteor.isServer) {
 }
 
 Meteor.methods({
-  'notifications.create': function createNotification(bookId, type) {
-    check(bookId, String);
-    check(type, String);
-
-    // get current book data
-    const book = Books.findOne(bookId);
-
-    // find related course
-    const course = Courses.findOne(book.course_id);
+  'notifications.create': function createNotification(message, courseId) {
+    check(message, String);
+    check(courseId, String);
 
     // find all the ids of students that are following this course
-    const followingUserIds = Following.find({ course_id: book.course_id }).map(function list(doc) {
+    const followingUserIds = Following.find({ course_id: courseId }).map(function list(doc) {
       return doc.user_id;
     });
+
+    // get course
+    const course = Courses.findOne(courseId);
 
     // create a new notification for each student
     for (let i = 0; i < followingUserIds.length; i += 1) {
       const notification = {
         user_id: followingUserIds[i],
-        bookTitle: book.title,
-        courseName: course.name,
-        course_id: book.course_id,
+        course_id: courseId,
         seen: false,
-        type,
+        courseName: course.name,
+        message,
       };
-
       Notifications.insert(notification);
     }
   },

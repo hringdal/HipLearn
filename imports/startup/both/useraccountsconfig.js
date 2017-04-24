@@ -1,6 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import { AccountsTemplates } from 'meteor/useraccounts:core';
 import { FlowRouter } from 'meteor/kadira:flow-router';
+import { Tracker } from 'meteor/tracker';
 
 AccountsTemplates.configure({
   showForgotPasswordLink: true,
@@ -16,6 +17,13 @@ AccountsTemplates.configure({
   },
   // ugly text on not logged in redirect
   texts: {
+    title: {
+      signIn: 'Log-in to your account',
+      signUp: 'Create a New Account',
+    },
+    button: {
+      signIn: 'Login',
+    },
     errors: {
       mustBeLoggedIn: 'You must login to be able to view this page',
       loginForbidden: 'Your username or password seems to be wrong. Try again',
@@ -42,32 +50,38 @@ AccountsTemplates.addField({
 // Creates a route to /sign-in with loginLayout and atFullPageForm template
 AccountsTemplates.configureRoute('signIn', {
   redirect() {
-    const user = Meteor.user();
-    if (user) {
-      if (user.profile.role === 1) {
-        FlowRouter.go('student.show');
-      } else if (user.profile.role === 2) {
-        FlowRouter.go('teacher.show');
+    Tracker.autorun(function waitOnLogin() {
+      const user = Meteor.user();
+      if (user) {
+        if (user.profile.role === 1) {
+          FlowRouter.go('student.show');
+        } else if (user.profile.role === 2) {
+          FlowRouter.go('teacher.show');
+        } else {
+          // should be an admin -> role === 3
+          FlowRouter.go('teacher.show');
+        }
       } else {
-        // should be an admin -> role === 3
-        FlowRouter.go('teacher.show');
+        console.log('no user');
       }
-    }
+    });
   },
 });
 AccountsTemplates.configureRoute('signUp', {
   name: 'signUp',
   redirect() {
-    const user = Meteor.user();
-    if (user) {
-      if (user.profile.role === 1) {
-        FlowRouter.go('student.show');
-      } else if (user.profile.role === 2) {
-        FlowRouter.go('teacher.show');
-      } else {
-        FlowRouter.go('teacher.show');
+    Tracker.autorun(function waitOnLogin() {
+      const user = Meteor.user();
+      if (user) {
+        if (user.profile.role === 1) {
+          FlowRouter.go('student.show');
+        } else if (user.profile.role === 2) {
+          FlowRouter.go('teacher.show');
+        } else {
+          FlowRouter.go('teacher.show');
+        }
       }
-    }
+    });
   },
 });
 

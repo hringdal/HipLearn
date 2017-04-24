@@ -60,10 +60,11 @@ const chaptersCompletedByStudents = function chaptersCompletedByStudents(courseI
 Meteor.methods({
   // return an object with the total number of chapters in a course, and how many chapters
   // the currently logged on user has completed in the course
-  userStats(courseId) {
+  userStats(courseId, userId) {
     check(courseId, String);
+    check(userId, String);
     // Create separate document for each chapter then increment count for each
-    const userId = this.userId;
+    // const userId = this.userId;
     // prevent error when empty array
     let chapterCount = 0;
     let completedCount = 0;

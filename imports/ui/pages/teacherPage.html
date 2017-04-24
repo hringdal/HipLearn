@@ -1,60 +1,110 @@
 <template name="teacherPage">
     <!-- Main content -->
-    <div class="ui relaxed grid container">
-        <div class="ui column">
-            {{#if Template.subscriptionsReady}}
-                {{#if courseSelected }}
-                    {{> course courseSelected}}
-                {{else}}
-                    <h1>Welcome back!</h1>
-                    <h3>Select one of your courses in the left menu, or create a new course if none exist</h3>
-                {{/if}}
-            {{else}}
-                <div class="ui active inverted dimmer">
-                    <div class="ui loader"></div>
+    {{#if courseSelected }}
+        {{> course courseSelected}}
+    {{else}}
+        <div class="ui relaxed grid container">
+            <div class="ui column">
+                <h1>Welcome back!</h1>
+                <div class="ui info message">
+                    <div class="header">
+                        Select a course in the left menu to get started
+                    </div>
+                    You can also create new courses from the menu
                 </div>
-            {{/if}}
+            </div>
         </div>
-    </div>
+    {{/if}}
 </template>
 
 <template name="course">
     {{#if Template.subscriptionsReady}}
-        <button class="ui right floated basic negative delete-course button">
-            Delete course
-        </button>
-        <a href="{{pathFor 'teacher.edit' courseId=_id data=name}}" title="{{title}}"
-           class="ui right floated secondary button">
-            Edit Course Info
-            <i class="right chevron icon"></i>
-        </a>
-        <h1>{{ name }}</h1>
-        <div class="ui small statistic">
-            <div class="value">
-                <i class="student icon"></i>
-                {{studentCount}}
-            </div>
-            <div class="label">
-                Student followers
+        <div class="ui relaxed grid container">
+            <div class="ui column">
+                <button class="ui right floated basic negative delete-course button">
+                    Delete course
+                </button>
+                <a href="{{pathFor 'teacher.edit' courseId=_id data=name}}" title="{{title}}"
+                   class="ui right floated secondary button">
+                    Edit Course Info
+                    <i class="right chevron icon"></i>
+                </a>
+                <h1>{{name}}</h1>
+                <div class="ui small statistic">
+                    <div class="value">
+                        <i class="student icon"></i>
+                        {{studentCount}}
+                    </div>
+                    <div class="label">
+                        Student followers
+                    </div>
+                </div>
+                <h3 class="ui horizontal divider header">
+                    <i class="bar chart icon"></i>
+                    Statistics
+                </h3>
+
+                {{#if courseHasBooks}}
+                    {{> pieCharts}}
+                {{else}}
+                    <div class="ui info message">
+                        <div class="ui header">
+                            Create a book below to start seeing statistics!
+                        </div>
+                        <p>
+                            This section will show statistics for your course when you have created
+                            at least one book
+                        </p>
+                    </div>
+                {{/if}}
+                <div class="ui hidden divider"></div>
+
+                <h1 class="ui dividing header">
+                    Course Information
+                </h1>
+
+                <div class="ui basic padded segment">
+                    <h3 class="ui header">
+                        <i class="info icon"></i>
+                        <div class="content">
+                            Description
+                        </div>
+                    </h3>
+                    {{#if courseContent}}
+                        <p>
+                            <span class="pre">{{ courseContent }}</span>
+                        </p>
+                    {{else}}
+                        <div class="ui warning message">
+                            Click <em>Edit Course Info</em> on the top of this page to add a description
+                        </div>
+                    {{/if}}
+
+                    <h3 class="ui header">
+                        <i class="trophy icon"></i>
+                        <div class="content">
+                            Learning Goals
+                        </div>
+                    </h3>
+                    {{#if learningGoal}}
+                        <p>
+                            <span class="pre">{{ learningGoal }}</span>
+                        </p>
+                    {{else}}
+                        <div class="ui warning message">
+                            Click <strong>Edit Course Info</strong> on the top of this page to add learning goals
+                        </div>
+                    {{/if}}
+
+                </div>
+                {{> listBooks}}
             </div>
         </div>
-        {{> pieCharts}}
-        {{#if courseContent}}
-            <h3>Description</h3>
-            <p>
-                {{ courseContent }}
-            </p>
-        {{/if}}
-        {{#if learningGoal}}
-            <h3>Learning Goals</h3>
-            <p>
-                {{ learningGoal }}
-            </p>
-        {{/if}}
-        {{> listBooks}}
     {{else}}
         <div class="ui active inverted dimmer">
-            <div class="ui loader"></div>
+            <div class="ui text loader">
+                course loader
+            </div>
         </div>
     {{/if}}
 </template>
@@ -62,7 +112,7 @@
 <template name="pieCharts">
     <div class="ui two column grid">
         <div class="eight-wide-tablet sixteen-wide-mobile center aligned column">
-            <h3>Your progress</h3>
+            <h3>Expected course progress</h3>
             <div id="teacherChart" style="height: 300px"></div>
         </div>
         <div class="eight-wide-tablet sixteen-wide-mobile center aligned column">
@@ -80,7 +130,8 @@
     <div class="ui relaxed grid container">
         <div class="column">
             <h1>Create a New Course</h1>
-            <p>You can add books after your course has been created. To automatically populate the values, fill in a course
+            <p>You can add books after your course has been created. To automatically populate the values, fill in a
+                course
                 code and press the <em>Autofill</em> button</p>
             {{#autoForm id="createCourse" type="method" meteormethod="courses.insert" collection=formCourses}}
                 {{> afQuickField name="code" size="10"}}

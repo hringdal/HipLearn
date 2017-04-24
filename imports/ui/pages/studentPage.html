@@ -1,14 +1,15 @@
 <template name="studentPage">
     <!-- Main content -->
-        <div class="ui grid container">
-            <div class="ui column">
-                {{#if course}}
-                    {{> listStudentBooks course}}
-                {{else}}
-                    <h1>Welcome back!</h1>
-                    <h3>Select one of your courses in the left menu, or follow a new course</h3>
-                {{/if}}
-            </div>
+    <div class="ui grid container">
+        <div class="ui column">
+            {{#if course}}
+                {{> listStudentBooks course}}
+            {{else}}
+                <h1>Welcome back!</h1>
+                <div class="ui info message">
+                    Select one of your courses in the left menu, or follow a new course
+                </div>
+            {{/if}}
         </div>
-
+    </div>
 </template>

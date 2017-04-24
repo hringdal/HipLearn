@@ -21,5 +21,5 @@ import './frontpage.js';
 import './sidebar.html';
 import './sidebar.js';
 
-import './list.html';
-import './list.js';
+import './useraccounts.html';
+import './useraccounts.js';

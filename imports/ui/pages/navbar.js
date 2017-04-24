@@ -26,9 +26,24 @@ Template.navbar.helpers({
     } else if (role === 2) {
       return 'teacher.show';
     }
-    return 'admin.show';
+    return '#';
+  },
+  about() {
+    if (!Meteor.user()) {
+      return '#';
+    }
+    const role = Meteor.user().profile.role;
+    if (role === 1) {
+      return 'student.about';
+    } else if (role === 2) {
+      return 'teacher.about';
+    }
+    return '#';
   },
   isStudent() {
+    if (!Meteor.user()) {
+      return '#';
+    }
     return Meteor.user().profile.role === 1;
   },
 });

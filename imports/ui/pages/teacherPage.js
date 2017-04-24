@@ -3,13 +3,14 @@ import { Template } from 'meteor/templating';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import { $ } from 'meteor/jquery';
 import { AutoForm } from 'meteor/aldeed:autoform';
-import Highcharts from 'highcharts';
+import Highcharts from 'highcharts'; // import is actually used, but by jquery
 // eslint-disable-next-line import/no-named-default
 import { default as swal } from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
 
 
 import { Courses } from '../../api/courses.js';
+import { Books } from '../../api/books.js';
 import { Following } from '../../api/following.js';
 
 Template.teacherPage.helpers({
@@ -47,13 +48,18 @@ Template.course.onCreated(function created() {
   this.getCourseId = () => FlowRouter.getParam('courseId');
 
   this.autorun(() => {
+    this.subscribe('books.course', this.getCourseId());
     this.subscribe('following.count', this.getCourseId());
   });
 });
 
 Template.course.helpers({
   studentCount() {
-    return Following.find({}).count();
+    return Following.find({ course_id: FlowRouter.getParam('courseId') }).count();
+  },
+  courseHasBooks() {
+    const courseId = FlowRouter.getParam('courseId');
+    return Books.find({ course_id: courseId });
   },
 });
 
@@ -87,6 +93,7 @@ Template.createCourse.events({
     const courseCode = AutoForm.getFieldValue('code', 'createCourse');
 
     $('.ui.dimmer').addClass('active');
+
     Meteor.call('courseInfo', courseCode, '2016', function callback(err, res) {
       populate('#createCourse', res);
       $('.ui.dimmer').removeClass('active');
@@ -197,7 +204,7 @@ Template.pieCharts.onRendered(function init() {
       },
     });
   });
-  Meteor.call('userStats', courseId, function userStats(err, res) {
+  Meteor.call('userStats', courseId, Meteor.userId(), function userStats(err, res) {
     // Use plot functon here with the data to insert graph in template
     const $teacherChart = $('#teacherChart');
     $teacherChart.highcharts().series[0].setData([

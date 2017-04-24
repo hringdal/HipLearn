@@ -60,3 +60,4 @@ zimme:active-route
 # Mobile
 mobile-experience@1.0.4       # Packages for a great mobile UX
 fastclick@1.0.13
+meteorhacks:fast-render

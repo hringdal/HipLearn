@@ -9,6 +9,13 @@ FlowRouter.route('/', {
   },
 });
 
+FlowRouter.route('/about', {
+  name: 'about',
+  action() {
+    BlazeLayout.render('mainLayout', { main: 'about', sidebar: 'hippo' });
+  },
+});
+
 FlowRouter.route('/books/:_id/edit', {
   name: 'books.edit',
   action() {
@@ -85,6 +92,6 @@ FlowRouter.route('/list', {
 // Redirect for all unknown routes
 FlowRouter.notFound = {
   action() {
-    BlazeLayout.render('mainLayout', { main: 'appNotFound' });
+    BlazeLayout.render('minimalLayout', { main: 'appNotFound' });
   },
 };

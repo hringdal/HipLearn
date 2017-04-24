@@ -1,10 +1,26 @@
 <template name="listBooks">
-    <h1>Books</h1>
+    <h1 class="ui dividing header">Course Books</h1>
+    <div class="ui info message">
+        <div class="header">
+            This is a list constisting of the book(s) that are part of the curriculum of this course
+        </div>
+        <ul class="list">
+            <li>Click <strong>Show</strong> to show the chapters in a book</li>
+            <li>Update the expected course progress by <strong>checking off</strong> chapters during the semester</li>
+            <li>The expected course progress is also shown on the student page, to let students know how far they should
+                have come
+            </li>
+        </ul>
+    </div>
     <div class="ui divided items">
         {{#each books}}
             {{> book}}
             <div class="book-slider" style="display: none" data-id="{{_id}}">
                 {{> showBook}}
+            </div>
+        {{else}}
+            <div class="ui warning message">
+                Nothing to see yet! Create a new book to get started!
             </div>
         {{/each}}
         <div class="ui divider"></div>
@@ -31,7 +47,7 @@
             </div>
             <div class="description">
                 <p>
-                    {{description}}
+                    <span class="pre">{{description}}</span>
                 </p>
             </div>
             <div class="extra">
@@ -65,7 +81,7 @@
                     Description
                 </div>
                 <div class="content">
-                    <p class="transition hidden">{{courseContent}}</p>
+                    <p class="transition hidden"><span class="pre">{{courseContent}}</span></p>
                 </div>
             {{/if}}
             {{#if learningGoal}}
@@ -74,28 +90,35 @@
                     Learning Goals
                 </div>
                 <div class="content">
-                    <p class="transition hidden">{{learningGoal}}</p>
+                    <p class="transition hidden"><span class="pre">{{learningGoal}}</span></p>
                 </div>
             {{/if}}
         </div>
+    </div>
 
-        <div class="ui hidden divider"></div>
+    <h1 class="ui dividing header">Course Material</h1>
 
+    <div class="ui hidden divider"></div>
+
+    <div class="ui basic segment">
         {{> progressBar}}
     </div>
 
-    <h1 class="ui header">Overview of books</h1>
-
     {{#if Template.subscriptionsReady}}
-        {{#if hasBooks}}
-            {{#each books}}
-                <div class="ui divider"></div>
-                {{> showBook}}
-            {{/each}}
+        {{#each books}}
+            <div class="ui divider"></div>
+            {{> showBook}}
         {{else}}
-            <p>Oops! This course currently has no listed books.<br>
-                Contact your lecturer to get your curriculum included.</p>
-        {{/if}}
+            <div class="ui warning message">
+                <div class="header">
+                    Looks like this course doesn't have any books yet
+                </div>
+                <p>Contact your lecturer to get your curriculum included and start checking off chapters!</p>
+                Email for lecturer in {{code}}:
+                <a class="ui link" href="mailto:{{courseOwner}}?subject={{code}} at HipLearn&body=Dear Sir or Madam,%0D%0DI am following your course at HipLearn, but there are currently no books listed. It would be great if you added some books in the course.%0D%0DLink to course: http://hiplearn.me/teacher/course/{{_id}}%0D%0DBest regards, Student">{{courseOwner}}</a>
+
+            </div>
+        {{/each}}
     {{else}}
         <div class="ui active inverted dimmer">
             <div class="ui loader"></div>
@@ -104,11 +127,21 @@
 </template>
 
 <template name="progressBar">
-    <div class="ui indicating progress" id="course-progress">
-        <div class="bar">
-            <div class="progress"></div>
+    <div class="ui message">
+        <h3>Your progress</h3>
+        <div class="ui indicating progress" id="course-progress">
+            <div class="bar">
+                <div class="progress"></div>
+            </div>
+            <div class="label">Completed chapters</div>
         </div>
-        <div class="label">Completed chapters</div>
+        <h3>Expected course progress</h3>
+        <div class="ui indicating progress" id="expected-progress">
+            <div class="bar">
+                <div class="progress"></div>
+            </div>
+            <div class="label">Completed chapters</div>
+        </div>
     </div>
 </template>
 
@@ -152,6 +185,7 @@
                 {{> afQuickField name='title'}}
                 {{> afQuickField name='course_id'}}
                 {{> afQuickField name='description' rows=3 }}
+                <h4>Chapters</h4>
                 {{> afArrayField name='chapters' template="bookForm"}}
                 <button type="submit" class="ui positive button">Update</button>
                 <a href="{{pathForCourse}}" class="ui basic button">Cancel</a>
@@ -164,10 +198,14 @@
     <div class="ui stackable grid container">
         <div class="column">
             <div id="new-book">
-                <h2>Creating New Book in course {{getCourseCode}}</h2>
+                <h2>Creating a new book in course {{getCourseCode}}</h2>
                 {{#autoForm collection=getBooks type="method" meteormethod="books.insert" id="createBook"}}
                     {{> afQuickField name='title'}}
                     {{> afQuickField name='description' rows=3 }}
+                    <h4>Chapters</h4>
+                    <div class="ui info message">
+                        Add the chapters, sections and subsections in this book that are a part of the course curriculum
+                    </div>
                     {{> afArrayField name='chapters' template="bookForm"}}
                     <button type="submit" class="ui primary button">Create Book</button>
                     <a href='{{pathForCourse}}' class="ui show-new-book button">Cancel</a>
@@ -178,13 +216,35 @@
 </template>
 
 <template name="newBookISBN">
+    <div class="ui inverted dimmer">
+        <div class="ui large text loader">
+            Gathering information..
+        </div>
+    </div>
     <div class="ui stackable grid container">
         <div class="column">
             <h2>Creating New Book from ISBN Code</h2>
-            <h3>* This feature is experimental and may cause errors *</h3>
+            <div class="ui info message">
+                <div class="header">
+                    This form tries to create a book from an ISBN (International Standard Book Number)
+                </div>
+                <ol class="ui list">
+                    <li value="*">The information is collected from <a
+                            href="https://openlibrary.org">openlibrary.org</a>, an extensive book library
+                    </li>
+                    <li value="*"> How to use:
+                        <ol>
+                            <li value="1">Search for a book at <a href="https://openlibrary.org">openlibrary.org</a>
+                            </li>
+                            <li value="2">Copy and paste its ISBN 10 or 13 code</li>
+                            <li value="3">Click on <strong>Get Book Info</strong></li>
+                        </ol>
+                    </li>
+                </ol>
+            </div>
             {{#autoForm schema=isbnSchema type="method" meteormethod="books.insertISBN" id="createBookISBN"}}
                 {{> afQuickField name='isbn'}}
-                <button type="submit" class="ui positive button">Insert</button>
+                <button type="submit" class="ui positive button">Get Book Info</button>
                 <a href='{{pathForCourse}}' class="ui button">Cancel</a>
             {{/autoForm}}
         </div>
@@ -192,9 +252,6 @@
 </template>
 
 <template name="afArrayField_bookForm">
-    <h4 class="ui header">
-        {{afFieldLabelText name=this.atts.name}}
-    </h4>
     <div class="ui basic segment">
         {{#if afFieldIsInvalid name=this.atts.name}}
             <div class="ui pointing red basic label">

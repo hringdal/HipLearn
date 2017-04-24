@@ -13,6 +13,9 @@ const BookSchema = new SimpleSchema({
   title: {
     type: String,
     label: 'Book title',
+    autoform: {
+      placeholder: 'Title',
+    },
   },
   course_id: {
     type: String,
@@ -93,14 +96,71 @@ if (Meteor.isServer) {
 Meteor.methods({
   'books.insert': function insertBook(book) {
     check(book, Object);
-    const bookId = Books.insert(book);
+    Books.insert(book);
 
     // Create a new notification
-    Meteor.call('notifications.create', bookId, 'added');
+    const message = `A new book ${book.title} was added`;
+    Meteor.call('notifications.create', message, book.course_id);
   },
-  'books.insertISBN': function insertBookISBN(book) {
-    check(book, Object);
-    Meteor.call('bookInfo', book.isbn, book.course_id);
+  'books.insertISBN': function insertBookISBN(data) {
+    check(data, {
+      isbn: String,
+      course_id: String,
+    });
+
+    const isbn = data.isbn;
+    const courseId = data.course_id;
+    // Call the openlibrary api to get info about chapters in a book
+    // There are few books that have a table_of_contents, but we often
+    // get at least the title
+    if (Meteor.isServer) {
+      this.unblock();
+      // remove all whitespace and set query
+      const id = `ISBN:${isbn.replace(/\s/g, '')}`;
+
+      try {
+        const response = HTTP.call('GET', 'https://openlibrary.org/api/books', {
+          params: {
+            bibkeys: id, // AIMA ISBN: 9780136042594
+            format: 'json',
+            jscmd: 'details',
+          },
+        });
+        const details = JSON.parse(response.content)[id].details;
+        let chapters = [];
+        let description = '';
+
+        if (details.table_of_contents !== undefined) {
+          chapters = details.table_of_contents;
+          for (let i = 0; i < chapters.length; i += 1) {
+            if (chapters[i].level < 1) {
+              chapters[i].level = 1;
+            } else if (chapters[i].level > 3) {
+              chapters[i].level = 3;
+            }
+          }
+        }
+
+        if (details.description !== undefined) {
+          description = details.description;
+        }
+
+        const book = {
+          title: details.title,
+          isbn,
+          description,
+          chapters,  // TODO: change names inside here?
+          course_id: courseId,
+        };
+        Books.insert(book);
+        return book.course_id;
+      } catch (e) {
+        // Got a network error, timeout, or HTTP error in the 400 or 500 range.
+        // Or JSON parse error
+        return false;
+      }
+    }
+    return undefined;
   },
 
   'books.update': function updateBook(data) {
@@ -108,11 +168,11 @@ Meteor.methods({
     // check for permissions
     Books.update(data._id, data.modifier);
 
-    // get updated book
+    // get updated book and create a notification for following users
     const book = Books.findOne(data._id);
+    const message = `The book ${book.title} was updated`;
 
-    // create a new notification
-    Meteor.call('notifications.create', data._id, 'updated');
+    Meteor.call('notifications.create', message, book.course_id);
 
     // if chapter has been deleted, remove results
     const chapterIds = book.chapters.map(function getId(chapter) {
@@ -125,45 +185,11 @@ Meteor.methods({
     // remove related results
     Results.remove({ book_id: bookId });
 
-    // create a notification for following users
-    Meteor.call('notifications.create', bookId, 'deleted');
+    // get data and create a notification for following users
+    const book = Books.findOne(bookId);
+    const message = `The book ${book.title} was deleted`;
+    Meteor.call('notifications.create', message, book.course_id);
 
     Books.remove(bookId);
-  },
-  bookInfo(isbn, courseId) {
-    check(isbn, String);
-    check(courseId, String);
-    // Call the openlibrary api to get info about chapters in a book
-    // There are few books that have a table_of_contents, but we often
-    // get at least the title
-    if (Meteor.isServer) {
-      this.unblock();
-      const id = `ISBN:${isbn}`;
-
-      try {
-        const response = HTTP.call('GET', 'https://openlibrary.org/api/books', {
-          params: {
-            bibkeys: id, // AIMA ISBN: 9780136042594
-            format: 'json',
-            jscmd: 'details',
-          },
-        });
-        const details = JSON.parse(response.content)[id].details;
-
-        const book = {
-          title: details.title,
-          isbn,
-          chapters: details.table_of_contents,  // TODO: change names inside here?
-          course_id: courseId,
-        };
-        Meteor.call('books.insert', book);
-      } catch (e) {
-        // Got a network error, timeout, or HTTP error in the 400 or 500 range.
-        // Or JSON parse error
-        console.log(e);
-        return false;
-      }
-    }
-    return false;
   },
 });

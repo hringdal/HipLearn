@@ -85,13 +85,15 @@ Template.listStudentBooks.onRendered(function init() {
 });
 
 Template.listStudentBooks.helpers({
-  hasBooks() {
-    const courseId = FlowRouter.getParam('courseId');
-    return Books.find({ course_id: courseId }).count() > 0;
-  },
   books() {
     const courseId = FlowRouter.getParam('courseId');
     return Books.find({ course_id: courseId });
+  },
+  courseOwner() {
+    const ownerId = Template.instance().data.owner_id;
+    console.log(Template.instance());
+    const owner = Meteor.users.findOne(ownerId);
+    return owner.emails[0].address;
   },
 });
 
@@ -108,7 +110,7 @@ Template.progressBar.onRendered(function init() {
   this.autorun(function render() {
     const courseId = FlowRouter.getParam('courseId');
     if (typeof courseId !== 'undefined') { // make sure that a course is selected
-      Meteor.call('userStats', courseId, function updateProgress(err, res) {
+      Meteor.call('userStats', courseId, Meteor.userId(), function updateProgress(err, res) {
         // Use plot functon here with the data to insert graph in template
         $('#course-progress')
           .progress({
@@ -118,6 +120,22 @@ Template.progressBar.onRendered(function init() {
             text: {
               active: 'Completed {value} of {total} total chapters',
               success: 'All chapters completed! Good job!',
+            },
+          });
+      });
+
+      const course = Courses.findOne(courseId);
+
+      Meteor.call('userStats', courseId, course.owner_id, function updateProgress(err, res) {
+        // Use plot functon here with the data to insert graph in template
+        $('#expected-progress')
+          .progress({
+            showActivity: false,
+            total: res.chapterCount,
+            value: res.completedCount,
+            text: {
+              active: 'Completed {value} of {total} total chapters',
+              success: 'All chapters should be completed!',
             },
           });
       });
@@ -175,17 +193,23 @@ Template.showBook.events({
 
     // update progress bar if in student page
     if (FlowRouter.getRouteName() === 'student.course') {
-      Meteor.call('userStats', courseId, function stats(err, res) {
+      Meteor.call('userStats', courseId, Meteor.userId(), function stats(err, res) {
         // Use plot functon here with the data to insert graph in template
-        $('#course-progress')
-          .progress('set total', res.chapterCount) // maybe unnecessary?
-          .progress('set progress', res.completedCount);
+        const $progress = $('#course-progress');
+        if (res.completedCount === res.chapterCount) {
+          $progress
+            .progress('set success');
+        } else {
+          $progress
+            .progress('set total', res.chapterCount)
+            .progress('set progress', res.completedCount);
+        }
       });
     }
 
     // update charts if teacher page
     if (FlowRouter.getRouteName() === 'teacher.course') {
-      Meteor.call('userStats', courseId, function userStats(err, res) {
+      Meteor.call('userStats', courseId, Meteor.userId(), function userStats(err, res) {
         const $teacherChart = $('#teacherChart');
         $teacherChart.highcharts().series[0].setData([
           res.chapterCount - res.completedCount,
@@ -288,6 +312,7 @@ Template.newBookISBN.helpers({
     return new SimpleSchema({
       isbn: {
         type: String,
+        label: 'ISBN code',
       },
       course_id: {
         type: String,
@@ -297,7 +322,7 @@ Template.newBookISBN.helpers({
 });
 
 // Routes "create book" and "edit book" forms to a specified template on success
-AutoForm.addHooks(['createBook', 'createBookISBN'], {
+AutoForm.addHooks(['createBook'], {
   before: {
     // Add courseId to book document before insert
     method(doc) {
@@ -310,6 +335,42 @@ AutoForm.addHooks(['createBook', 'createBookISBN'], {
   onSuccess() {
     const courseId = FlowRouter.getParam('courseId');
     FlowRouter.go('teacher.course', { courseId });
+  },
+});
+
+AutoForm.addHooks('createBookISBN', {
+  before: {
+    // Add courseId to book document before insert
+    method(doc) {
+      if ($('input[type="text"]').val() !== '') {
+        $('.ui.dimmer').addClass('active');
+      }
+      const book = doc;
+      book.course_id = FlowRouter.getParam('courseId');
+      return book;
+    },
+  },
+  onSuccess() {
+    console.log('submit');
+  },
+  after: {
+    method: function res(error, result) {
+      console.log('after');
+      if (result) {
+        swal({
+          title: 'Success!',
+          text: 'A new book was created. Returning to course..',
+          type: 'success',
+          showConfirmButton: false,
+          timer: 2000,
+        }).then(() => {}, function route() {
+          FlowRouter.go('teacher.course', { courseId: result });
+        }).catch(swal.noop);
+      } else {
+        $('.ui.dimmer').removeClass('active');
+        swal('Getting info from Open Library failed...', "We couldn't find a book with that ISBN, or the book is missing required information", 'error');
+      }
+    },
   },
 });
 

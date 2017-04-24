@@ -1,9 +1,12 @@
 <template name="frontpage">
-    {{#if currentUser}}
-        {{> navbar}}
-    {{/if}}
-
     <!-- del 1 av forsiden -->
+    {{> masthead}}
+    <!-- del 2 av forsiden-->
+    {{> about}}
+
+</template>
+
+<template name="masthead">
     <div class="frontpage">
         <div class="ui inverted vertical masthead center aligned segment">
             <div class="ui text container">
@@ -15,22 +18,17 @@
                 </h2>
             </div>
             <div class="ui hidden divider"></div>
-            {{#unless currentUser}}
-                <a href="{{pathFor 'sign-in'}}" id="getStartedButton" class="ui huge primary button">
-                    Get started with HipLearn (or login)
-                    <i class="right arrow icon"></i>
-                </a>
-            {{/unless}}
-
+            <a href="{{pathFor 'sign-in'}}" id="getStartedButton" class="ui huge primary button">
+                Get started with HipLearn (or login)
+                <i class="right arrow icon"></i>
+            </a>
         </div>
         <div class="ui hidden divider"></div>
+        <div class="ui hidden divider"></div>
     </div>
+</template>
 
-
-    <!-- del 2 av forsiden-->
-
-    <div class="ui hidden divider"></div>
-
+<template name="about">
     <div class="ui middle aligned stackable grid container">
         <div class="row">
             <div class="eight wide center aligned column">
@@ -87,7 +85,7 @@
 
     </div>
 
-    <div class="ui divider"></div>
+    <div class="ui section divider"></div>
 
     <div class="ui vertical stripe quote segment">
         <div class="ui equal width stackable internally celled grid">

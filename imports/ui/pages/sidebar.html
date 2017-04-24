@@ -1,11 +1,11 @@
 <template name="studentSidebar">
     <div id="fixed-vertical" class="ui fixed vertical menu">
-        <div class="item">
-            <div class="header">Courses</div>
+        <div class="header item">
+            My Courses
         </div>
         {{#if Template.subscriptionsReady}}
             {{#each courses}}
-                <a class="item {{#if activeCourse}}teal active{{/if}}" href={{pathForCourse}}>
+                <a class="course item {{#if activeCourse}}teal active{{/if}}" href={{pathForCourse}}>
                     {{name}}
                 </a>
             {{/each}}
@@ -69,5 +69,10 @@
             Create a new course
         </a>
     </div>
+</template>
 
+<template name="hippo">
+    <div id="fixed-image" class="ui image">
+        <img class="ui image" src="/images/hippo.png">
+    </div>
 </template>

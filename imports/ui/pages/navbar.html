@@ -1,7 +1,7 @@
 <template name="navbar">
     <div class="ui inverted fixed borderless menu">
         <div class="ui container">
-            <a href="{{pathFor 'root'}}" class="header item">
+            <a href="{{pathFor userRole}}" class="header item">
                 <i class="large home icon"></i>
                 <strong>HipLearn</strong>
             </a>
@@ -9,10 +9,10 @@
                 <i class="list icon"></i>
                 Courses
             </a>
-            <!--<a href="{{pathFor 'list.show'}}" class="{{isActiveRoute 'list.show' class='active'}} item">
-                <i class="tasks icon"></i>
-                List
-            </a>-->
+            <a href="{{pathFor 'about'}}" class="{{isActiveRoute 'about' class='active'}} item">
+                <i class="info icon"></i>
+                About
+            </a>
             <div class="right menu">
                 {{#if isStudent}}
                     {{> notifications}}
@@ -61,7 +61,7 @@
 <template name="notificationItem">
     <a class="notification item" href="{{pathFor 'student.course' courseId=course_id}}">
         <h4><i class="book icon"></i>{{courseName}}</h4>
-        The book <strong>{{bookTitle}}</strong> has been {{type}}
+        {{message}}
     </a>
 
 </template>
