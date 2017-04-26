@@ -5,7 +5,9 @@ import { Tracker } from 'meteor/tracker';
 import { Random } from 'meteor/random';
 import { check } from 'meteor/check';
 import { HTTP } from 'meteor/http';
+
 import { Results } from './results.js';
+import { Courses } from './courses.js';
 
 SimpleSchema.extendOptions(['autoform']);
 
@@ -93,9 +95,24 @@ if (Meteor.isServer) {
   });
 }
 
+// Deny client-side updates because we use methods for handling data
+Books.deny({
+  insert() { return true; },
+  update() { return true; },
+  remove() { return true; },
+});
+
 Meteor.methods({
   'books.insert': function insertBook(book) {
     check(book, Object);
+
+    const ownerId = Courses.findOne(book.course_id).owner_id;
+
+    if (ownerId !== this.userId) {
+      throw new Meteor.Error('books.insert.accessDenied',
+        'Cannot add books to a course that is not yours');
+    }
+
     Books.insert(book);
 
     // Create a new notification
@@ -108,13 +125,19 @@ Meteor.methods({
       course_id: String,
     });
 
+    const ownerId = Courses.findOne(data.course_id).owner_id;
+
+    if (ownerId !== this.userId) {
+      throw new Meteor.Error('books.insertISBN.accessDenied',
+        'Cannot add books to a course that is not yours');
+    }
+
     const isbn = data.isbn;
     const courseId = data.course_id;
     // Call the openlibrary api to get info about chapters in a book
     // There are few books that have a table_of_contents, but we often
     // get at least the title
     if (Meteor.isServer) {
-      this.unblock();
       // remove all whitespace and set query
       const id = `ISBN:${isbn.replace(/\s/g, '')}`;
 
@@ -166,6 +189,14 @@ Meteor.methods({
   'books.update': function updateBook(data) {
     check(data, Object);
     // check for permissions
+    const courseId = Books.findOne(data._id).course_id;
+    const ownerId = Courses.findOne(courseId).owner_id;
+
+    if (ownerId !== this.userId) {
+      throw new Meteor.Error('books.update.accessDenied',
+        'Cannot update books in a course that is not yours');
+    }
+
     Books.update(data._id, data.modifier);
 
     // get updated book and create a notification for following users
@@ -175,13 +206,29 @@ Meteor.methods({
     Meteor.call('notifications.create', message, book.course_id);
 
     // if chapter has been deleted, remove results
-    const chapterIds = book.chapters.map(function getId(chapter) {
-      return chapter._id;
-    }); // compare results with chapters in book
-    Results.remove({ book_id: data._id, chapter_id: { $nin: chapterIds } });
+    // remove whole book if no chapters
+    console.log(book.chapters);
+    if (book.chapters === undefined) {
+      Results.remove({ book_id: data._id });
+    } else {
+      console.log('else');
+      const chapterIds = book.chapters.map(function getId(chapter) {
+        return chapter._id;
+      }); // compare results with chapters in book
+      Results.remove({ book_id: data._id, chapter_id: { $nin: chapterIds } });
+    }
   },
   'books.delete': function deleteBook(bookId) {
     check(bookId, String);
+
+    const courseId = Books.findOne(bookId).course_id;
+    const ownerId = Courses.findOne(courseId).owner_id;
+
+    if (ownerId !== this.userId) {
+      throw new Meteor.Error('books.delete.accessDenied',
+        'Cannot delete books in a course that is not yours');
+    }
+
     // remove related results
     Results.remove({ book_id: bookId });
 

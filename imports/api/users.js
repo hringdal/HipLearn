@@ -63,3 +63,8 @@ const UserSchema = new SimpleSchema({
 });
 
 Meteor.users.attachSchema(UserSchema);
+
+Meteor.publish('users.owner', function courseOwner(userId) {
+  check(userId, String);
+  return Meteor.users.find(userId, { fields: { 'emails.address': 1 } });
+});

@@ -21,4 +21,10 @@ Template.studentPage.helpers({
   course() {
     return Courses.findOne(FlowRouter.getParam('courseId'));
   },
+  isTeacher() {
+    if (!Meteor.user()) {
+      return false;
+    }
+    return Meteor.user().profile.role === 2;
+  },
 });

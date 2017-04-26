@@ -16,30 +16,6 @@ FlowRouter.route('/about', {
   },
 });
 
-FlowRouter.route('/books/:_id/edit', {
-  name: 'books.edit',
-  action() {
-    BlazeLayout.render('mainLayout', { main: 'editBook', sidebar: 'teacherSidebar' });
-  },
-  triggersEnter: [() => {
-    window.scrollTo(0, 0);
-  }],
-});
-
-FlowRouter.route('/books/new/:courseId', {
-  name: 'books.new',
-  action() {
-    BlazeLayout.render('mainLayout', { main: 'newBook', sidebar: 'teacherSidebar' });
-  },
-});
-
-FlowRouter.route('/books/new/isbn/:courseId', {
-  name: 'books.new.isbn',
-  action() {
-    BlazeLayout.render('mainLayout', { main: 'newBookISBN', sidebar: 'teacherSidebar' });
-  },
-});
-
 FlowRouter.route('/student', {
   name: 'student.show',
   action() {
@@ -54,38 +30,60 @@ FlowRouter.route('/student/course/:courseId', {
   },
 });
 
-FlowRouter.route('/teacher', {
+// Access is restricted in the template through the adminLayout
+const teacherRoutes = FlowRouter.group({
+  prefix: '/teacher',
+});
+
+teacherRoutes.route('/books/:_id/edit', {
+  name: 'books.edit',
+  action() {
+    BlazeLayout.render('adminLayout', { main: 'editBook', sidebar: 'teacherSidebar' });
+  },
+  triggersEnter: [() => {
+    window.scrollTo(0, 0);
+  }],
+});
+
+teacherRoutes.route('/books/new/:courseId', {
+  name: 'books.new',
+  action() {
+    BlazeLayout.render('adminLayout', { main: 'newBook', sidebar: 'teacherSidebar' });
+  },
+});
+
+teacherRoutes.route('/books/new/isbn/:courseId', {
+  name: 'books.new.isbn',
+  action() {
+    BlazeLayout.render('adminLayout', { main: 'newBookISBN', sidebar: 'teacherSidebar' });
+  },
+});
+
+teacherRoutes.route('/', {
   name: 'teacher.show',
   action() {
-    BlazeLayout.render('mainLayout', { main: 'teacherPage', sidebar: 'teacherSidebar' });
+    BlazeLayout.render('adminLayout', { main: 'teacherPage', sidebar: 'teacherSidebar' });
   },
 });
 
-FlowRouter.route('/teacher/course/:courseId', {
+teacherRoutes.route('/course/:courseId', {
   name: 'teacher.course',
   action() {
-    BlazeLayout.render('mainLayout', { main: 'teacherPage', sidebar: 'teacherSidebar' });
+    BlazeLayout.render('adminLayout', { main: 'teacherPage', sidebar: 'teacherSidebar' });
   },
 });
 
-FlowRouter.route('/teacher/course/:courseId/edit', {
+teacherRoutes.route('/course/:courseId/edit', {
   name: 'teacher.edit',
   action() {
-    BlazeLayout.render('mainLayout', { main: 'editCourse', sidebar: 'teacherSidebar' });
+    BlazeLayout.render('adminLayout', { main: 'editCourse', sidebar: 'teacherSidebar' });
   },
 });
 
-FlowRouter.route('/teacher/new/', {
+teacherRoutes.route('/new/', {
   name: 'teacher.new',
   action() {
-    BlazeLayout.render('mainLayout', { main: 'createCourse', sidebar: 'teacherSidebar' });
-  },
-});
-
-FlowRouter.route('/list', {
-  name: 'list.show',
-  action() {
-    BlazeLayout.render('mainLayout', { main: 'list' });
+    BlazeLayout.render('adminLayout', { main: 'createCourse', sidebar: 'teacherSidebar' });
   },
 });
 

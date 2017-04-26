@@ -61,8 +61,6 @@ AccountsTemplates.configureRoute('signIn', {
           // should be an admin -> role === 3
           FlowRouter.go('teacher.show');
         }
-      } else {
-        console.log('no user');
       }
     });
   },

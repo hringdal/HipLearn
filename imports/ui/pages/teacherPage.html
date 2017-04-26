@@ -8,9 +8,16 @@
                 <h1>Welcome back!</h1>
                 <div class="ui info message">
                     <div class="header">
-                        Select a course in the left menu to get started
+                        Select one of your courses in the left menu to get started
                     </div>
-                    You can also create new courses from the menu
+                    <div class="content">
+                        <ul>
+                            <li>The admin tab lets you edit and create new courses</li>
+                            <li>Students can follow your courses to get a list of the course curriculum</li>
+                            <li>As a teacher you are able to see the average student progress in your course</li>
+                            <li>Click the <a href="{{pathFor 'student.show'}}">Courses</a> tab to preview your courses as a student</li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
@@ -44,9 +51,10 @@
                     Statistics
                 </h3>
 
-                {{#if courseHasBooks}}
+                <div class="{{#if courseHasNoBooks}}hide{{/if}}">
                     {{> pieCharts}}
-                {{else}}
+                </div>
+                {{#if courseHasNoBooks}}
                     <div class="ui info message">
                         <div class="ui header">
                             Create a book below to start seeing statistics!
@@ -124,15 +132,22 @@
 </template>
 
 <template name="createCourse">
-    <div class="ui inverted dimmer">
+    <div class="submit-loader ui inverted dimmer">
         <div class="ui large loader"></div>
     </div>
-    <div class="ui relaxed grid container">
+    <div class="ui stackable grid container">
         <div class="column">
             <h1>Create a New Course</h1>
-            <p>You can add books after your course has been created. To automatically populate the values, fill in a
-                course
-                code and press the <em>Autofill</em> button</p>
+            <div class="ui info message">
+                <ul>
+                    <li>Here you can create a new course</li>
+                    <li>The <strong>Autofill</strong> button takes an NTNU course code, i.e. <em>TMA4100</em>, and tries
+                        to
+                        fill the fields using data from the official
+                        <a href="http://www.ntnu.no/studier/emner" target="_blank">NTNU website</a></li>
+                    <li>If Autofill doesn't find anything, it simply clears all the fields</li>
+                </ul>
+            </div>
             {{#autoForm id="createCourse" type="method" meteormethod="courses.insert" collection=formCourses}}
                 {{> afQuickField name="code" size="10"}}
                 {{> afQuickField name="name"}}

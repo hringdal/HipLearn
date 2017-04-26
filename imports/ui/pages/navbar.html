@@ -1,14 +1,20 @@
 <template name="navbar">
     <div class="ui inverted fixed borderless menu">
         <div class="ui container">
-            <a href="{{pathFor userRole}}" class="header item">
+            <a href="{{pathFor 'student.show'}}" class="header item">
                 <i class="large home icon"></i>
                 <strong>HipLearn</strong>
             </a>
-            <a href="{{pathFor userRole}}" class="{{isActiveRoute userRole class='active'}} item">
+            <a href="{{pathFor 'student.show'}}" class="{{isActiveRoute 'student.show' class='active'}} item">
                 <i class="list icon"></i>
                 Courses
             </a>
+            {{#if isTeacher}}
+                <a href="{{pathFor 'teacher.show'}}" class="{{isActiveRoute 'teacher.show' class='active'}} item">
+                    <i class="list icon"></i>
+                    Course Admin
+                </a>
+            {{/if}}
             <a href="{{pathFor 'about'}}" class="{{isActiveRoute 'about' class='active'}} item">
                 <i class="info icon"></i>
                 About

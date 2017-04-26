@@ -3,15 +3,21 @@ import { Template } from 'meteor/templating';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import { $ } from 'meteor/jquery';
 import { AutoForm } from 'meteor/aldeed:autoform';
+// eslint-disable-next-line no-unused-vars
 import Highcharts from 'highcharts'; // import is actually used, but by jquery
 // eslint-disable-next-line import/no-named-default
 import { default as swal } from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
 
-
 import { Courses } from '../../api/courses.js';
 import { Books } from '../../api/books.js';
 import { Following } from '../../api/following.js';
+
+Template.teacherPage.onCreated(function created() {
+  this.autorun(() => {
+    this.subscribe('courses.teacher');
+  });
+});
 
 Template.teacherPage.helpers({
   courseSelected() {
@@ -48,18 +54,21 @@ Template.course.onCreated(function created() {
   this.getCourseId = () => FlowRouter.getParam('courseId');
 
   this.autorun(() => {
-    this.subscribe('books.course', this.getCourseId());
+    this.subscribe('books', this.getCourseId());
     this.subscribe('following.count', this.getCourseId());
   });
 });
 
 Template.course.helpers({
   studentCount() {
-    return Following.find({ course_id: FlowRouter.getParam('courseId') }).count();
+    if (Meteor.user()) {
+      return Following.find({ course_id: FlowRouter.getParam('courseId'), user_id: { $ne: Meteor.userId() } }).count();
+    }
+    return 0;
   },
-  courseHasBooks() {
+  courseHasNoBooks() {
     const courseId = FlowRouter.getParam('courseId');
-    return Books.find({ course_id: courseId });
+    return Books.find({ course_id: courseId }).count() === 0;
   },
 });
 
@@ -74,7 +83,7 @@ Template.editCourse.helpers({
 });
 
 Template.createCourse.onRendered(function init() {
-  $('input[name="code"]').after('<div class="ui teal button" id="fill">Autofill</div><span data-tooltip="Use a valid code like TMA4100" data-position="right center"><i class="circular question icon"></i></span>');
+  $('input[name="code"]').parent().after('<div class="ui teal button" style="margin-bottom: 1em" id="fill">Autofill Form</div><span data-tooltip="Be aware that NTNU does not have descriptions and learning goals for every course" data-position="right center"><i class="circular question icon"></i></span>');
 });
 
 Template.createCourse.helpers({
@@ -92,7 +101,7 @@ Template.createCourse.events({
     }
     const courseCode = AutoForm.getFieldValue('code', 'createCourse');
 
-    $('.ui.dimmer').addClass('active');
+    $('.submit-loader.ui.dimmer').addClass('active');
 
     Meteor.call('courseInfo', courseCode, '2016', function callback(err, res) {
       populate('#createCourse', res);

@@ -1,14 +1,37 @@
 <template name="studentPage">
     <!-- Main content -->
-    <div class="ui grid container">
+    <div class="ui relaxed grid container">
         <div class="ui column">
             {{#if course}}
                 {{> listStudentBooks course}}
             {{else}}
-                <h1>Welcome back!</h1>
-                <div class="ui info message">
-                    Select one of your courses in the left menu, or follow a new course
-                </div>
+                {{#if isTeacher}}
+                    <h1>Welcome to the student page!</h1>
+                    <div class="ui info message">
+                        <div class="header">
+                            Here you can preview how your students will see your courses
+                        </div>
+                    </div>
+                    <div class="ui warning message">
+                        <ul>
+                            <li>Note that the chapters you check off here also affect the <i>Expected course
+                                progress</i> on the
+                                <a href="{{pathFor 'teacher.show'}}">admin page</a>
+                            </li>
+                            <li>Don't check off chapters that you haven't covered yet!</li>
+                        </ul>
+                    </div>
+                {{else}}
+                    <h1>Welcome back!</h1>
+                    <div class="ui info message">
+                        <div class="header">
+                            Select one of your courses in the left menu to get started
+                        </div>
+                        <div class="content">
+                            You can also follow new courses in the menu.
+                        </div>
+                    </div>
+                {{/if}}
             {{/if}}
         </div>
     </div>

@@ -43,6 +43,7 @@ Template.listBooks.events({
   'click .delete-book': function confirmDelete(event) {
     event.preventDefault();
     const bookId = this._id;
+    const courseId = this.course_id;
     swal({
       title: 'Are you sure you want to delete this book?',
       text: 'You will not be able to recover it later!',
@@ -52,6 +53,23 @@ Template.listBooks.events({
       cancelButtonText: 'No, keep it',
     }).then(function deleteBook() {
       Meteor.call('books.delete', bookId);
+
+      // update charts
+      Meteor.call('userStats', courseId, Meteor.userId(), function userStats(err, res) {
+        const $teacherChart = $('#teacherChart');
+        $teacherChart.highcharts().series[0].setData([
+          res.chapterCount - res.completedCount,
+          res.completedCount]);
+        $teacherChart.highcharts().setTitle({ text: `<b>${res.completedCount}</b><br>Completed<br>chapters` });
+      });
+      Meteor.call('averageUserStats', courseId, function averageStats(err, res) {
+        const $studentChart = $('#studentChart');
+        $studentChart.highcharts().series[0].setData([
+          res.chapterCount - res.averageCount,
+          res.averageCount,
+        ]);
+        $studentChart.highcharts().setTitle({ text: `<b>${res.averageCount}</b><br>Completed<br>chapters` });
+      });
       swal({
         title: 'Deleted!',
         text: 'Your book has been deleted.',
@@ -74,6 +92,7 @@ Template.listBooks.events({
 
 Template.listStudentBooks.onCreated(function created() {
   this.getCourseId = () => FlowRouter.getParam('courseId');
+  this.getOwnerId = () => Template.instance().data.owner_id;
 
   this.autorun(() => {
     this.subscribe('books', this.getCourseId());
@@ -81,6 +100,8 @@ Template.listStudentBooks.onCreated(function created() {
 });
 
 Template.listStudentBooks.onRendered(function init() {
+  // this subscription has to wait for a value that is rendered in template
+  this.subscribe('users.owner', this.getOwnerId());
   $('#course-info').accordion('open', 0);
 });
 
@@ -91,9 +112,14 @@ Template.listStudentBooks.helpers({
   },
   courseOwner() {
     const ownerId = Template.instance().data.owner_id;
-    console.log(Template.instance());
     const owner = Meteor.users.findOne(ownerId);
     return owner.emails[0].address;
+  },
+  isStudent() {
+    if (!Meteor.user()) {
+      return false;
+    }
+    return Meteor.user().profile.role === 1;
   },
 });
 
@@ -124,9 +150,7 @@ Template.progressBar.onRendered(function init() {
           });
       });
 
-      const course = Courses.findOne(courseId);
-
-      Meteor.call('userStats', courseId, course.owner_id, function updateProgress(err, res) {
+      Meteor.call('userStats', courseId, Template.parentData(0).owner_id, function updateProgress(err, res) {
         // Use plot functon here with the data to insert graph in template
         $('#expected-progress')
           .progress({
@@ -205,6 +229,20 @@ Template.showBook.events({
             .progress('set progress', res.completedCount);
         }
       });
+
+      if (Meteor.userId() === Template.parentData(1).owner_id) {
+        Meteor.call('userStats', courseId, Meteor.userId(), function updateProgress(err, res) {
+          const $progress = $('#expected-progress');
+          if (res.completedCount === res.chapterCount) {
+            $progress
+              .progress('set success');
+          } else {
+            $progress
+              .progress('set total', res.chapterCount)
+              .progress('set progress', res.completedCount);
+          }
+        });
+      }
     }
 
     // update charts if teacher page
@@ -343,19 +381,15 @@ AutoForm.addHooks('createBookISBN', {
     // Add courseId to book document before insert
     method(doc) {
       if ($('input[type="text"]').val() !== '') {
-        $('.ui.dimmer').addClass('active');
+        $('.submit-loader.ui.dimmer').addClass('active');
       }
       const book = doc;
       book.course_id = FlowRouter.getParam('courseId');
       return book;
     },
   },
-  onSuccess() {
-    console.log('submit');
-  },
   after: {
     method: function res(error, result) {
-      console.log('after');
       if (result) {
         swal({
           title: 'Success!',
@@ -367,7 +401,7 @@ AutoForm.addHooks('createBookISBN', {
           FlowRouter.go('teacher.course', { courseId: result });
         }).catch(swal.noop);
       } else {
-        $('.ui.dimmer').removeClass('active');
+        $('.submit-loader.ui.dimmer').removeClass('active');
         swal('Getting info from Open Library failed...', "We couldn't find a book with that ISBN, or the book is missing required information", 'error');
       }
     },

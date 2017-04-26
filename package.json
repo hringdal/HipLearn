@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "start": "meteor --no-release-check",
-    "lint": "eslint --quiet ./imports",
+    "lint": "node_modules/.bin/eslint imports",
     "test": "meteor test --driver-package practicalmeteor:mocha"
   },
   "dependencies": {
@@ -45,6 +45,7 @@
     ],
     "rules": {
       "import/no-extraneous-dependencies": "off",
+      "import/prefer-default-export": "off",
       "import/extensions": [
         "off",
         "never"

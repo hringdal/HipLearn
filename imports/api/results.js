@@ -53,6 +53,13 @@ if (Meteor.isServer) {
   });
 }
 
+// Deny client-side updates because we use methods for handling data
+Results.deny({
+  insert() { return true; },
+  update() { return true; },
+  remove() { return true; },
+});
+
 Meteor.methods({
   // Create a new result if none exists, or toggle the checked value of an existing result
   // @checked: optional argument for updating subchapters in the collection
@@ -60,6 +67,11 @@ Meteor.methods({
     check(chapterId, String);
     check(bookId, String);
     check(courseId, String);
+
+    if (!this.userId) {
+      throw new Meteor.Error('results.toggle.notLoggedIn',
+        'Must be logged in to toggle results');
+    }
 
     function findChapter(chapter) {
       return chapter._id === chapterId;
@@ -130,5 +142,6 @@ Meteor.methods({
     } catch (e) {
       return false;
     }
+    return false;
   },
 });

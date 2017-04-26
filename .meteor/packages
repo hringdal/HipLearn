@@ -32,7 +32,6 @@ aldeed:autoform                      # forms of all kinds
 check@1.2.5                          # simple data validation
 
 # Development
-msavin:mongol                        # Development only database viewer TODO: remove
 
 # Testing
 practicalmeteor:mocha
@@ -60,4 +59,3 @@ zimme:active-route
 # Mobile
 mobile-experience@1.0.4       # Packages for a great mobile UX
 fastclick@1.0.13
-meteorhacks:fast-render

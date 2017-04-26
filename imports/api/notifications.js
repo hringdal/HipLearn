@@ -3,7 +3,6 @@ import { Mongo } from 'meteor/mongo';
 import { Tracker } from 'meteor/tracker';
 import SimpleSchema from 'simpl-schema';
 
-import { Books } from './books.js';
 import { Courses } from './courses.js';
 import { Following } from './following.js';
 
@@ -34,6 +33,13 @@ if (Meteor.isServer) {
     return Notifications.find({ user_id: this.userId, seen: false });
   });
 }
+
+// Deny client-side updates because we use methods for handling data
+Notifications.deny({
+  insert() { return true; },
+  update() { return true; },
+  remove() { return true; },
+});
 
 Meteor.methods({
   'notifications.create': function createNotification(message, courseId) {

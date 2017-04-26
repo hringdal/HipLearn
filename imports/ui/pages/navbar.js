@@ -16,33 +16,16 @@ Template.navbar.helpers({
   userEmail() {
     return Meteor.user().emails[0].address;
   },
-  userRole() {
+  isTeacher() {
     if (!Meteor.user()) {
-      return '#';
+      return false;
     }
     const role = Meteor.user().profile.role;
-    if (role === 1) {
-      return 'student.show';
-    } else if (role === 2) {
-      return 'teacher.show';
-    }
-    return '#';
-  },
-  about() {
-    if (!Meteor.user()) {
-      return '#';
-    }
-    const role = Meteor.user().profile.role;
-    if (role === 1) {
-      return 'student.about';
-    } else if (role === 2) {
-      return 'teacher.about';
-    }
-    return '#';
+    return role === 2;
   },
   isStudent() {
     if (!Meteor.user()) {
-      return '#';
+      return false;
     }
     return Meteor.user().profile.role === 1;
   },

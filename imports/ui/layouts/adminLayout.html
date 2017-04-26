@@ -1,0 +1,36 @@
+<template name="adminLayout">
+    {{#onlyIfAdmin}}
+        {{#if loggingIn}}
+            <div class="ui active inverted dimmer">
+                <div class="ui large text loader">
+                    Logging in, please wait
+                </div>
+            </div>
+        {{else}}
+            {{> navbar}}
+            {{> Template.dynamic template=sidebar}}
+            <div id="content">
+                {{> Template.dynamic template=main}}
+            </div>
+        {{/if}}
+    {{/onlyIfAdmin}}
+</template>
+
+<template name="onlyIfAdmin">
+    {{#if loggingIn}}
+        <div class="ui active inverted dimmer">
+            <div class="ui large text loader">
+                Logging in, please wait
+            </div>
+        </div>
+    {{else}}
+        {{#if canShow}}
+            {{> UI.contentBlock }}
+        {{else}}
+            <div class="ui fluid center aligned basic fitted segment">
+                <p>Only teachers are authorized to view this page.</p>
+                <p>Please <a href="sign-in">login</a> to view this page</p>
+            </div>
+        {{/if}}
+    {{/if}}
+</template>

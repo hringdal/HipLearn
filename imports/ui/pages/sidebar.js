@@ -22,7 +22,7 @@ Template.studentSidebar.onRendered(function render() {
 Template.studentSidebar.helpers({
   // return list of courses current user is following
   courses() {
-    const courseIds = Following.find({ user_id: Meteor.userId() }).map(function (c) {
+    const courseIds = Following.find({ user_id: Meteor.userId() }).map(function createList(c) {
       return c.course_id;
     });
     return Courses.find({ _id: { $in: courseIds } }, { sort: { code: 1 } });
@@ -35,6 +35,12 @@ Template.studentSidebar.helpers({
   },
   activeCourse() {
     return FlowRouter.getParam('courseId') === this._id;
+  },
+  isTeacher() {
+    if (!Meteor.user()) {
+      return false;
+    }
+    return Meteor.user().profile.role === 2;
   },
 });
 

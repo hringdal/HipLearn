@@ -14,7 +14,7 @@
                 <div class="ui loader"></div>
             </div>
         {{/if}}
-        <a class="item" id="clickable">
+        <a class="item {{#if isTeacher}}hide{{/if}}" id="clickable">
             <i class="plus icon"> </i>
             Follow a new course
         </a>
@@ -33,7 +33,7 @@
             Select a new course to follow
         </div>
         <div class="content">
-            {{#autoForm schema=addCourseSchema id="followCourse" type="method" meteormethod="followCourseStudent"}}
+            {{#autoForm schema=addCourseSchema id="followCourse" type="method" meteormethod="following.follow"}}
                 {{> afFieldInput name="_id" search=true placeholder="Select a course"}}
             {{/autoForm}}
         </div>
@@ -64,7 +64,7 @@
                 <div class="ui loader"></div>
             </div>
         {{/if}}
-        <a href="{{pathFor 'teacher.new'}}" class="green item">
+        <a href="{{pathFor 'teacher.new'}}" class="{{isActiveRoute 'teacher.new' class="active"}} teal item">
             <i class="plus icon"> </i>
             Create a new course
         </a>

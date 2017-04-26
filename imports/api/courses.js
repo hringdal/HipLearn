@@ -16,8 +16,7 @@ export const Courses = new Mongo.Collection('courses');
 
 const CourseSchema = new SimpleSchema({
   year: {
-    type: Number,
-    optional: true,
+    type: Number, optional: true,
   },
   courseContent: {
     type: String,
@@ -38,12 +37,12 @@ const CourseSchema = new SimpleSchema({
   owner_id: {
     type: String,
     label: 'Created by',
-    optional: true,
+    // eslint-disable-next-line consistent-return
     autoValue() {
       if (this.isInsert && (!this.isSet || this.value.length === 0)) {
         return this.userId;
       }
-      return undefined;
+      // returns provided value if not insert
     },
   },
   code: {
@@ -56,8 +55,7 @@ const CourseSchema = new SimpleSchema({
         Meteor.call('isSubjectUnique', this.value, (error, result) => {
           if (!result) {
             this.validationContext.addValidationErrors([{
-              name: 'code',
-              type: 'notUnique',
+              name: 'code', type: 'notUnique',
             }]);
           }
         });
@@ -71,32 +69,25 @@ const CourseSchema = new SimpleSchema({
     },
   },
   name: {
-    type: String,
-    label: 'Course Name',
+    type: String, label: 'Course Name',
   },
   students: {
-    type: Array,
-    label: 'Students taking the course',
-    optional: true,
+    type: Array, label: 'Students taking the course', optional: true,
   },
   'students.$': String,
   books: {
-    type: Array,
-    label: 'Course books',
-    optional: true,
+    type: Array, label: 'Course books', optional: true,
   },
   'books.$.': String,
   faculty: {
-    type: String,
-    optional: true,
-    label: 'Course faculty',
+    type: String, optional: true, label: 'Course faculty',
   },
 }, { tracker: Tracker });
 
 // #11 - Makes the error for creating new non-unique courses more descriptive
 CourseSchema.messageBox.messages({
   en: {
-    notUnique: '{{label}} has already been created by a different teacher',
+    notUnique: 'This course has already been taken by a different teacher',
   },
 });
 
@@ -109,7 +100,16 @@ export const AddCourseSchema = new SimpleSchema({
     autoform: {
       afFieldInput: {
         options() {
-          return Courses.find({}, { name: 1, sort: { name: 1 } }).map(function createSet(c) {
+          // TODO: maybe too advanced
+          const followingCourseIds = Following.find({
+            user_id: Meteor.userId() }).map(function createList(c) {
+              return c.course_id;
+            },
+          );
+
+          return Courses.find({
+            _id: { $nin: followingCourseIds },
+          }, { name: 1, sort: { name: 1 } }).map(function createSet(c) {
             return { label: c.name.toUpperCase(), value: c._id };
           });
         },
@@ -119,12 +119,6 @@ export const AddCourseSchema = new SimpleSchema({
 }, { tracker: Tracker });
 
 if (Meteor.isServer) {
-  /* Meteor.publish('courses.following', function followingCourses() {
-    const courseIds = Following.find({ user_id: this.userId }).map(function getId(c) {
-      return c.course_id;
-    });
-    return Courses.find({ _id: { $in: courseIds } });
-  });*/
   Meteor.publish('courses.student', function allCourses() {
     return Courses.find({});
   });
@@ -133,18 +127,56 @@ if (Meteor.isServer) {
   });
 }
 
+// Deny client-side updates because we use methods for handling data
+Courses.deny({
+  insert() {
+    return true;
+  },
+  update() {
+    return true;
+  },
+  remove() {
+    return true;
+  },
+});
 
 Meteor.methods({
   'courses.insert': function insertCourse(course) {
     check(course, Object);
-    return Courses.insert(course);
+
+    const role = Meteor.users.findOne(this.userId).profile.role;
+
+    if (role < 2) {
+      throw new Meteor.Error('courses.insert.accessDenied', 'You must be a teacher to create new courses');
+    }
+
+    const courseId = Courses.insert(course);
+    // follow your courses automatically as a teacher
+    Following.insert({ user_id: this.userId, course_id: courseId });
+    return courseId;
   },
   'courses.update': function updateCourse(data) {
-    check(data, Object);
+    check(data, {
+      _id: String, modifier: Object,
+    });
+
+    const ownerId = Courses.findOne(data._id).owner_id;
+
+    if (ownerId !== this.userId) {
+      throw new Meteor.Error('courses.update.accessDenied', 'Cannot update a course that is not yours');
+    }
+
     Courses.update(data._id, data.modifier);
   },
   'courses.delete': function deleteCourse(courseId) {
     check(courseId, String);
+
+    const ownerId = Courses.findOne(courseId).owner_id;
+
+    if (ownerId !== this.userId) {
+      throw new Meteor.Error('courses.delete.accessDenied', 'Cannot delete a course that is not yours');
+    }
+
     Results.remove({ course_id: courseId });
     Following.remove({ course_id: courseId });
     Books.remove({ course_id: courseId });
@@ -185,5 +217,11 @@ Meteor.methods({
       }
     }
     return false;
+  },
+  isSubjectUnique(subjectCode) {
+    check(subjectCode, String);
+    return Courses.find({
+      code: subjectCode.toUpperCase(),
+    }).count() === 0;
   },
 });
