@@ -1,13 +1,25 @@
 # HipLearn
+> *Learning has never been more easy*
 
-> "I wanted to lay down and die. Then i found HipLearn. Now my life has meaning"
+HipLearn is a university course manager that allows students and teachers to keep track of their curriculum. During the semester, teachers can let students know exactly how far they should have come in their course material.
 
-Ingeborg, 20
+The application is developed in JavaScript, using the [Meteor](https://www.meteor.com/install) fullstack framework.
+
+
+## Live Demo
+
+Try out the latest version at [https://hiplearn.me](https://hiplearn.me)
 
 ## Installation
 
-1. Clone the repository
-2. `cd` into repository
-3. `meteor npm install`to install required packages
-4. `meteor npm start` to run the application
+HipLearn runs as a Meteor application, so you need to have installed Meteor first:
 
+[https://www.meteor.com/install](https://www.meteor.com/install)
+
+Now simply clone the repository, install the required packages, and start the app:
+```
+$ git clone https://github.com/hringdal/HipLearn.git
+$ cd HipLearn
+$ meteor npm install
+$ meteor
+```

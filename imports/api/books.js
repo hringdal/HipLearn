@@ -207,11 +207,9 @@ Meteor.methods({
 
     // if chapter has been deleted, remove results
     // remove whole book if no chapters
-    console.log(book.chapters);
     if (book.chapters === undefined) {
       Results.remove({ book_id: data._id });
     } else {
-      console.log('else');
       const chapterIds = book.chapters.map(function getId(chapter) {
         return chapter._id;
       }); // compare results with chapters in book
