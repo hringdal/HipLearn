@@ -172,7 +172,7 @@ Meteor.methods({
           title: details.title,
           isbn,
           description,
-          chapters,  // TODO: change names inside here?
+          chapters,
           course_id: courseId,
         };
         Books.insert(book);

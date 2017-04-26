@@ -100,7 +100,6 @@ export const AddCourseSchema = new SimpleSchema({
     autoform: {
       afFieldInput: {
         options() {
-          // TODO: maybe too advanced
           const followingCourseIds = Following.find({
             user_id: Meteor.userId() }).map(function createList(c) {
               return c.course_id;
@@ -183,40 +182,44 @@ Meteor.methods({
     Courses.remove(courseId);
   },
   courseInfo(courseId, year) {
-    check(courseId, String);
-    check(year, String);
-    if (Meteor.isServer) {
-      this.unblock();
+    try {
+      check(courseId, String);
+      check(year, String);
+      if (Meteor.isServer) {
+        this.unblock();
 
-      try {
-        // encode to allow non-ascii characters
-        const url = encodeURI(`https://www.ntnu.no/studier/emner/${courseId}/${year}`);
-        // Change to callback style if you want to run on client
-        const response = HTTP.call('GET', url, {});
-        const reCredits = /Studiepoeng:&nbsp;(\d+\.?\d+)/g;
-        const match = reCredits.exec(response.content);
-        let credits = '';
-        if (match && match.length > 1) {
-          credits = match[1];
+        try {
+          // encode to allow non-ascii characters
+          const url = encodeURI(`https://www.ntnu.no/studier/emner/${courseId}/${year}`);
+          // Change to callback style if you want to run on client
+          const response = HTTP.call('GET', url, {});
+          const reCredits = /Studiepoeng:&nbsp;(\d+\.?\d+)/g;
+          const match = reCredits.exec(response.content);
+          let credits = '';
+          if (match && match.length > 1) {
+            credits = match[1];
+          }
+          const $ = cheerio.load(response.content);
+
+          return {
+            name: $('#course-details').find('> h1').text(),
+            courseContent: $('.content-course-content').text(),
+            learningGoal: $('.content-learning-goal').text(),
+            credits,
+          };
+        } catch (e) {
+          // Maybe better to not catch error and let caller handle it?
+
+          // Got a network error, timeout, or HTTP error in the 400 or 500 range.
+          // Or JSON parse error
+          console.log(e);
+          return false;
         }
-        const $ = cheerio.load(response.content);
-
-        return {
-          name: $('#course-details').find('> h1').text(),
-          courseContent: $('.content-course-content').text(),
-          learningGoal: $('.content-learning-goal').text(),
-          credits,
-        };
-      } catch (e) {
-        // Maybe better to not catch error and let caller handle it?
-
-        // Got a network error, timeout, or HTTP error in the 400 or 500 range.
-        // Or JSON parse error
-        console.log(e);
-        return false;
       }
+      return false;
+    } catch (err) {
+      return false;
     }
-    return false;
   },
   isSubjectUnique(subjectCode) {
     check(subjectCode, String);

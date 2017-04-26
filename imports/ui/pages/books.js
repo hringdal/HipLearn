@@ -429,5 +429,3 @@ AutoForm.addHooks(null, {
     },
   },
 });
-// TODO: remove
-AutoForm.debug();
