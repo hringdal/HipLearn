@@ -23,3 +23,12 @@ $ cd HipLearn
 $ meteor npm install
 $ meteor
 ```
+Then go to `localhost:3000` in your browser to see the running app.
+
+## Testing
+
+To run the included tests, execute the following command in your console after building the application for the first time.
+```
+$ meteor npm test
+```
+The tests are created with mocha and chai
